@@ -1,6 +1,5 @@
-# Editor configuration, see https://editorconfig.org
+# Editor configuration, see http://editorconfig.org
 root = true
-quote_type = single
 
 [*]
 charset = utf-8
