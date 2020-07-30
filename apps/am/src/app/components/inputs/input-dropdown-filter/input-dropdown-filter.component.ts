@@ -1,7 +1,7 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges, OnDestroy } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { Subscription, Observable } from 'rxjs';
-import { debounceTime, distinctUntilChanged, startWith, map, filter } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { startWith, map } from 'rxjs/operators';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 
 @Component({
@@ -16,7 +16,7 @@ export class InputDropdownFilterComponent implements OnInit, OnChanges, OnDestro
   @Input() public arrayValues: any[] = [];
   @Input() public displayWithValue: string;
   @Input() public filterValue: string;
-  @Output() onValueChanged = new EventEmitter<any>();
+  @Output() public onValueChanged = new EventEmitter<any>();
   public formControl: FormControl = new FormControl('', [Validators.required]);
   public filteredArray: Observable<any[]>;
 

@@ -8,5 +8,5 @@ import { Component, OnInit } from '@angular/core';
 export class ClusterAssignmentViewComponent implements OnInit {
   constructor() {}
 
-  ngOnInit(): void {}
+  public ngOnInit(): void {}
 }

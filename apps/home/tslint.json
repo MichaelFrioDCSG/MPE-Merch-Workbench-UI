@@ -1,19 +1,6 @@
 {
   "extends": "../../tslint.json",
-  "rules": {
-    "directive-selector": [
-      true,
-      "attribute",
-      "mpeMerchWorkbenchUi",
-      "camelCase"
-    ],
-    "component-selector": [
-      true,
-      "element",
-      "mpe-merch-workbench-ui",
-      "kebab-case"
-    ]
-  },
+  "rules": {},
   "linterOptions": {
     "exclude": ["!**/*"]
   }

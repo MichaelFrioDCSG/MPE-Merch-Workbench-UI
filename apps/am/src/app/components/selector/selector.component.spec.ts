@@ -1,6 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SelectorComponent } from './selector.component';
+import { MatTabsModule } from '@angular/material/tabs';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('SelectorComponent', () => {
   let component: SelectorComponent;
@@ -9,6 +11,7 @@ describe('SelectorComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [SelectorComponent],
+      imports: [BrowserAnimationsModule, MatTabsModule],
     }).compileComponents();
   }));
 

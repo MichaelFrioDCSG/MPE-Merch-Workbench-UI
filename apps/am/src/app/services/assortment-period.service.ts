@@ -10,7 +10,7 @@ import { IAssortmentPeriod } from '../../models/IAssortmentPeriod';
 export class AssortmentPeriodService {
   constructor(public http: HttpClient) {}
 
-  getAssortmentPeriods() {
+  public getAssortmentPeriods() {
     return this.http.get(`${environment.mpe_api}/api/assortmentperiod?mustHaveBuyPlan=true`).pipe(
       map((data: IAssortmentPeriod[]) => {
         return data;

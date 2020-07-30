@@ -4,18 +4,15 @@ import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms'
 import { Observable, ReplaySubject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { map, startWith } from 'rxjs/operators';
-import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { MatAutocompleteTrigger, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
-import { MatChipInputEvent } from '@angular/material/chips';
 import { ImportOverrideDialogComponent } from '../import-override-dialog/import-override-dialog.component';
 import { ImportAssortmentService } from '../../services/import-assortment.service';
 import { ImportValidationService } from '../../services/import-validation.service';
 import { OracleImportService } from '../../services/oracle-import.service';
 import { ProductHierarchyService } from '../../services/product-hierarchy.service';
 import { AssortmentPeriodService } from '../../services/assortment-period.service';
-import { IProductHierarchy } from 'apps/am/src/models/IProductHierarchy';
-import { IAssortment } from 'apps/am/src/models/IAssortment';
-import { IAssortmentPeriod } from 'apps/am/src/models/IAssortmentPeriod';
+import { IProductHierarchy } from '@am/src/models/IProductHierarchy';
+import { IAssortment } from '@am/src/models/IAssortment';
+import { IAssortmentPeriod } from '@am/src/models/IAssortmentPeriod';
 @Component({
   selector: 'app-import-dialog',
   templateUrl: './import-dialog.component.html',
@@ -33,18 +30,18 @@ export class ImportDialogComponent implements OnInit {
   public productSubClassesData: any[] = [];
   public assortmentImport: IAssortment[] = [];
 
-  assortmentPeriod = new FormControl({ value: [] }, [Validators.required]);
-  productDepartments = new FormControl({ value: [], disabled: true }, [Validators.required]);
-  productSubDepartments = new FormControl({ value: [], disabled: true });
-  productClasses = new FormControl({ value: [], disabled: true });
-  productSubClasses = new FormControl({ value: [], disabled: true });
+  public assortmentPeriod = new FormControl({ value: [] }, [Validators.required]);
+  public productDepartments = new FormControl({ value: [], disabled: true }, [Validators.required]);
+  public productSubDepartments = new FormControl({ value: [], disabled: true });
+  public productClasses = new FormControl({ value: [], disabled: true });
+  public productSubClasses = new FormControl({ value: [], disabled: true });
 
-  addedAssortments: IAssortment[] = [];
+  public addedAssortments: IAssortment[] = [];
 
-  loadingAssortmentPeriods = false;
-  loadingProductHierarchy = false;
-  loadingAssorments = false;
-  overrideExistingAssortment = false;
+  public loadingAssortmentPeriods = false;
+  public loadingProductHierarchy = false;
+  public loadingAssorments = false;
+  public overrideExistingAssortment = false;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -58,7 +55,7 @@ export class ImportDialogComponent implements OnInit {
     private dialog: MatDialog
   ) {}
 
-  ngOnInit() {
+  public ngOnInit() {
     this.loadingAssortmentPeriods = true;
     this.assortmentPeriodService.getAssortmentPeriods().subscribe((assortmentPeriods: IAssortmentPeriod[]) => {
       this.assortmentPeriods = assortmentPeriods;
@@ -198,7 +195,7 @@ export class ImportDialogComponent implements OnInit {
 
     const subclassIds: string[] = [];
     this.productSubClasses.value.forEach((displaySubclass: string) => {
-      let subclassId = displaySubclass.split(' -')[0];
+      const subclassId = displaySubclass.split(' -')[0];
       subclassIds.push(subclassId);
     });
 
@@ -227,7 +224,7 @@ export class ImportDialogComponent implements OnInit {
     );
   }
 
-  insertImportData(assortmentPeriodId, subclassId, overRideValue) {
+  public insertImportData(assortmentPeriodId, subclassId, overRideValue) {
     this.importAssortmentService.putAssortments(assortmentPeriodId, subclassId, overRideValue);
   }
 

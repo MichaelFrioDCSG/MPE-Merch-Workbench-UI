@@ -1,7 +1,7 @@
 <mat-form-field class="form-field-dropdown-loading example-full-width">
   <mat-label>{{ placeholder }}</mat-label>
-  <mat-select [formControl]="formControl" (selectionChange)="selectionChanged($event)" [disable]="disable" multiple>
-    <mat-option *ngFor="let value of arrayValues" [value]="value">{{ displayWithValue ? value[displayWithValue] : value }} </mat-option>
+  <mat-select [formControl]="formControl" (selectionChange)="selectionChanged($event)" [disabled]="disable" multiple>
+    <mat-option *ngFor="let value of arrayValues" [value]="value"> {{ displayWithValue ? value[displayWithValue] : value }} </mat-option>
   </mat-select>
   <app-input-spinner *ngIf="loading"></app-input-spinner>
   <mat-error *ngIf="formControl?.errors?.required">{{ placeholder }} is required</mat-error>

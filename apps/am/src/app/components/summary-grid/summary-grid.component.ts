@@ -8,15 +8,15 @@ import 'ag-grid-enterprise';
   templateUrl: './summary-grid.component.html',
   styleUrls: ['./summary-grid.component.scss'],
 })
-export class SummaryGridComponent {
-  @ViewChild('agGrid', { static: false }) agGrid: AgGridAngular;
+export class SummaryGridComponent implements OnInit {
+  @ViewChild('agGrid', { static: false }) public agGrid: AgGridAngular;
   private gridApi;
   private gridColumnApi;
   private nClickCount = 0;
 
-  title = 'AssortmentSummary';
+  public title = 'AssortmentSummary';
 
-  columnDefs = [
+  public columnDefs = [
     { headerName: 'Buy Plan ID', field: 'BuyPLanID' },
     { headerName: 'Buy Plan Name', field: 'BuyPLanName' },
     { headerName: 'Asssortment Period', field: 'AssortmentPeriod' },
@@ -25,7 +25,7 @@ export class SummaryGridComponent {
     { headerName: 'Last Modified Date', field: 'LastModifiedDate' },
   ];
 
-  defaultColDef = {
+  public defaultColDef = {
     flex: 1,
     minWidth: 50,
     autoSizeColumns: true,
@@ -37,27 +37,27 @@ export class SummaryGridComponent {
     resizable: true,
   };
 
-  sideBar = 'columns';
-  setValuesSectionVisible = 'true';
+  public sideBar = 'columns';
+  public setValuesSectionVisible = 'true';
 
-  aggFuncs = {
+  public aggFuncs = {
     sum: sumFunction,
   };
 
   /******** Fetch Row Data from External Source *******/
-  rowData: any;
-  groupDefaultExpanded = 1;
+  public rowData: any;
+  public groupDefaultExpanded = 1;
 
   constructor(private http: HttpClient) {}
 
-  ngOnInit() {
+  public ngOnInit() {
     // this.rowData = this.http.get('https://raw.githubusercontent.com/cangelo10/WorkWork/master/.github/workflows/IPData.json');
     //this.rowData = this.http.get('https://raw.githubusercontent.com/cangelo10/WorkWork/master/.github/workflows/IPDataWithTime.json');
     this.rowData = this.http.get('https://raw.githubusercontent.com/cangelo10/WorkWork/master/.github/workflows/IPWeekData.json');
   }
 
-  LoadUpdateRows() {
-    if (this.nClickCount == 0) {
+  public LoadUpdateRows() {
+    if (this.nClickCount === 0) {
       this.rowData = this.http.get('https://raw.githubusercontent.com/cangelo10/WorkWork/master/.github/workflows/IPWeekPartial.json');
       this.nClickCount++;
     } else {
@@ -66,28 +66,28 @@ export class SummaryGridComponent {
     }
   }
 
-  SwitchToWeekView() {
+  public SwitchToWeekView() {
     this.rowData = this.http.get('https://raw.githubusercontent.com/cangelo10/WorkWork/master/.github/workflows/IPDataAtWeek%2Cjson');
   }
 
-  lockSelectedRows() {
+  public lockSelectedRows() {
     const selectedNodes = this.agGrid.api.getSelectedNodes();
     const selectedData = selectedNodes.map(node => node.data);
     const selectedDataStringPresentation = selectedData.map(node => node.make + ' ' + node.model).join(', ');
     alert('Selected Nodes: ${SelectedDataStringPresentation}');
   }
 
-  reCalc() {
+  public reCalc() {
     const selectedNodes = this.agGrid.api.getSelectedNodes();
     const selectedData = selectedNodes.map(node => node.data);
     //const selectedDataStringPresentation = selectedData.map(node => node.make + ' ' + node.model).join(", ");
     /* *** DO some math to re-calc **** */
   }
 
-  cellValueChanged() {
+  public cellValueChanged() {
     alert('Spread values for grouping at: ' + this.agGrid.api.getRowNode);
   }
-  onGridReady(params) {
+  public onGridReady(params) {
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
     params.api.sizeColumnsToFit();
@@ -95,8 +95,8 @@ export class SummaryGridComponent {
 } //// END GRID CLASS //////
 
 function createRowData() {
-  var rowData = [];
-  for (var i = 0; i < 100; i++) {
+  const rowData = [];
+  for (let i = 0; i < 100; i++) {
     rowData.push({
       a: Math.floor(i % 4),
       b: Math.floor(i % 7),
@@ -106,7 +106,7 @@ function createRowData() {
 }
 
 function sumFunction(values) {
-  var result = 0;
+  let result = 0;
   values.forEach(function (value) {
     if (typeof value === 'number') {
       result += value;

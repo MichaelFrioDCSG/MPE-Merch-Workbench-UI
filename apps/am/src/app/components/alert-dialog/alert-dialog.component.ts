@@ -6,8 +6,8 @@ import { Component, Inject } from '@angular/core';
   templateUrl: './alert-dialog.component.html',
 })
 export class AlertDialogComponent {
-  message = '';
-  cancelButtonText = 'Cancel';
+  public message = '';
+  public cancelButtonText = 'Cancel';
   constructor(@Inject(MAT_DIALOG_DATA) private data: any, private dialogRef: MatDialogRef<AlertDialogComponent>) {
     if (data) {
       this.message = data.message || this.message;
@@ -18,7 +18,7 @@ export class AlertDialogComponent {
     this.dialogRef.updateSize('300vw', '300vw');
   }
 
-  onConfirmClick(): void {
+  public onConfirmClick(): void {
     this.dialogRef.close(true);
   }
 }

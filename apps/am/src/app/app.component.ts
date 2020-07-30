@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { AgGridAngular } from 'ag-grid-angular';
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ImportDialogComponent } from './components/import-dialog/import-dialog.component';
 import { ConfirmationDialogComponent } from '../app/components/confirmation-dialog/confirmation-dialog.component';
@@ -18,20 +18,20 @@ import { IProductHierarchy } from '../models/IProductHierarchy';
   encapsulation: ViewEncapsulation.None,
 })
 export class AppComponent implements OnInit {
-  @ViewChild('agGrid', { static: false }) agGrid: AgGridAngular;
+  @ViewChild('agGrid', { static: false }) public agGrid: AgGridAngular;
   public selectedData: any;
-  title = 'MPE-AM';
-  rowData: IProductHierarchy[] = [];
-  rowDataHeader: any;
-  gridOptions: any;
-  totalAssortments: any;
-  gridApi: any;
-  rowCount: any;
-  statusBar: any;
-  sideBar: any;
-  headerSelected = false;
-  assortmentperiods: any;
-  columnDefs = [
+  public title = 'MPE-AM';
+  public rowData: IProductHierarchy[] = [];
+  public rowDataHeader: any;
+  public gridOptions: any;
+  public totalAssortments: any;
+  public gridApi: any;
+  public rowCount: any;
+  public statusBar: any;
+  public sideBar: any;
+  public headerSelected = false;
+  public assortmentperiods: any;
+  public columnDefs = [
     {
       headerName: '',
       width: 40,
@@ -93,19 +93,19 @@ export class AppComponent implements OnInit {
     };
   }
 
-  onGridReady(params: any) {
+  public onGridReady(params: any) {
     params.api.sizeColumnsToFit();
     params.api.onlySelected = true;
     console.log('grid ready');
   }
-  ngOnInit() {
+  public ngOnInit() {
     // load Assortment Summary data
     this.getSummaryData().subscribe(data => {
       this.rowDataHeader = data.assortmentdata;
     });
   }
 
-  onRowSelected(event) {
+  public onRowSelected(event) {
     // window.alert('row ' + event.node.data.asmt_period_id + ' selected = ' + event.node.selected);
 
     if (event.node.selected) {
@@ -115,7 +115,7 @@ export class AppComponent implements OnInit {
     }
   }
 
-  onSelectionChanged(event) {
+  public onSelectionChanged(event) {
     this.rowCount = event.api.getSelectedNodes().length;
     // window.alert('selection changed, ' + this.rowCount + ' rows selected');
     if (this.rowCount > 0) {
@@ -140,7 +140,7 @@ export class AppComponent implements OnInit {
     return this.http.get('../assets/import_data.json');
   }
 
-  getSelectedRows() {
+  public getSelectedRows() {
     const selectedNodes = this.agGrid.api.getSelectedNodes();
     this.selectedData = JSON.stringify(selectedNodes.map(node => node.data));
     // const selectedDataStringPresentation = selectedData.map(node => node.make + ' ' + node.model).join(', ');
@@ -171,7 +171,7 @@ export class AppComponent implements OnInit {
     this.router.navigate(['']);
   }
 
-  openDeleteDialog() {
+  public openDeleteDialog() {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       data: {
         message: 'Are you sure want to delete?',
@@ -197,7 +197,7 @@ export class AppComponent implements OnInit {
     });
   }
 
-  openAlertDialog() {
+  public openAlertDialog() {
     const dialogRef = this.dialog.open(AlertDialogComponent, {
       data: {
         message: 'You have chosen to edit selected assortments !',

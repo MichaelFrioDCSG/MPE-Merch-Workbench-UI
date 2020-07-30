@@ -10,7 +10,7 @@
       },
       "root": "apps/home",
       "sourceRoot": "apps/home/src",
-      "prefix": "mpe-merch-workbench-ui",
+      "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
@@ -127,7 +127,7 @@
       },
       "root": "apps/am",
       "sourceRoot": "apps/am/src",
-      "prefix": "mpe-merch-workbench-ui",
+      "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
