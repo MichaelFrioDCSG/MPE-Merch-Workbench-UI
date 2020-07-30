@@ -234,6 +234,35 @@
           }
         }
       }
+    },
+    "assortment-management": {
+      "projectType": "library",
+      "root": "libs/assortment-management",
+      "sourceRoot": "libs/assortment-management/src",
+      "prefix": "mpe",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/assortment-management/tsconfig.lib.json", "libs/assortment-management/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/assortment-management/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/assortment-management/jest.config.js",
+            "tsConfig": "libs/assortment-management/tsconfig.spec.json",
+            "passWithNoTests": true,
+            "setupFile": "libs/assortment-management/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "style": "scss"
+        }
+      }
     }
   },
   "cli": {

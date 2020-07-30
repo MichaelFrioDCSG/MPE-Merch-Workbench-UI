@@ -16,7 +16,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@am/*": ["apps/am/*"]
+      "@am/*": ["apps/am/*"],
+      "@mpe/assortment-management": ["libs/assortment-management/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

@@ -1,14 +1,11 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { AppComponent as AMAppComponent } from '@am/src/app/app.component';
+import { AssortmentManagementModule, assortmentManagementRoutes } from '@mpe/assortment-management';
 
-const routes: Routes = [
-  { path: 'am', component: AMAppComponent },
-  { path: '', redirectTo: '/am', pathMatch: 'full' }, // redirect to `first-component`
-];
+const routes: Routes = [{ path: 'am', children: assortmentManagementRoutes }];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, { initialNavigation: 'enabled' })],
   exports: [RouterModule],
 })
 export class AppRoutingModule {}
