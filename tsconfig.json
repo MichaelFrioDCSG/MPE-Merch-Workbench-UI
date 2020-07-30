@@ -15,7 +15,9 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@am/*": ["apps/am/*"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }
