@@ -10,9 +10,9 @@ import { ImportValidationService } from '../../services/import-validation.servic
 import { OracleImportService } from '../../services/oracle-import.service';
 import { ProductHierarchyService } from '../../services/product-hierarchy.service';
 import { AssortmentPeriodService } from '../../services/assortment-period.service';
-import { IProductHierarchy } from '@am/src/models/IProductHierarchy';
-import { IAssortment } from '@am/src/models/IAssortment';
-import { IAssortmentPeriod } from '@am/src/models/IAssortmentPeriod';
+import { IProductHierarchy } from '@mpe/am/src/models/IProductHierarchy';
+import { IAssortment } from '@mpe/am/src/models/IAssortment';
+import { IAssortmentPeriod } from '@mpe/am/src/models/IAssortmentPeriod';
 @Component({
   selector: 'app-import-dialog',
   templateUrl: './import-dialog.component.html',
