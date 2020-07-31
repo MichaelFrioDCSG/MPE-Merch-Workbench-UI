@@ -1,6 +1,7 @@
 import { TestBed, async } from '@angular/core/testing';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { AppComponent } from './app.component';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('AppComponent', () => {
   let store: MockStore;
@@ -9,6 +10,7 @@ describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [AppComponent],
+      imports: [RouterTestingModule],
       providers: [provideMockStore({ initialState })],
     }).compileComponents();
 
@@ -31,6 +33,6 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement;
-    expect(compiled.querySelector('h1').textContent).toContain('Welcome to home!');
+    expect(compiled.querySelector('p').textContent).toContain('Portal APP');
   });
 });

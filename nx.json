@@ -1,5 +1,5 @@
 {
-  "npmScope": "mpe-merch-workbench-ui",
+  "npmScope": "mpe",
   "affected": {
     "defaultBase": "master"
   },
@@ -35,6 +35,9 @@
     "am-e2e": {
       "tags": [],
       "implicitDependencies": ["am"]
+    },
+    "assortment-management": {
+      "tags": []
     }
   }
 }
