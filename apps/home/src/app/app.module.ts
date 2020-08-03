@@ -7,8 +7,7 @@ import { AgGridModule } from 'ag-grid-angular';
 import 'ag-grid-enterprise';
 
 import { environment } from '../environments/environment';
-import { AppModule as AmModule } from '@mpe/am/src/app/app.module';
-
+import { AssortmentManagementModule } from '@mpe/assortment-management';
 import appReducer, { appReducerKey } from '../store/reducer';
 import appEffects from '../store/effects';
 
@@ -22,7 +21,7 @@ import { AppRoutingModule } from './app-routing.module';
     BrowserModule,
     AppRoutingModule,
     SharedModule,
-    AmModule,
+    AssortmentManagementModule,
     AgGridModule.withComponents([]),
     StoreModule.forRoot(
       { [appReducerKey]: appReducer },
