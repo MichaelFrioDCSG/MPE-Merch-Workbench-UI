@@ -3,9 +3,11 @@ import { BrowserModule } from '@angular/platform-browser';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { AppModule as AmModule } from '@mpe/am/src/app/app.module';
+import { AgGridModule } from 'ag-grid-angular';
+import 'ag-grid-enterprise';
 
 import { environment } from '../environments/environment';
+import { AppModule as AmModule } from '@mpe/am/src/app/app.module';
 
 import appReducer, { appReducerKey } from '../store/reducer';
 import appEffects from '../store/effects';
@@ -19,6 +21,7 @@ import { AppRoutingModule } from './app-routing.module';
     BrowserModule,
     AppRoutingModule,
     AmModule,
+    AgGridModule.withComponents([]),
     StoreModule.forRoot(
       { [appReducerKey]: appReducer },
       {
