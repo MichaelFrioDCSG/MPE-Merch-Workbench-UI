@@ -38,6 +38,12 @@
     },
     "assortment-management": {
       "tags": []
+    },
+    "shared": {
+      "tags": []
+    },
+    "material": {
+      "tags": []
     }
   }
 }

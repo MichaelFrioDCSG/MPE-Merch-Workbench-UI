@@ -13,6 +13,7 @@ import appReducer, { appReducerKey } from '../store/reducer';
 import appEffects from '../store/effects';
 
 import { AppComponent } from './app.component';
+import { SharedModule } from '@mpe/shared';
 import { AppRoutingModule } from './app-routing.module';
 
 @NgModule({
@@ -20,6 +21,7 @@ import { AppRoutingModule } from './app-routing.module';
   imports: [
     BrowserModule,
     AppRoutingModule,
+    SharedModule,
     AmModule,
     AgGridModule.withComponents([]),
     StoreModule.forRoot(
