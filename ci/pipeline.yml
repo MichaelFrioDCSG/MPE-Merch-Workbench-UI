@@ -1,0 +1,40 @@
+---
+resources:
+  - name: project
+    type: git
+    source:
+      uri: { { project_resource_uri } }
+      skip_ssl_verification: true
+      branch: { { project_resource_branch } }
+      private_key: ((gitkey))
+
+  - name: cf-dev
+    type: cf
+    source:
+      api: { { cf_resource_api } }
+      organization: { { cf_resource_organization } }
+      username: { { cf_resource_username } }
+      password: { { cf_resource_password } }
+      skip_cert_check: true
+      space: { { cf_resource_space_dev } }
+
+jobs:
+  - name: build-and-deploy
+    public: true
+    serial: true
+    plan:
+      - in_parallel:
+          - get: project
+            trigger: true
+      - task: build-static-site
+        file: project/ci/build.yml
+        params:
+          BUILD_CONFIGURATION: { { build_configuration } }
+          INDEX_ARGUMENT: { { index_argument } }
+      - put: cf-push
+        resource: cf-dev
+        params:
+          command: push
+          manifest: build-output/dist/manifest.yml
+          current_app_name: { { project_name } }
+          path: build-output/

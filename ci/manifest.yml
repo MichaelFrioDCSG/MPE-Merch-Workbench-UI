@@ -1,0 +1,6 @@
+---
+applications:
+  - name: mpe-merch-workbench
+    buildpack: staticfile_buildpack
+    instances: 1
+    stack: cflinuxfs3
