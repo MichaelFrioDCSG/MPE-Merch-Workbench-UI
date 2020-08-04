@@ -1,0 +1,18 @@
+<div>
+  <mat-form-field class="form-field-loading example-full-width">
+    <input
+      matInput
+      placeholder="{{ placeholder }}"
+      color="accent"
+      title="{{ title }}"
+      [formControl]="formControl"
+      [matAutocomplete]="auto"
+      (click)="$event.target.select()"
+    />
+    <mat-autocomplete #auto="matAutocomplete" [displayWith]="getDisplayWith.bind(this)" (optionSelected)="onOptionSelected($event)">
+      <mat-option *ngFor="let value of filteredArray | async" [value]="value"> {{ displayWithValue ? value[displayWithValue] : value }} </mat-option>
+    </mat-autocomplete>
+
+    <mpe-input-spinner *ngIf="loading"></mpe-input-spinner>
+  </mat-form-field>
+</div>

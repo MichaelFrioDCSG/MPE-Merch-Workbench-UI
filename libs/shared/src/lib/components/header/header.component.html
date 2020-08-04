@@ -1,0 +1,22 @@
+<mat-toolbar class="AM-head" position="fixed;">
+  <mat-toolbar-row>
+    <span id="AM-font" class="AM-head" style.Background="black">
+      <img class="menu-picture" src="assets/images/DSG_Logo.png" /> Assortment Management
+    </span>
+    <span class="example-spacer"></span>
+    <button mat-icon-button [matMenuTriggerFor]="menu">
+      <mat-icon>apps</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item>
+        <mat-icon>PO Manager</mat-icon>
+      </button>
+      <button mat-menu-item>
+        <mat-icon>Store Group Mgmt</mat-icon>
+      </button>
+      <button mat-menu-item>
+        <mat-icon>Item Plan Mgmt</mat-icon>
+      </button>
+    </mat-menu>
+  </mat-toolbar-row>
+</mat-toolbar>

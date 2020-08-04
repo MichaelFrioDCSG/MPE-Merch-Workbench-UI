@@ -1,0 +1,57 @@
+<section>
+  <div class="example-button-row">
+    <div class="example-flex-contianer">
+      <div class="example-button-container">
+        <button
+          mat-mini-fab
+          color="primary"
+          *ngIf="!headerSelected"
+          matTooltipPosition="right"
+          matTooltip="Import"
+          matTooltipClass="tool-tip-style"
+          mat-button
+          (click)="openDialog()"
+        >
+          <i class="material-icons">add</i>
+        </button>
+        <button
+          mat-mini-fab
+          color="accent"
+          *ngIf="headerSelected"
+          matTooltipPosition="right"
+          matTooltip="Edit/View"
+          matTooltipClass="tool-tip-style"
+          mat-button
+          (click)="openAlertDialog()"
+        >
+          <i class="material-icons">edit</i>
+        </button>
+        <button
+          mat-mini-fab
+          color="warn"
+          *ngIf="headerSelected"
+          matTooltipPosition="right"
+          matTooltip="Delete"
+          matTooltipClass="tool-tip-style"
+          mat-button
+          (click)="openDeleteDialog()"
+        >
+          <i class="material-icons">delete</i>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+<ag-grid-angular
+  #agGrid
+  class="ag-theme-alpine"
+  [columnDefs]="columnDefs"
+  [statusBar]="statusBar"
+  [sideBar]="sideBar"
+  rowSelection="multiple"
+  [rowData]="rowDataHeader"
+  (gridReady)="onGridReady($event)"
+  (rowSelected)="onRowSelected($event)"
+  (selectionChanged)="onSelectionChanged($event)"
+>
+</ag-grid-angular>

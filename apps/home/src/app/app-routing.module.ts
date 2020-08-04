@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { AssortmentManagementModule, assortmentManagementRoutes } from '@mpe/assortment-management';
-import { routes as amRoutes } from '@mpe/am/src/app/app-routing.module';
+import { amRoutes } from '@mpe/assortment-management';
+import { LandingPageComponent } from './components/landing-page/landing-page.component';
 
 const routes: Routes = [
-  { path: 'amui', children: assortmentManagementRoutes },
   { path: 'am', children: amRoutes },
+  { path: '', component: LandingPageComponent },
 ];
 
 @NgModule({

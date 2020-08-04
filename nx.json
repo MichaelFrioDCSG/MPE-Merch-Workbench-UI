@@ -29,14 +29,13 @@
       "tags": [],
       "implicitDependencies": ["home"]
     },
-    "am": {
+    "assortment-management": {
       "tags": []
     },
-    "am-e2e": {
-      "tags": [],
-      "implicitDependencies": ["am"]
+    "shared": {
+      "tags": []
     },
-    "assortment-management": {
+    "material": {
       "tags": []
     }
   }
