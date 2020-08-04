@@ -18,6 +18,7 @@
     "paths": {
       "@mpe/assortment-management": ["libs/assortment-management/src/index.ts"],
       "@mpe/am/*": ["apps/am/*"],
+      "@mpe/home/*": ["apps/home/*"],
       "@mpe/shared": ["libs/shared/src/index.ts"],
       "@mpe/material": ["libs/material/src/index.ts"]
     }

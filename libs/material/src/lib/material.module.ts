@@ -10,7 +10,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatSelectModule } from '@angular/material/select';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatMenuModule } from '@angular/material/menu';
@@ -40,5 +40,6 @@ const material_modules = [
 @NgModule({
   imports: [CommonModule, ...material_modules],
   exports: [...material_modules],
+  providers: [{ provide: MAT_DIALOG_DATA, useValue: {} }],
 })
 export class MaterialModule {}

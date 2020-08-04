@@ -2,6 +2,7 @@ import { TestBed, async } from '@angular/core/testing';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { AppComponent } from './app.component';
 import { RouterTestingModule } from '@angular/router/testing';
+import { HeaderComponent } from './components/header/header.component';
 
 describe('AppComponent', () => {
   let store: MockStore;
@@ -9,7 +10,7 @@ describe('AppComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [AppComponent],
+      declarations: [AppComponent, HeaderComponent],
       imports: [RouterTestingModule],
       providers: [provideMockStore({ initialState })],
     }).compileComponents();

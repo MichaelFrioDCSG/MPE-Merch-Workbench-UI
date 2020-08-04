@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { HttpClientModule } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
@@ -14,12 +15,15 @@ import appEffects from '../store/effects';
 import { AppComponent } from './app.component';
 import { SharedModule } from '@mpe/shared';
 import { AppRoutingModule } from './app-routing.module';
+import { LandingPageComponent } from './components/landing-page/landing-page.component';
+import { HeaderComponent } from './components/header/header.component';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, LandingPageComponent, HeaderComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
+    HttpClientModule,
     SharedModule,
     AssortmentManagementModule,
     AgGridModule.withComponents([]),
@@ -38,5 +42,6 @@ import { AppRoutingModule } from './app-routing.module';
   ],
   providers: [],
   bootstrap: [AppComponent],
+  exports: [LandingPageComponent, HeaderComponent],
 })
 export class AppModule {}

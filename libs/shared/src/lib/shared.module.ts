@@ -13,6 +13,6 @@ export const sharedRoutes: Route[] = [];
 @NgModule({
   imports: [CommonModule, RouterModule, MaterialModule, AgGridModule.withComponents([])],
   declarations: [HeaderComponent],
-  exports: [HeaderComponent],
+  exports: [HeaderComponent, AgGridModule],
 })
 export class SharedModule {}

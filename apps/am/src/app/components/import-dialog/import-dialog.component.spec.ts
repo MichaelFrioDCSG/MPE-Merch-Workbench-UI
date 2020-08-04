@@ -1,19 +1,12 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ImportDialogComponent } from './import-dialog.component';
-import { MatTabsModule } from '@angular/material/tabs';
 import { InputMultiselectDropdownComponent } from '../inputs/input-multiselect-dropdown/input-multiselect-dropdown.component';
-import { MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { InputDropdownFilterComponent } from '../inputs/input-dropdown-filter/input-dropdown-filter.component';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
-import { MatOptionModule } from '@angular/material/core';
 import { InputSpinnerComponent } from '../inputs/input-spinner/input-spinner.component';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
-import { MatButtonModule } from '@angular/material/button';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { HttpTestingController, HttpClientTestingModule } from '@angular/common/http/testing';
 import { Type } from '@angular/core';
 import { AssortmentPeriodService } from '../../services/assortment-period.service';
@@ -22,7 +15,7 @@ import { OracleImportService } from '../../services/oracle-import.service';
 import { ImportValidationService } from '../../services/import-validation.service';
 import { ImportAssortmentService } from '../../services/import-assortment.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatInputModule } from '@angular/material/input';
+import { MaterialModule } from '@mpe/material';
 
 describe('ImportDialogComponent', () => {
   let component: ImportDialogComponent;
@@ -32,24 +25,10 @@ describe('ImportDialogComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ImportDialogComponent, InputMultiselectDropdownComponent, InputDropdownFilterComponent, InputSpinnerComponent],
-      imports: [
-        BrowserModule,
-        BrowserAnimationsModule,
-        HttpClientTestingModule,
-        ReactiveFormsModule,
-        FormsModule,
-        MatTabsModule,
-        MatDialogModule,
-        MatSelectModule,
-        MatOptionModule,
-        MatButtonModule,
-        MatAutocompleteModule,
-        MatProgressSpinnerModule,
-        MatInputModule,
-      ],
+      imports: [BrowserModule, BrowserAnimationsModule, HttpClientTestingModule, ReactiveFormsModule, FormsModule, MaterialModule],
       providers: [
         { provide: MAT_DIALOG_DATA, useValue: {} },
-        { provide: AssortmentPeriodService, useValue: { getAssortmentPeriods: () => ({ subscribe: data => ({ sort: () => {} }) }) } },
+        { provide: AssortmentPeriodService, useValue: { getAssortmentPeriods: () => ({ subscribe: () => ({ sort: () => {} }) }) } },
         { provide: ProductHierarchyService, useValue: {} },
         { provide: OracleImportService, useValue: {} },
         { provide: ImportValidationService, useValue: {} },

@@ -1,0 +1,71 @@
+<h1 mat-dialog-title>Import Assortment Plan</h1>
+<div mat-dialog-content>
+  <mat-tab-group mat-align-tabs="center">
+    <mat-tab label="Oracle">
+      <div class="container-fluid" (ngSubmit)="validateImport()">
+        <div class="row">
+          <div class="col-md-4">
+            <mpe-input-dropdown-filter
+              [placeholder]="'Assortment Period'"
+              [title]="'Choose an Assortment Period'"
+              [arrayValues]="assortmentPeriods"
+              [displayWithValue]="'assortmentPeriodLabel'"
+              [filterValue]="'assortmentPeriodLabel'"
+              [loading]="loadingAssortmentPeriods"
+              (onValueChanged)="onAssortmentPeriodChanged($event)"
+            ></mpe-input-dropdown-filter>
+          </div>
+        </div>
+        <div class="row row-centered">
+          <div class="col-md-3">
+            <mpe-input-multiselect-dropdown
+              [placeholder]="'Department'"
+              [title]="'Choose a department'"
+              [loading]="loadingProductHierarchy"
+              [arrayValues]="productDepartmentsData"
+              [inputFormControl]="productDepartments"
+              (onValueChanged)="onProductDepartmentChanged($event)"
+            >
+            </mpe-input-multiselect-dropdown>
+          </div>
+          <div class="col-md-3">
+            <mpe-input-multiselect-dropdown
+              [placeholder]="'Sub Department'"
+              [title]="'Choose a sub department'"
+              [arrayValues]="productSubDepartmentsData"
+              [inputFormControl]="productSubDepartments"
+              (onValueChanged)="onProductSubDepartmentChanged($event)"
+            ></mpe-input-multiselect-dropdown>
+          </div>
+          <div class="col-md-3">
+            <mpe-input-multiselect-dropdown
+              [placeholder]="'Class'"
+              [title]="'Choose a class'"
+              [arrayValues]="productClassesData"
+              [inputFormControl]="productClasses"
+              (onValueChanged)="onProductClassChanged($event)"
+            ></mpe-input-multiselect-dropdown>
+          </div>
+          <div class="col-md-3">
+            <mpe-input-multiselect-dropdown
+              [placeholder]="'Sub Class'"
+              [title]="'Choose a sub class'"
+              [arrayValues]="productSubClassesData"
+              [inputFormControl]="productSubClasses"
+              (onValueChanged)="onProductSubClassChanged($event)"
+            ></mpe-input-multiselect-dropdown>
+          </div>
+        </div>
+      </div>
+    </mat-tab>
+    <mat-tab label="Excel"> Content 2 </mat-tab>
+  </mat-tab-group>
+</div>
+<div mat-dialog-actions class="show-on-right">
+  <button mat-raised-button color="primary" [mat-dialog-close]="addedAssortments" [disabled]="!addedAssortments?.length" (click)="validateImport()">
+    Import
+  </button>
+  <button mat-raised-button color="warn" mat-dialog-close cdkFocusInitial>
+    Close
+  </button>
+</div>
