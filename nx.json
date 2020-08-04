@@ -29,13 +29,6 @@
       "tags": [],
       "implicitDependencies": ["home"]
     },
-    "am": {
-      "tags": []
-    },
-    "am-e2e": {
-      "tags": [],
-      "implicitDependencies": ["am"]
-    },
     "assortment-management": {
       "tags": []
     },
