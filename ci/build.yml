@@ -1,0 +1,17 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: node
+    tag: 'latest'
+
+inputs:
+  - name: project
+
+outputs:
+  - name: build-output
+
+run:
+  path: project/ci/build.sh
