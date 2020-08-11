@@ -1,16 +1,8 @@
 #!/usr/bin/env bash
 
-CONCOURSE_TARGET="merchandise-planning-and-execution"
-PIPELINE_NAME="mpe-merch-workbench"
-PIPELINE_CONFIG_FILE="pipeline.yml"
-VARS_FILE="vars.yml"
-
 # set pipeline
-fly --target $CONCOURSE_TARGET set-pipeline \
-    --config $PIPELINE_CONFIG_FILE \
-    --pipeline $PIPELINE_NAME \
-    --load-vars-from $VARS_FILE \
+fly --target merchandise-planning-and-execution set-pipeline --config pipeline.yml --pipeline mpe-merch-workbench \
     ${*}
 
 # notify concourse of a pipeline update
-fly -t $CONCOURSE_TARGET up --pipeline $PIPELINE_NAME
+fly -t merchandise-planning-and-execution up --pipeline mpe-merch-workbench
