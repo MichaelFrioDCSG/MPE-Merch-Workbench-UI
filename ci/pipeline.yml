@@ -1,40 +1,60 @@
 ---
-resources:
-  - name: project
-    type: git
-    source:
-      uri: {{project_resource_uri}}
-      skip_ssl_verification: true
-      branch: {{project_resource_branch}}
-      private_key: ((gitkey))
+  resources:
+    - name: MerchWorkBenchMaster
+      type: git
+      source:
+        uri: git@github.com:dsg-tech/MPE-Merch-Workbench-UI.git
+        branch: master
+        private_key: ((MPE-Merch-Workbench-UI-deploykey.private))
 
-  - name: cf-dev
-    type: cf
-    source:
-      api: {{cf_resource_api}}
-      organization: {{cf_resource_organization}}
-      username: {{cf_resource_username}}
-      password: {{cf_resource_password}}
-      skip_cert_check: true
-      space: {{cf_resource_space_dev}}
+    - name: PCF-VN01-Dev
+      type: cf
+      source:
+        api: https://api.sys.vn01.pcf.dcsg.com
+        username: ((cf_user_nonprod))
+        password: ((cf_password_nonprod))
+        organization: merchandise-planning-and-execution
+        space: dev
+        skip_cert_check: true
 
-jobs:
-  - name: build-and-deploy
-    public: true
-    serial: true
-    plan:
-      - in_parallel:
-          - get: project
-            trigger: true
-      - task: build-static-site
-        file: project/ci/build.yml
-        params:
-          BUILD_CONFIGURATION: {{build_configuration}}
-          INDEX_ARGUMENT: {{index_argument}}
-      - put: cf-push
-        resource: cf-dev
-        params:
-          command: push
-          manifest: build-output/dist/manifest.yml
-          current_app_name: {{project_name}}
-          path: build-output/
+  jobs:
+    - name: Publish-and-Deploy
+      plan:
+        - get: MerchWorkBenchMaster
+          trigger: true
+        - task: ng-publish
+          config:
+            platform: linux
+            image_resource:
+              type: docker-image
+              source:
+                repository: node
+                tag: latest
+            inputs:
+              - name: MerchWorkBenchMaster
+            outputs:
+              - name: build-output
+            run:
+              path: sh
+              args:
+                - -exc
+                - |
+                  set -xe
+                  # There is still an issue/bug with this. Should
+                  # be able to use ci as value - https://github.com/angular/angular-cli/blob/master/docs/design/analytics.md4
+                  export NG_CLI_ANALYTICS="false"
+                  echo "NG_CLI_ANALYTICS="$NG_CLI_ANALYTICS
+                  cd MerchWorkBenchMaster
+                  npm install --unsafe-perm --verbose
+                  #./node_modules/@angular/cli/bin/ng build --output-hashing=bundles --index=${INDEX_ARGUMENT}
+                  npx ng build
+                  cp -r dist/apps/home/* ../build-output
+                  cp ci/Staticfile ../build-output
+                  cp ci/manifest.yml ../build-output
+        - put: cf-push-dev
+          resource: PCF-VN01-Dev
+          params:
+            command: push
+            path: build-output
+            manifest: build-output/manifest.yml
+            current_app_name: mpe-merch-workbench
