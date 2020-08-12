@@ -3,6 +3,9 @@ import { HttpClient } from '@angular/common/http';
 import { AgGridAngular } from 'ag-grid-angular';
 import { Observable } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
+import { IProductHierarchy } from 'libs/shared/src/lib/models/IProductHierarchy';
+import { StoreGroupService } from '../../services/store-group.service';
+import { ImportStoreGroupDialogComponent } from 'libs/shared/src/lib/dialogs/import-store-group-dialog/import-store-group-dialog.component';
 
 @Component({
   selector: 'mpe-landing',
@@ -10,11 +13,11 @@ import { MatDialog } from '@angular/material/dialog';
   styleUrls: ['./landing.component.scss'],
 })
 export class LandingComponent implements OnInit {
-  @ViewChild('agGrid', { static: false }) public agGrid: AgGridAngular;
+  @ViewChild('agGrid', { static: false }) agGrid: AgGridAngular;
   public selectedData: any;
-  public title = 'MPE-SGM';
-  public rowData: any[] = [];
-  public columnDefs = [
+  title = 'MPE-SGM';
+  rowData: IProductHierarchy[] = [];
+  columnDefs = [
     {
       headerName: '',
       width: 40,
@@ -23,20 +26,15 @@ export class LandingComponent implements OnInit {
       headerCheckboxSelectionFilteredOnly: false,
       checkboxSelection: true,
     },
-    { headerName: 'Assortment Period', field: 'assortmentPeriodLabel', sortable: true, filter: true },
-    { headerName: 'Department Id', field: 'departmentId', sortable: true, filter: true },
-    { headerName: 'Department Description', field: 'departmentDesc', sortable: true, filter: true },
-    { headerName: 'Sub Department Id', field: 'subDepartmentId', sortable: true, filter: true },
-    { headerName: 'Sub Department Description', field: 'subDepartmentDesc', sortable: true, filter: true },
-    { headerName: 'Class Id', field: 'classId', sortable: true, filter: true },
-    { headerName: 'Class Description', field: 'classDesc', sortable: true, filter: true },
-    { headerName: 'Sub Class Number', field: 'subClassId', sortable: true, filter: true },
-    { headerName: 'Sub Class Description', field: 'subClassDesc', sortable: true, filter: true },
+    { headerName: 'Assortment Period ID', field: 'assortmentPeriodId', sortable: true, filter: true },
+    { headerName: 'Assortment Period Label', field: 'assortmentPeriodLabel', sortable: true, filter: true },
+    { headerName: 'Last Modified Date', field: 'lastModifiedDate', sortable: true, filter: true },
+    { headerName: 'Last Modified By', field: 'lastModifiedBy', sortable: true, filter: true },
   ];
 
-  constructor(private http: HttpClient, private dialog: MatDialog) {}
+  constructor(private http: HttpClient, private dialog: MatDialog, private storeGroupService: StoreGroupService) {}
 
-  public ngOnInit() {
+  ngOnInit() {
     /*
     this.getJSON().subscribe(data => {
       this.rowData = data.storeclusters;
@@ -56,24 +54,33 @@ export class LandingComponent implements OnInit {
       console.log(this.rowData);
     });
     */
+    this.getStoreGroupHeaders();
   }
 
-  public getSelectedRows() {
+  getSelectedRows() {
     const selectedNodes = this.agGrid.api.getSelectedNodes();
     this.selectedData = JSON.stringify(selectedNodes.map(node => node.data));
     // const selectedDataStringPresentation = selectedData.map(node => node.make + ' ' + node.model).join(', ');
   }
 
+  public getJSON(): Observable<any> {
+    return this.http.get('../assets/store-group-data.json');
+  }
+
+  public getStoreGroupHeaders() {
+    this.storeGroupService.getStoreGroupHeaders().subscribe(data => {
+      this.rowData = data;
+    });
+  }
+
   public openDialog(): void {
-    /* const dialogRef = this.dialog.open(ImportStoreGroupDialogComponent, {
+    const dialogRef = this.dialog.open(ImportStoreGroupDialogComponent, {
       width: '100rem',
       data: {},
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log(result);
-      this.rowData = result.data;
+      this.getStoreGroupHeaders();
     });
-    */
   }
 }
