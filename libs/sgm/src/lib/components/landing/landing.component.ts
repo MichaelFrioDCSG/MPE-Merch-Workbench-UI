@@ -39,7 +39,6 @@ export class LandingComponent implements OnInit {
   public getSelectedRows() {
     const selectedNodes = this.agGrid.api.getSelectedNodes();
     this.selectedData = JSON.stringify(selectedNodes.map(node => node.data));
-    // const selectedDataStringPresentation = selectedData.map(node => node.make + ' ' + node.model).join(', ');
   }
 
   public getStoreGroupHeaders() {

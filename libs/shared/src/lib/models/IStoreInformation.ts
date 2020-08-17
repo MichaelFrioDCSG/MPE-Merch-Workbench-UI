@@ -20,5 +20,5 @@ export interface IStoreInformation {
   species: string;
   districtDesc: string;
   state: string;
-  OpenDate: Date;
+  openDate: Date;
 }

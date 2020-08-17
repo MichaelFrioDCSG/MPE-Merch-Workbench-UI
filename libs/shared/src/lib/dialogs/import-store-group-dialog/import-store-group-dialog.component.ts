@@ -2,7 +2,6 @@ import { Component, OnInit, Inject, ViewChild, ElementRef } from '@angular/core'
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { Observable, ReplaySubject } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
 import { map, startWith } from 'rxjs/operators';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { MatAutocompleteTrigger, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
@@ -32,27 +31,26 @@ export class ImportStoreGroupDialogComponent implements OnInit {
   public productClassesData: any[] = [];
   public productSubClassesData: any[] = [];
 
-  assortmentPeriod = new FormControl({ value: [] }, [Validators.required]);
-  productDepartments = new FormControl({ value: [], disabled: true }, [Validators.required]);
-  productSubDepartments = new FormControl({ value: [], disabled: true });
-  productClasses = new FormControl({ value: [], disabled: true });
-  productSubClasses = new FormControl({ value: [], disabled: true });
+  public assortmentPeriod = new FormControl({ value: [] }, [Validators.required]);
+  public productDepartments = new FormControl({ value: [], disabled: true }, [Validators.required]);
+  public productSubDepartments = new FormControl({ value: [], disabled: true });
+  public productClasses = new FormControl({ value: [], disabled: true });
+  public productSubClasses = new FormControl({ value: [], disabled: true });
 
-  addedStoreGroups: IStoreGroup[] = [];
+  public addedStoreGroups: IStoreGroup[] = [];
 
-  loadingAssortmentPeriods = false;
-  loadingProductHierarchy = false;
-  creatingStoreGroups = false;
-  createStoreGroupErrors: string[] = [];
-  showErrors = false;
+  public loadingAssortmentPeriods = false;
+  public loadingProductHierarchy = false;
+  public creatingStoreGroups = false;
+  public createStoreGroupErrors: string[] = [];
+  public showErrors = false;
 
-  addedProductHierarchies: IProductHierarchy[] = [];
+  public addedProductHierarchies: IProductHierarchy[] = [];
 
   constructor(
     public dialogRef: MatDialogRef<ImportStoreGroupDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     public formBuilder: FormBuilder,
-    private http: HttpClient,
     public assortmentPeriodService: AssortmentPeriodService,
     public productHierarchyService: ProductHierarchyService,
     public storeGroupService: StoreGroupService
@@ -105,10 +103,6 @@ export class ImportStoreGroupDialogComponent implements OnInit {
         this.loadingProductHierarchy = false;
         this.productDepartments.enable({ emitEvent: false });
       });
-  }
-
-  public getJSON(): Observable<any> {
-    return this.http.get('../../../assets/store-group-data.json');
   }
 
   public addStoreGroups() {
@@ -193,7 +187,7 @@ export class ImportStoreGroupDialogComponent implements OnInit {
 
     this.storeGroupService.createStoreGroup(body).subscribe((data: ICreateStoreGroupResponse) => {
       this.creatingStoreGroups = false;
-      if (data.isSuccess === true) {
+      if (data.isSuccess) {
         this.dialogRef.close({ data: this.addedStoreGroups });
       } else {
         this.showErrors = true;
