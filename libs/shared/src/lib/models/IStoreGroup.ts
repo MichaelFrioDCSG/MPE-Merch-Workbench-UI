@@ -1,4 +1,7 @@
-import { IAssortmentPeriod } from './IAssortmentPeriod';
-import { IProductHierarchy } from './IProductHierarchy';
-
-export interface IStoreGroup extends IAssortmentPeriod, IProductHierarchy {}
+export interface IStoreGroup {
+  storeGroupName: string;
+  storeGroupDescription: string;
+  assortmentPeriodId: string;
+  sourceSubclassId: string;
+  targetSubclassIds: string[];
+}

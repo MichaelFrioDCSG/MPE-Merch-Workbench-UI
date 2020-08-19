@@ -1,5 +1,6 @@
+import { IStoreGroup } from '../IStoreGroup';
+
 export interface ICreateStoreGroupRequest {
-  AssortmentPeriodId: string;
-  SubClassIds: string[];
+  StoreGroups: IStoreGroup[];
   ModifiedBy: string;
 }

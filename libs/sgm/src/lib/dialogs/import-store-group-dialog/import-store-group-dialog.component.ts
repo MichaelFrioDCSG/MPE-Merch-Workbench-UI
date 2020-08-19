@@ -1,19 +1,16 @@
-import { Component, OnInit, Inject, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
-import { Observable, ReplaySubject } from 'rxjs';
+import { FormBuilder, Validators, FormControl } from '@angular/forms';
+import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
-import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { MatAutocompleteTrigger, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
-import { MatChipInputEvent } from '@angular/material/chips';
-import { IProductHierarchy } from '../../models/IProductHierarchy';
+import { IProductHierarchy } from '../../../../../shared/src/lib/models/IProductHierarchy';
 import { AssortmentPeriodService } from 'libs/sgm/src/lib/services/assortment-period.service';
-import { IAssortmentPeriod } from '../../models/IAssortmentPeriod';
+import { IAssortmentPeriod } from '../../../../../shared/src/lib/models/IAssortmentPeriod';
 import { ProductHierarchyService } from 'libs/sgm/src/lib/services/product-hierarchy.service';
-import { IStoreGroup } from '../../models/IStoreGroup';
+import { IStoreGroup } from '../../../../../shared/src/lib/models/IStoreGroup';
 import { StoreGroupService } from 'libs/sgm/src/lib/services/store-group.service';
-import { ICreateStoreGroupResponse } from '../../models/dto/ICreateStoreGroupResponse';
-import { ICreateStoreGroupRequest } from '../../models/dto/ICreateStoreGroupRequest';
+import { ICreateStoreGroupResponse } from '../../../../../shared/src/lib/models/dto/ICreateStoreGroupResponse';
+import { ICreateStoreGroupRequest } from '../../../../../shared/src/lib/models/dto/ICreateStoreGroupRequest';
 
 @Component({
   selector: 'app-import-store-group-dialog',
@@ -31,13 +28,19 @@ export class ImportStoreGroupDialogComponent implements OnInit {
   public productClassesData: any[] = [];
   public productSubClassesData: any[] = [];
 
-  public assortmentPeriod = new FormControl({ value: [] }, [Validators.required]);
-  public productDepartments = new FormControl({ value: [], disabled: true }, [Validators.required]);
+  public storeGroupName = new FormControl('', [Validators.required]);
+  public storeGroupDescription = new FormControl('');
+  public assortmentPeriod = new FormControl('', [Validators.required]);
+  public sourceSubclass = new FormControl({ value: '', disabled: true }, [Validators.required]);
+  public productDepartments = new FormControl({ value: [], disabled: true });
   public productSubDepartments = new FormControl({ value: [], disabled: true });
   public productClasses = new FormControl({ value: [], disabled: true });
   public productSubClasses = new FormControl({ value: [], disabled: true });
 
-  public addedStoreGroups: IStoreGroup[] = [];
+  public targetSubclassIds: string[] = [];
+
+  public productSourceSubclasses: string[] = [];
+  public storeGroups: IStoreGroup[] = [];
 
   public loadingAssortmentPeriods = false;
   public loadingProductHierarchy = false;
@@ -56,7 +59,7 @@ export class ImportStoreGroupDialogComponent implements OnInit {
     public storeGroupService: StoreGroupService
   ) {}
 
-  ngOnInit() {
+  public ngOnInit() {
     this.loadingAssortmentPeriods = true;
     this.assortmentPeriodService.getAssortmentPeriods(false, true).subscribe((assortmentPeriods: IAssortmentPeriod[]) => {
       this.assortmentPeriods = assortmentPeriods;
@@ -70,6 +73,10 @@ export class ImportStoreGroupDialogComponent implements OnInit {
   public onAssortmentPeriodChanged(value) {
     this.assortmentPeriod.setValue(value);
     this.getProductHierarchies();
+  }
+
+  public onSourceSubclassChanged(value) {
+    this.sourceSubclass.setValue(value);
   }
 
   public onProductDepartmentChanged(value) {
@@ -94,32 +101,35 @@ export class ImportStoreGroupDialogComponent implements OnInit {
       .getAssortmentPeriodProductHierarchy(this.assortmentPeriod.value.assortmentPeriodId, false, true)
       .subscribe((productHierarchies: IProductHierarchy[]) => {
         this.productHierarchiesData = productHierarchies;
-        this.productDepartmentsData = this.productHierarchiesData
-          .map((product: IProductHierarchy) => {
-            return product.departmentDisplay;
-          })
-          .sort();
-        this.productDepartmentsData = [...new Set(this.productDepartmentsData)];
+        this.formatProductHierarchies();
         this.loadingProductHierarchy = false;
+        this.sourceSubclass.enable({ emitEvent: false });
         this.productDepartments.enable({ emitEvent: false });
       });
   }
 
-  public addStoreGroups() {
-    this.addedStoreGroups = [];
-    this.addedProductHierarchies = this.productHierarchiesData
+  public formatProductHierarchies() {
+    this.productDepartmentsData = this.productHierarchiesData
+      .map((product: IProductHierarchy) => {
+        return product.departmentDisplay;
+      })
+      .sort();
+    this.productDepartmentsData = [...new Set(this.productDepartmentsData)];
+
+    this.productSourceSubclasses = this.productHierarchiesData
+      .map((product: IProductHierarchy) => {
+        return product.subClassDisplay;
+      })
+      .sort();
+    this.productSourceSubclasses = [...new Set(this.productSourceSubclasses)];
+  }
+  public addProductHierarchies() {
+    this.targetSubclassIds = this.productHierarchiesData
       .filter(product => !this.productDepartments.value.length || this.productDepartments.value.includes(product.departmentDisplay))
       .filter(product => !this.productSubDepartments.value.length || this.productSubDepartments.value.includes(product.subDepartmentDisplay))
       .filter(product => !this.productClasses.value.length || this.productClasses.value.includes(product.classDisplay))
-      .filter(product => !this.productSubClasses.value.length || this.productSubClasses.value.includes(product.subClassDisplay));
-    this.addedStoreGroups = [...new Set(this.addedProductHierarchies)]
-      .map((product: IProductHierarchy) => {
-        return {
-          ...product,
-          ...this.assortmentPeriod.value,
-        };
-      })
-      .sort((a: IStoreGroup, b: IStoreGroup) => (a.subClassId > b.subClassId ? 1 : -1));
+      .filter(product => !this.productSubClasses.value.length || this.productSubClasses.value.includes(product.subClassDisplay))
+      .map(product => product.subClassId);
   }
 
   private filterAssortmentPeriods() {
@@ -146,7 +156,7 @@ export class ImportStoreGroupDialogComponent implements OnInit {
         .map(product => product.subDepartmentDisplay)
         .sort();
       this.productSubDepartmentsData = [...new Set(this.productSubDepartmentsData)];
-      this.addStoreGroups();
+      this.addProductHierarchies();
     });
     // Get Classes
     this.productSubDepartments.valueChanges.subscribe(subDepartment => {
@@ -156,7 +166,7 @@ export class ImportStoreGroupDialogComponent implements OnInit {
         .map(product => product.classDisplay)
         .sort();
       this.productClassesData = [...new Set(this.productClassesData)];
-      this.addStoreGroups();
+      this.addProductHierarchies();
     });
     // Get SubClasses
     this.productClasses.valueChanges.subscribe(classes => {
@@ -166,17 +176,27 @@ export class ImportStoreGroupDialogComponent implements OnInit {
         .map(product => product.subClassDisplay)
         .sort();
       this.productSubClassesData = [...new Set(this.productSubClassesData)];
-      this.addStoreGroups();
+      this.addProductHierarchies();
     });
-    this.productSubClasses.valueChanges.subscribe(subClasses => {
-      this.addStoreGroups();
+    this.productSubClasses.valueChanges.subscribe(() => {
+      this.addProductHierarchies();
     });
   }
 
-  public createStoreGroup() {
+  public addStoreGroup() {
+    this.storeGroups.push({
+      storeGroupName: this.storeGroupName.value,
+      storeGroupDescription: this.storeGroupDescription.value,
+      assortmentPeriodId: this.assortmentPeriod.value.assortmentPeriodId,
+      sourceSubclassId: this.sourceSubclass.value,
+      targetSubclassIds: this.targetSubclassIds,
+    });
+  }
+
+  public createStoreGroups() {
+    this.addStoreGroup();
     const body: ICreateStoreGroupRequest = {
-      AssortmentPeriodId: this.assortmentPeriod.value.assortmentPeriodId,
-      SubClassIds: this.addedProductHierarchies.map(product => product.subClassId),
+      StoreGroups: this.storeGroups,
       // TODO: Change to Login Username
       ModifiedBy: 'Michael Frio',
     };
@@ -188,7 +208,7 @@ export class ImportStoreGroupDialogComponent implements OnInit {
     this.storeGroupService.createStoreGroup(body).subscribe((data: ICreateStoreGroupResponse) => {
       this.creatingStoreGroups = false;
       if (data.isSuccess) {
-        this.dialogRef.close({ data: this.addedStoreGroups });
+        this.dialogRef.close({ data: null });
       } else {
         this.showErrors = true;
         this.createStoreGroupErrors = data.errorMessages;
@@ -198,5 +218,9 @@ export class ImportStoreGroupDialogComponent implements OnInit {
 
   public getAssortmentPeriodLabel(assortmentPeriod: IAssortmentPeriod) {
     return assortmentPeriod.assortmentPeriodLabel;
+  }
+
+  public validForm() {
+    return this.storeGroupName.valid && this.assortmentPeriod.valid && this.sourceSubclass.valid;
   }
 }

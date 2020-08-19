@@ -1,18 +1,33 @@
 <div>
   <mat-form-field class="form-field-loading example-full-width">
-    <input
-      matInput
-      placeholder="{{ placeholder }}"
-      color="accent"
-      title="{{ title }}"
-      [formControl]="formControl"
-      [matAutocomplete]="auto"
-      (click)="$event.target.select()"
-    />
-    <mat-autocomplete #auto="matAutocomplete" [displayWith]="getDisplayWith.bind(this)" (optionSelected)="onOptionSelected($event)">
-      <mat-option *ngFor="let value of filteredArray | async" [value]="value">{{ displayWithValue ? value[displayWithValue] : value }} </mat-option>
-    </mat-autocomplete>
-
+    <ng-container *ngIf="!disable; else disableAutoComplete">
+      <input
+        matInput
+        placeholder="{{ placeholder }}"
+        color="accent"
+        title="{{ title }}"
+        [formControl]="formControl"
+        [matAutocomplete]="auto"
+        [required]="required"
+        (click)="$event.target.select()"
+      />
+      <mat-autocomplete #auto="matAutocomplete" [displayWith]="getDisplayWith.bind(this)" (optionSelected)="onOptionSelected($event)">
+        <mat-option *ngFor="let value of filteredArray | async" [value]="value">{{ displayWithValue ? value[displayWithValue] : value }} </mat-option>
+      </mat-autocomplete>
+    </ng-container>
+    <ng-template #disableAutoComplete>
+      <input
+        matInput
+        placeholder="{{ placeholder }}"
+        color="accent"
+        title="{{ title }}"
+        [formControl]="formControl"
+        [required]="required"
+        [disabled]="disable"
+        (click)="$event.target.select()"
+      />
+    </ng-template>
+    <mat-error *ngIf="isRequired">{{ placeholder }} is required</mat-error>
     <app-input-spinner *ngIf="loading"></app-input-spinner>
   </mat-form-field>
 </div>
