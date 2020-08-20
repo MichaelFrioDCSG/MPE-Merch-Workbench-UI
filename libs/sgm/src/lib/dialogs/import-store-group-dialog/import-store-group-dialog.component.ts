@@ -193,25 +193,7 @@ export class ImportStoreGroupDialogComponent implements OnInit {
       sourceSubclassId: this.sourceSubclass.value,
       targetSubclassIds: this.targetSubclassIds,
     });
-    /*
-    this.storeGroupName.setValue('');
-    this.storeGroupDescription.setValue('');
-    this.assortmentPeriod.setValue('');
-    this.sourceSubclass.setValue([]);
-    this.productDepartments.setValue([]);
-    this.productSubDepartments.setValue([]);
-    this.productClasses.setValue([]);
-    this.productSubClasses.setValue([]);
-    */
-
-    this.storeGroupName.reset();
-    this.storeGroupDescription.reset();
-    this.assortmentPeriod.reset();
-    this.sourceSubclass.reset();
-    this.productDepartments.reset();
-    this.productSubDepartments.reset();
-    this.productClasses.reset();
-    this.productSubClasses.reset();
+    this.resetFormAndValues();
   }
 
   public removeStoreGroup(removeStoreGroup: IStoreGroup) {
@@ -250,5 +232,23 @@ export class ImportStoreGroupDialogComponent implements OnInit {
 
   public validForm() {
     return this.storeGroupName.valid && this.assortmentPeriod.valid && this.sourceSubclass.valid;
+  }
+
+  private resetFormAndValues() {
+    this.storeGroupName.reset('', { emitEvent: false });
+    this.storeGroupDescription.reset('', { emitEvent: false });
+    this.assortmentPeriod.reset('', { emitEvent: false });
+
+    this.sourceSubclass.reset('', { emitEvent: false });
+    this.sourceSubclass.disable();
+
+    this.productDepartments.reset([]);
+    this.productDepartments.disable();
+    this.productSubDepartments.reset([]);
+    this.productClasses.reset([]);
+    this.productSubClasses.reset([]);
+
+    this.productHierarchiesData = [];
+    this.formatProductHierarchies();
   }
 }
