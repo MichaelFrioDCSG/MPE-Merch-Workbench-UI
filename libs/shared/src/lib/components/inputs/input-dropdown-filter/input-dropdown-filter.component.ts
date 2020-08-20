@@ -36,6 +36,7 @@ export class InputDropdownFilterComponent implements OnInit, OnChanges, OnDestro
     }
     this.filterArray();
   }
+
   public ngOnChanges(changes) {
     if (changes.hasOwnProperty('arrayValues')) {
       this.filterArray();
@@ -49,7 +50,7 @@ export class InputDropdownFilterComponent implements OnInit, OnChanges, OnDestro
   }
 
   public getDisplayWith(value: any): string {
-    if (this.displayWithValue) {
+    if (this.displayWithValue && value) {
       return value[this.displayWithValue];
     } else {
       return value;

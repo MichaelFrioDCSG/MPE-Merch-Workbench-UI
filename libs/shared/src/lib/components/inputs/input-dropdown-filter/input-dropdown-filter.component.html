@@ -27,7 +27,7 @@
         (click)="$event.target.select()"
       />
     </ng-template>
-    <mat-error *ngIf="isRequired">{{ placeholder }} is required</mat-error>
+    <mat-error *ngIf="isRequired" [id]="null">{{ placeholder }} is required</mat-error>
     <app-input-spinner *ngIf="loading"></app-input-spinner>
   </mat-form-field>
 </div>

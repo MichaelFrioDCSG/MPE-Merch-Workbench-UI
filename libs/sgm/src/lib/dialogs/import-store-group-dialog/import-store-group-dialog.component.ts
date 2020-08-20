@@ -124,12 +124,13 @@ export class ImportStoreGroupDialogComponent implements OnInit {
     this.productSourceSubclasses = [...new Set(this.productSourceSubclasses)];
   }
   public addProductHierarchies() {
-    this.targetSubclassIds = this.productHierarchiesData
-      .filter(product => !this.productDepartments.value.length || this.productDepartments.value.includes(product.departmentDisplay))
-      .filter(product => !this.productSubDepartments.value.length || this.productSubDepartments.value.includes(product.subDepartmentDisplay))
-      .filter(product => !this.productClasses.value.length || this.productClasses.value.includes(product.classDisplay))
-      .filter(product => !this.productSubClasses.value.length || this.productSubClasses.value.includes(product.subClassDisplay))
-      .map(product => product.subClassId);
+    if (this.productDepartments.value)
+      this.targetSubclassIds = this.productHierarchiesData
+        .filter(product => !this.productDepartments.value.length || this.productDepartments.value.includes(product.departmentDisplay))
+        .filter(product => !this.productSubDepartments.value.length || this.productSubDepartments.value.includes(product.subDepartmentDisplay))
+        .filter(product => !this.productClasses.value.length || this.productClasses.value.includes(product.classDisplay))
+        .filter(product => !this.productSubClasses.value.length || this.productSubClasses.value.includes(product.subClassDisplay))
+        .map(product => product.subClassId);
   }
 
   private filterAssortmentPeriods() {
@@ -188,9 +189,36 @@ export class ImportStoreGroupDialogComponent implements OnInit {
       storeGroupName: this.storeGroupName.value,
       storeGroupDescription: this.storeGroupDescription.value,
       assortmentPeriodId: this.assortmentPeriod.value.assortmentPeriodId,
+      assortmentPeriodLabel: this.assortmentPeriod.value.assortmentPeriodLabel,
       sourceSubclassId: this.sourceSubclass.value,
       targetSubclassIds: this.targetSubclassIds,
     });
+    /*
+    this.storeGroupName.setValue('');
+    this.storeGroupDescription.setValue('');
+    this.assortmentPeriod.setValue('');
+    this.sourceSubclass.setValue([]);
+    this.productDepartments.setValue([]);
+    this.productSubDepartments.setValue([]);
+    this.productClasses.setValue([]);
+    this.productSubClasses.setValue([]);
+    */
+
+    this.storeGroupName.reset();
+    this.storeGroupDescription.reset();
+    this.assortmentPeriod.reset();
+    this.sourceSubclass.reset();
+    this.productDepartments.reset();
+    this.productSubDepartments.reset();
+    this.productClasses.reset();
+    this.productSubClasses.reset();
+  }
+
+  public removeStoreGroup(removeStoreGroup: IStoreGroup) {
+    const removalStoreGroupIndex = this.storeGroups.findIndex(storeGroup => storeGroup.sourceSubclassId === removeStoreGroup.sourceSubclassId);
+    if (removalStoreGroupIndex !== -1) {
+      this.storeGroups.splice(removalStoreGroupIndex, 1);
+    }
   }
 
   public createStoreGroups() {

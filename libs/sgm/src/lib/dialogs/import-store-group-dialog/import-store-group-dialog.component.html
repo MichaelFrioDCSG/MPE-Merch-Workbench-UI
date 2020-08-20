@@ -96,6 +96,7 @@
 <div class="row row-centered">
   <div class="col-md-12">
     <div mat-dialog-actions class="show-on-right">
+      <button mat-raised-button color="primary" [disabled]="!validForm()" (click)="addStoreGroup()">Add Store Group</button>
       <button mat-raised-button color="primary" [disabled]="!validForm() || creatingStoreGroups == true" (click)="createStoreGroups()">
         {{ creatingStoreGroups == false ? 'Import Store Group' : 'Importing Store Group...' }}
       </button>
@@ -109,4 +110,15 @@
       </ng-container>
     </div>
   </ng-container>
+</div>
+<div *ngIf="storeGroups.length > 0">
+  <h4>Store Groups Added To PO</h4>
+  <div class="row" *ngFor="let storeGroup of storeGroups">
+    <div class="col-md-9">
+      <p>{{ storeGroup.storeGroupName }} - {{ storeGroup.assortmentPeriodLabel }} - {{ storeGroup.sourceSubclassId }}</p>
+    </div>
+    <div class="col-md-3">
+      <button mat-icon-button (click)="removeStoreGroup(storeGroup)"><mat-icon>remove_circle_outline</mat-icon> Remove</button>
+    </div>
+  </div>
 </div>
