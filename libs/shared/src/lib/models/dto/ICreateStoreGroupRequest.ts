@@ -1,6 +1,3 @@
 import { IStoreGroup } from '../IStoreGroup';
 
-export interface ICreateStoreGroupRequest {
-  StoreGroups: IStoreGroup[];
-  ModifiedBy: string;
-}
+export interface ICreateStoreGroupRequest extends IStoreGroup {}
