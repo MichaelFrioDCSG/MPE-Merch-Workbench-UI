@@ -184,31 +184,13 @@ export class ImportStoreGroupDialogComponent implements OnInit {
     });
   }
 
-  public addStoreGroup() {
-    this.storeGroups.push({
+  public createStoreGroups() {
+    const body: ICreateStoreGroupRequest = {
       storeGroupName: this.storeGroupName.value,
       storeGroupDescription: this.storeGroupDescription.value,
       assortmentPeriodId: this.assortmentPeriod.value.assortmentPeriodId,
-      assortmentPeriodLabel: this.assortmentPeriod.value.assortmentPeriodLabel,
       sourceSubclassId: this.sourceSubclass.value,
       targetSubclassIds: this.targetSubclassIds,
-    });
-    this.resetFormAndValues();
-  }
-
-  public removeStoreGroup(removeStoreGroup: IStoreGroup) {
-    const removalStoreGroupIndex = this.storeGroups.findIndex(storeGroup => storeGroup.sourceSubclassId === removeStoreGroup.sourceSubclassId);
-    if (removalStoreGroupIndex !== -1) {
-      this.storeGroups.splice(removalStoreGroupIndex, 1);
-    }
-  }
-
-  public createStoreGroups() {
-    this.addStoreGroup();
-    const body: ICreateStoreGroupRequest = {
-      StoreGroups: this.storeGroups,
-      // TODO: Change to Login Username
-      ModifiedBy: 'Michael Frio',
     };
 
     this.creatingStoreGroups = true;
