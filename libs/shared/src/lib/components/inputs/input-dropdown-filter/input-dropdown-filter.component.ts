@@ -20,7 +20,7 @@ export class InputDropdownFilterComponent implements OnInit, OnChanges, OnDestro
   @Input() public required: boolean;
   @Input() public disable: boolean;
   @Input() public inputFormControl: FormControl;
-  @Output() onValueChanged = new EventEmitter<any>();
+  @Output() public onValueChanged = new EventEmitter<any>();
   public formControl: FormControl = new FormControl('');
   public filteredArray: Observable<any[]>;
   public autoCompleteEnabled: string;

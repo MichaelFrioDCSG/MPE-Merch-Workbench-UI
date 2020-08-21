@@ -1,4 +1,4 @@
-<h1 mat-dialog-title>Import New Store Group</h1>
+<h1 mat-dialog-title>Import New Cluster Group</h1>
 <div mat-dialog-content>
   <mat-tab-group mat-align-tabs="center">
     <mat-tab label="Oracle">
@@ -99,7 +99,7 @@
   <div class="col-md-12">
     <div mat-dialog-actions class="show-on-right">
       <button mat-raised-button color="primary" [disabled]="!validForm() || creatingStoreGroups == true" (click)="createStoreGroups()">
-        {{ creatingStoreGroups == false ? 'Import Store Group' : 'Importing Store Group...' }}
+        {{ creatingStoreGroups == false ? 'Import Cluster Group' : 'Importing Cluster Group...' }}
       </button>
       <button mat-raised-button color="warn" mat-dialog-close cdkFocusInitial>Close</button>
     </div>
