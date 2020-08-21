@@ -1,3 +1,38 @@
+<mat-sidenav-container fullscreen fxFlexOffset="auto">
+  <mat-sidenav-content fxLayout="column" style="height: 100%;">
+    <mat-toolbar class="AM-head" position="fixed;">
+      <mat-toolbar-row>
+        <span id="AM-font" class="AM-head" style.Background="black"
+          ><img class="menu-picture" src="../assets/images/DSG_Logo.png" /> Assortment Management - Summary</span
+        >
+        <span class="example-spacer"></span>
+        <button mat-icon-button style.color="white" [matMenuTriggerFor]="menu">
+          <mat-icon>apps</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item>
+            <mat-icon>PO Manager</mat-icon>
+          </button>
+          <button mat-menu-item>
+            <mat-icon>Store Group Mgmt</mat-icon>
+          </button>
+          <button mat-menu-item>
+            <mat-icon>Item Plan Mgmt</mat-icon>
+          </button>
+        </mat-menu>
+      </mat-toolbar-row>
+    </mat-toolbar>
+    <mat-toolbar-row>
+      <span id="AM-font" class="AM-head2" style.Background="white"></span>
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
+      <a routerLink="/am" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"> Assortment Management</a>
+      <a routerLink="/sgm" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"> Store Group Management</a>
+    </mat-toolbar-row>
+  </mat-sidenav-content>
+</mat-sidenav-container>
+
+<router-outlet></router-outlet>
+
 <section>
   <div class="example-button-row">
     <div class="example-flex-contianer">

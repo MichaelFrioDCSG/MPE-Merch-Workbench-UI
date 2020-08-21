@@ -2,6 +2,10 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { InputDropdownFilterComponent } from './input-dropdown-filter.component';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { InputSpinnerComponent } from '../input-spinner/input-spinner.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MaterialModule } from '@mpe/material';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('InputDropdownComponent', () => {
   let component: InputDropdownFilterComponent;
@@ -9,8 +13,8 @@ describe('InputDropdownComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [InputDropdownFilterComponent],
-      imports: [MatAutocompleteModule],
+      declarations: [InputDropdownFilterComponent, InputSpinnerComponent],
+      imports: [ReactiveFormsModule, MaterialModule, BrowserAnimationsModule],
     }).compileComponents();
   }));
 

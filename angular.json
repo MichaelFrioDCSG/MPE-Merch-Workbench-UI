@@ -22,7 +22,7 @@
             "tsConfig": "apps/home/tsconfig.app.json",
             "aot": true,
             "assets": ["apps/home/src/favicon.ico", "apps/home/src/assets"],
-            "styles": ["apps/home/src/styles.scss"],
+            "styles": ["./node_modules/@angular/material/prebuilt-themes/indigo-pink.css", "apps/home/src/styles.scss"],
             "scripts": []
           },
           "configurations": {

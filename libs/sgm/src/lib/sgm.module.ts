@@ -27,8 +27,13 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { ClusterDetailComponent } from './components/cluster-detail/cluster-detail.component';
+import { SgmHeaderComponent } from './components/sgm-header/sgm-header.component';
 
-export const sgmRoutes: Route[] = [{ path: '', component: LandingComponent }];
+export const sgmRoutes: Route[] = [
+  { path: 'landing', component: LandingComponent },
+  { path: 'detail', component: ClusterDetailComponent },
+];
 
 @NgModule({
   imports: [
@@ -56,12 +61,14 @@ export const sgmRoutes: Route[] = [{ path: '', component: LandingComponent }];
   ],
   declarations: [
     LandingComponent,
+    ClusterDetailComponent,
     ImportStoreGroupDialogComponent,
     InputSpinnerComponent,
     InputMultiselectDropdownComponent,
     InputDropdownFilterComponent,
+    SgmHeaderComponent,
   ],
-  exports: [LandingComponent],
+  exports: [LandingComponent, ClusterDetailComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class SgmModule {}

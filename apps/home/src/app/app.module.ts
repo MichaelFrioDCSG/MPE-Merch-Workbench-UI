@@ -6,17 +6,22 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { AgGridModule } from 'ag-grid-angular';
 import 'ag-grid-enterprise';
-
 import { environment } from '../environments/environment';
 import { AssortmentManagementModule } from '@mpe/assortment-management';
 import appReducer, { appReducerKey } from '../store/reducer';
 import appEffects from '../store/effects';
+import { MaterialModule } from '@mpe/material';
 
+import { MatMenuModule } from '@angular/material/menu';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatSelectModule } from '@angular/material/select';
 import { AppComponent } from './app.component';
 import { SharedModule } from '@mpe/shared';
 import { AppRoutingModule } from './app-routing.module';
 import { LandingPageComponent } from './components/landing-page/landing-page.component';
 import { HeaderComponent } from './components/header/header.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [AppComponent, LandingPageComponent, HeaderComponent],
@@ -25,6 +30,11 @@ import { HeaderComponent } from './components/header/header.component';
     AppRoutingModule,
     HttpClientModule,
     SharedModule,
+    MatToolbarModule,
+    MatTabsModule,
+    MaterialModule,
+    MatToolbarModule,
+    MatMenuModule,
     AssortmentManagementModule,
     AgGridModule.withComponents([]),
     StoreModule.forRoot(
@@ -39,6 +49,7 @@ import { HeaderComponent } from './components/header/header.component';
     ),
     EffectsModule.forRoot([appEffects]),
     !environment.production ? StoreDevtoolsModule.instrument() : [],
+    BrowserAnimationsModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
