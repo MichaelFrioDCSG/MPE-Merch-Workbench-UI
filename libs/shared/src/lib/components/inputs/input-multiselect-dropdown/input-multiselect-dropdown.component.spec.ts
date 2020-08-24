@@ -26,10 +26,19 @@ describe('InputMultiselectDropdownComponent', () => {
     component = fixture.componentInstance;
     loader = TestbedHarnessEnvironment.loader(fixture);
     fixture.detectChanges();
+    // Set Variables
+    component.arrayValues = ['002.001.001.001', '001.002.001.001', '001.001.002.001', '001.001.001.002'];
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('Input HTML Checks', async () => {
+    it('should display placeholder value', async () => {
+      const selectHarness = await loader.getHarness<MatSelectHarness>(MatSelectHarness);
+      console.log(selectHarness);
+    });
   });
 
   fit('should have the placeholder as the label', async () => {
@@ -40,6 +49,7 @@ describe('InputMultiselectDropdownComponent', () => {
     (await selectHarness.host()).click();
     const actual = (await selectHarness.getOptions()).length;
     expect(actual).toBe(expectedCount);
+
     /*
     const dropdownHarness = await loader.getHarness<MatSelectHarness>(MatSelectHarness);
     (await dropdownHarness.host()).click();
