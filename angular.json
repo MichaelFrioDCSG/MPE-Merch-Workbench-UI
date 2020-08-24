@@ -23,7 +23,8 @@
             "aot": true,
             "assets": ["apps/home/src/favicon.ico", "apps/home/src/assets"],
             "styles": ["apps/home/src/styles.scss"],
-            "scripts": []
+            "scripts": [],
+            "preserveSymlinks": true
           },
           "configurations": {
             "production": {
@@ -81,12 +82,15 @@
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "jestConfig": "apps/home/jest.config.js",
+            "main": "apps/home/src/test.ts",
+            "karmaConfig": "./karma.conf.js",
+            "polyfills": "apps/home/src/polyfills.ts",
             "tsConfig": "apps/home/tsconfig.spec.json",
-            "passWithNoTests": true,
-            "setupFile": "apps/home/src/test-setup.ts"
+            "scripts": [],
+            "styles": ["apps/home/src/assets/scss/material-dashboard.scss"],
+            "assets": ["apps/home/src/assets", "apps/home/src/favicon.ico"]
           }
         }
       }
@@ -240,11 +244,11 @@
   },
   "schematics": {
     "@nrwl/angular:application": {
-      "unitTestRunner": "jest",
+      "unitTestRunner": "karma",
       "e2eTestRunner": "cypress"
     },
     "@nrwl/angular:library": {
-      "unitTestRunner": "jest"
+      "unitTestRunner": "karma"
     }
   },
   "defaultProject": "home"
