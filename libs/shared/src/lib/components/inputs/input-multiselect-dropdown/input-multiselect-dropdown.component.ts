@@ -15,6 +15,7 @@ export class InputMultiselectDropdownComponent implements OnInit, OnChanges, OnD
   @Input() public arrayValues: any[] = [];
   @Input() public displayWithValue: string;
   @Input() public inputFormControl: FormControl;
+  @Input() public required: boolean;
 
   @Output() public onValueChanged = new EventEmitter<any>();
 
