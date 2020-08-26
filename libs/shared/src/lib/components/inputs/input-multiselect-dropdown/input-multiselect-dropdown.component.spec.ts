@@ -73,6 +73,25 @@ describe('InputMultiselectDropdownComponent', () => {
     expect(await selectHarness.isDisabled()).toBe(true);
   });
 
+  it('when option is selected call selectionChanged function', async () => {
+    spyOn(component, 'selectionChanged');
+    component.arrayValues = [
+      {
+        departmentId: '001',
+        departmentLabel: 'Test Department',
+      },
+      {
+        departmentId: '002',
+        departmentLabel: 'Test Department 2',
+      },
+    ];
+    component.displayWithValue = 'departmentLabel';
+    await selectHarness.open();
+    const selectOptions = await selectHarness.getOptions();
+    await selectOptions[0].click();
+    expect(component.selectionChanged).toHaveBeenCalled();
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });

@@ -57,7 +57,7 @@ export class InputDropdownFilterComponent implements OnInit, OnChanges, OnDestro
     }
   }
 
-  private filterArray() {
+  public filterArray() {
     // valueChanges event fires both on typing into the autocomplete and making an autocomplete selection
     // We only want to apply filtering changes when the autocomplete typed value is changing
     this.filteredArray = this.formControl.valueChanges.pipe(
