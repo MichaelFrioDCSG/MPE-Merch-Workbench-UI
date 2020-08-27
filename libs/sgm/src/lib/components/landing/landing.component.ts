@@ -3,7 +3,7 @@ import { AgGridAngular } from 'ag-grid-angular';
 import { MatDialog } from '@angular/material/dialog';
 import { IProductHierarchy } from 'libs/shared/src/lib/models/IProductHierarchy';
 import { StoreGroupService } from '../../services/store-group.service';
-import { ImportStoreGroupDialogComponent } from 'libs/shared/src/lib/dialogs/import-store-group-dialog/import-store-group-dialog.component';
+import { ImportStoreGroupDialogComponent } from '../../dialogs/import-store-group-dialog/import-store-group-dialog.component';
 import { Title } from '@angular/platform-browser';
 
 @Component({
