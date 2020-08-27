@@ -1,5 +1,3 @@
-export interface ICreateStoreGroupRequest {
-  AssortmentPeriodId: string;
-  SubClassIds: string[];
-  ModifiedBy: string;
-}
+import { IStoreGroup } from '../IStoreGroup';
+
+export interface ICreateStoreGroupRequest extends IStoreGroup {}

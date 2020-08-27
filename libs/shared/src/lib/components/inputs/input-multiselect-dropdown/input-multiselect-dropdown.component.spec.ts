@@ -14,6 +14,7 @@ describe('InputMultiselectDropdownComponent', () => {
   let component: InputMultiselectDropdownComponent;
   let fixture: ComponentFixture<InputMultiselectDropdownComponent>;
   let loader: HarnessLoader;
+  let selectHarness: MatSelectHarness;
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [InputMultiselectDropdownComponent],
@@ -21,30 +22,77 @@ describe('InputMultiselectDropdownComponent', () => {
     }).compileComponents();
   }));
 
-  beforeEach(() => {
+  beforeEach(async () => {
     fixture = TestBed.createComponent(InputMultiselectDropdownComponent);
     component = fixture.componentInstance;
     loader = TestbedHarnessEnvironment.loader(fixture);
     fixture.detectChanges();
+    selectHarness = await loader.getHarness<MatSelectHarness>(MatSelectHarness);
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('should be able to check whether a select is in multi-selection mode', async () => {
+    const multipleSelection = await loader.getHarness<MatSelectHarness>(MatSelectHarness);
+    expect(await multipleSelection.isMultiple()).toBe(true);
   });
 
-  fit('should have the placeholder as the label', async () => {
-    const expectedCount = 3;
-    const selectHarness = await loader.getHarness<MatSelectHarness>(MatSelectHarness);
-
+  it('should have the same number of options as arrayValues', async () => {
+    // Set Variables
+    component.arrayValues = ['002.001.001.001', '001.002.001.001', '001.001.002.001', '001.001.001.002'];
+    const expectedCount = component.arrayValues.length;
     //Click the select element host
     (await selectHarness.host()).click();
     const actual = (await selectHarness.getOptions()).length;
     expect(actual).toBe(expectedCount);
-    /*
-    const dropdownHarness = await loader.getHarness<MatSelectHarness>(MatSelectHarness);
-    (await dropdownHarness.host()).click();
-    const actual = (await dropdownHarness.getOptions()).length;
-    expect(actual).toBe(expectedCount);
-    */
+  });
+
+  it('should display displayWithValue from object', async () => {
+    component.arrayValues = [
+      {
+        departmentId: '001',
+        departmentLabel: 'Test Department',
+      },
+      {
+        departmentId: '002',
+        departmentLabel: 'Test Department 2',
+      },
+    ];
+    component.displayWithValue = 'departmentLabel';
+    await selectHarness.open();
+    const selectOptions = await selectHarness.getOptions();
+    await selectOptions[0].click();
+    expect(await selectHarness.getValueText()).toBe('Test Department');
+  });
+
+  it('should make the dropdown required based on Input value', async () => {
+    component.required = true;
+    expect(await selectHarness.isRequired()).toBe(true);
+  });
+
+  it('should make the dropdown disabled based on Input value', async () => {
+    component.disable = true;
+    expect(await selectHarness.isDisabled()).toBe(true);
+  });
+
+  it('when option is selected call selectionChanged function', async () => {
+    spyOn(component, 'selectionChanged');
+    component.arrayValues = [
+      {
+        departmentId: '001',
+        departmentLabel: 'Test Department',
+      },
+      {
+        departmentId: '002',
+        departmentLabel: 'Test Department 2',
+      },
+    ];
+    component.displayWithValue = 'departmentLabel';
+    await selectHarness.open();
+    const selectOptions = await selectHarness.getOptions();
+    await selectOptions[0].click();
+    expect(component.selectionChanged).toHaveBeenCalled();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
   });
 });
