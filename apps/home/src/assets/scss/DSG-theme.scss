@@ -71,12 +71,46 @@ $DSG-orange: (
   ),
 );
 
+$DSG-dark: (
+  50: #e3e4e4,
+  100: #babcbb,
+  200: #8c8f8e,
+  300: #5e6260,
+  400: #3c413e,
+  500: #191f1c,
+  600: #161b19,
+  700: #121714,
+  800: #0e1211,
+  900: #080a09,
+  A100: #51ffff,
+  A200: #1effff,
+  A400: #00eaea,
+  A700: #00d0d0,
+  contrast: (
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #ffffff,
+    400: #ffffff,
+    500: #ffffff,
+    600: #ffffff,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+    A100: #000000,
+    A200: #000000,
+    A400: #000000,
+    A700: #000000,
+  ),
+);
+
 // mandatory stuff for theming
 $DSG-primary: mat-palette($DSG-green);
 $DSG-secondary: mat-palette($DSG-orange);
+$DSG-background-dark: mat-palette($DSG-dark);
 
 // include the custom theme components into a theme object
-$DSG-theme: mat-light-theme($DSG-primary, $DSG-secondary);
+$DSG-theme: mat-light-theme($DSG-primary, $DSG-secondary, $DSG-background-dark);
 
 // include the custom theme object into the angular material theme
 @include angular-material-theme($DSG-theme);

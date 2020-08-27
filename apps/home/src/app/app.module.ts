@@ -17,6 +17,11 @@ import { SharedModule } from '@mpe/shared';
 import { AppRoutingModule } from './app-routing.module';
 import { LandingPageComponent } from './components/landing-page/landing-page.component';
 import { HeaderComponent } from './components/header/header.component';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSidenavModule } from '@angular/material/sidenav';
 
 @NgModule({
   declarations: [AppComponent, LandingPageComponent, HeaderComponent],
@@ -39,6 +44,11 @@ import { HeaderComponent } from './components/header/header.component';
     ),
     EffectsModule.forRoot([appEffects]),
     !environment.production ? StoreDevtoolsModule.instrument() : [],
+    MatTabsModule,
+    MatMenuModule,
+    MatToolbarModule,
+    MatIconModule,
+    MatSidenavModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

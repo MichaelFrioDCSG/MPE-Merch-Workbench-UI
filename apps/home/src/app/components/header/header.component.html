@@ -1,11 +1,8 @@
-<div class="app-nav">
-  <nav>
-    <ul>
-      <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a></li>
-      <!-- <li><a routerLink="/am" routerLinkActive="active">Assortment Management App</a></li> -->
-      <li><a routerLink="/am" routerLinkActive="active">Assortment Management</a></li>
-      <li><a routerLink="/sgm" routerLinkActive="active">Store Group Management</a></li>
-    </ul>
-  </nav>
-</div>
-<p>Portal APP</p>
+<nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top" style="background: #333333 !important;">
+  <div class="container-fluid">
+    <div class="navbar-wrapper">
+      <img class="image-resize" src="/assets/images/dsglogo.png" />
+      <a class="navbar-brand dicks-font" href="#">Merch Workbench - {{ getTitle() }}</a>
+    </div>
+  </div>
+</nav>

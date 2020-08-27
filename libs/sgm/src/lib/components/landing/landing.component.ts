@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { IProductHierarchy } from 'libs/shared/src/lib/models/IProductHierarchy';
 import { StoreGroupService } from '../../services/store-group.service';
 import { ImportStoreGroupDialogComponent } from 'libs/shared/src/lib/dialogs/import-store-group-dialog/import-store-group-dialog.component';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'mpe-landing',
@@ -30,10 +31,11 @@ export class LandingComponent implements OnInit {
     { headerName: 'Last Modified By', field: 'lastModifiedBy', sortable: true, filter: true },
   ];
 
-  constructor(private dialog: MatDialog, private storeGroupService: StoreGroupService) {}
+  constructor(private dialog: MatDialog, private storeGroupService: StoreGroupService, public titleService: Title) {}
 
   public ngOnInit() {
     this.getStoreGroupHeaders();
+    this.titleService.setTitle('Store Group Management');
   }
 
   public getSelectedRows() {

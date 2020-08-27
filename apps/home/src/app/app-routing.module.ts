@@ -4,10 +4,9 @@ import { amRoutes } from '@mpe/assortment-management';
 import { sgmRoutes } from '@mpe/sgm';
 import { LandingPageComponent } from './components/landing-page/landing-page.component';
 
-const routes: Routes = [
-  { path: 'am', children: amRoutes },
-  { path: 'sgm', children: sgmRoutes },
-  { path: '', component: LandingPageComponent },
+export const routes: Routes = [
+  { path: 'sgm', data: { name: 'Store Group Management' }, children: sgmRoutes },
+  { path: 'am', data: { name: 'Assortment Management' }, children: amRoutes },
 ];
 
 @NgModule({
