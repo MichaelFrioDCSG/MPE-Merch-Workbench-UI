@@ -2,9 +2,9 @@
   <mat-toolbar color="primary">
     <mat-toolbar-row>
       <img class="image-resize" src="/assets/images/dsglogo.png" />
-      <span class="pad-items">Merch Workbench - {{ getTitle() }}</span>
+      <span class="pad-items dicks-font">Merch Workbench - {{ getTitle() }}</span>
       <nav mat-tab-nav-bar class="pad-items" [backgroundColor]="backgroundColor">
-        <a mat-tab-link *ngFor="let route of routes" [active]="activeRoute == route.path" [routerLink]="route.path">
+        <a mat-tab-link class="tabs dicks-font" *ngFor="let route of routes" [active]="activeRoute == route.path" [routerLink]="route.path">
           {{ route.data.name }}
         </a>
       </nav>
