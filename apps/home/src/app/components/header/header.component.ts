@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { Routes } from '@angular/router';
+import { Routes, Router, NavigationEnd } from '@angular/router';
 import { routes } from '../../app-routing.module';
 import { Title } from '@angular/platform-browser';
 
@@ -12,11 +12,17 @@ import { Title } from '@angular/platform-browser';
 export class HeaderComponent implements OnInit {
   public backgroundColor = 'primary';
   public routes: Routes;
-  constructor(private titleService: Title) {}
+  public activeRoute: any;
+  constructor(private titleService: Title, public router: Router) {}
 
   public ngOnInit(): void {
     this.routes = routes;
-    console.log(this.routes);
+    //this.activeRoute = this.router.url.substring(1);
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        this.activeRoute = this.router.url.substring(1);
+      }
+    });
   }
 
   public getTitle() {
