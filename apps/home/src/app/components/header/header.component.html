@@ -1,13 +1,16 @@
-<nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top" style="background: #191f1c !important;">
-  <div class="container-fluid">
-    <div class="navbar-wrapper">
+<div class="Monochromatic">
+  <mat-toolbar color="primary">
+    <mat-toolbar-row>
       <img class="image-resize" src="/assets/images/dsglogo.png" />
-      <a class="navbar-brand dicks-font" href="#">Merch Workbench - {{ getTitle() }}</a>
-    </div>
-    <nav mat-tab-nav-bar [backgroundColor]="backgroundColor">
-      <a mat-tab-link *ngFor="let route of routes" (click)="activeLink = route" [active]="activeLink == route" [routerLink]="route.path">
-        {{ route.data.name }}
-      </a>
-    </nav>
-  </div>
-</nav>
+      <span class="pad-items">Merch Workbench - {{ getTitle() }}</span>
+      <nav mat-tab-nav-bar class="pad-items" [backgroundColor]="backgroundColor">
+        <a mat-tab-link *ngFor="let route of routes" (click)="activeLink = route" [active]="activeLink == route" [routerLink]="route.path">
+          {{ route.data.name }}
+        </a>
+      </nav>
+      <span class="fill-space"></span>
+      <span>FirstName, LastName</span>
+      <mat-icon class="pad-items icon">account_circle</mat-icon>
+    </mat-toolbar-row>
+  </mat-toolbar>
+</div>

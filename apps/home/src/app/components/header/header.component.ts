@@ -10,7 +10,7 @@ import { Title } from '@angular/platform-browser';
   encapsulation: ViewEncapsulation.None,
 })
 export class HeaderComponent implements OnInit {
-  public backgroundColor = 'warn';
+  public backgroundColor = 'primary';
   public routes: Routes;
   constructor(private titleService: Title) {}
 
