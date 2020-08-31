@@ -17,6 +17,7 @@ import { SharedModule } from '@mpe/shared';
 import { AppRoutingModule } from './app-routing.module';
 import { LandingPageComponent } from './components/landing-page/landing-page.component';
 import { HeaderComponent } from './components/header/header.component';
+import { SgmModule } from '@mpe/sgm';
 
 @NgModule({
   declarations: [AppComponent, LandingPageComponent, HeaderComponent],
@@ -38,6 +39,7 @@ import { HeaderComponent } from './components/header/header.component';
       }
     ),
     EffectsModule.forRoot([appEffects]),
+    SgmModule,
     !environment.production ? StoreDevtoolsModule.instrument() : [],
   ],
   providers: [],

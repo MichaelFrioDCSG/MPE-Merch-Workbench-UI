@@ -26,9 +26,12 @@
   #agGrid
   style="width: 100%; height: 100%;"
   class="ag-theme-alpine"
-  [rowData]="rowData"
+  [rowData]="clusterGroups"
+  [modules]="modules"
+  [defaultColDef]="defaultColDef"
   [columnDefs]="columnDefs"
   rowSelection="multiple"
+  (gridReady)="onGridReady($event)"
 >
 </ag-grid-angular>
 

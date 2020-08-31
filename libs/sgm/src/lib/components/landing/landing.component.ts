@@ -1,20 +1,32 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { AgGridAngular } from 'ag-grid-angular';
 import { MatDialog } from '@angular/material/dialog';
-import { IProductHierarchy } from 'libs/shared/src/lib/models/IProductHierarchy';
+import { AllCommunityModules, Module } from '@ag-grid-community/all-modules';
+
 import { StoreGroupService } from '../../services/store-group.service';
+import { IClusterGroup } from '../../../../../shared/models/IClusterGroup';
 import { ImportStoreGroupDialogComponent } from 'libs/shared/src/lib/dialogs/import-store-group-dialog/import-store-group-dialog.component';
+import { Store, select } from '@ngrx/store';
+import { selectClusterGroups, IStoreGroupMgmtState } from '../../store/store-group-mgmt.reducer';
+import { Observable } from 'rxjs';
+import * as actions from '../../store/store-group-mgmt.actions';
 
 @Component({
   selector: 'mpe-landing',
   templateUrl: './landing.component.html',
   styleUrls: ['./landing.component.scss'],
 })
-export class LandingComponent implements OnInit {
+export class LandingComponent implements OnInit, OnDestroy {
   @ViewChild('agGrid', { static: false }) public agGrid: AgGridAngular;
+  public clusterGroupsObs: Observable<IClusterGroup[]> = null;
+
+  public modules: Module[] = AllCommunityModules;
   public selectedData: any;
   public title = 'MPE-SGM';
-  public rowData: IProductHierarchy[] = [];
+  public clusterGroups: IClusterGroup[] = [];
+  public defaultColDef: any = {
+    resizable: true,
+  };
   public columnDefs = [
     {
       headerName: '',
@@ -24,26 +36,28 @@ export class LandingComponent implements OnInit {
       headerCheckboxSelectionFilteredOnly: false,
       checkboxSelection: true,
     },
-    { headerName: 'Assortment Period ID', field: 'assortmentPeriodId', sortable: true, filter: true },
-    { headerName: 'Assortment Period Label', field: 'assortmentPeriodLabel', sortable: true, filter: true },
-    { headerName: 'Last Modified Date', field: 'lastModifiedDate', sortable: true, filter: true },
-    { headerName: 'Last Modified By', field: 'lastModifiedBy', sortable: true, filter: true },
+    { headerName: 'Cluster Group Name', field: 'name', sortable: true, filter: true },
+    { headerName: 'Cluster Group Desc', field: 'description', sortable: true, filter: true, width: 200 },
+    { headerName: 'Assortment Period', field: 'asmtPeriod.asmtPeriodLabel', sortable: true, filter: true },
+    // TODO, once available on back end:
+    // { headerName: 'Last Modified Date', field: 'lastModifiedDate', sortable: true, filter: true },
+    // { headerName: 'Last Modified By', field: 'lastModifiedBy', sortable: true, filter: true },
   ];
 
-  constructor(private dialog: MatDialog, private storeGroupService: StoreGroupService) {}
+  constructor(private dialog: MatDialog, private storeGroupService: StoreGroupService, private store: Store<IStoreGroupMgmtState>) {}
 
-  public ngOnInit() {
-    this.getStoreGroupHeaders();
-  }
+  public ngOnInit() {}
+
+  public ngOnDestroy() {}
 
   public getSelectedRows() {
     const selectedNodes = this.agGrid.api.getSelectedNodes();
     this.selectedData = JSON.stringify(selectedNodes.map(node => node.data));
   }
 
-  public getStoreGroupHeaders() {
-    this.storeGroupService.getStoreGroupHeaders().subscribe(data => {
-      this.rowData = data;
+  public getClusterGroupHeaders() {
+    this.store.pipe(select(selectClusterGroups)).subscribe((clusterGroups: IClusterGroup[]) => {
+      this.clusterGroups = clusterGroups;
     });
   }
 
@@ -53,8 +67,14 @@ export class LandingComponent implements OnInit {
       data: {},
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      this.getStoreGroupHeaders();
+    dialogRef.afterClosed().subscribe(() => {
+      this.getClusterGroupHeaders();
     });
+  }
+
+  public onGridReady(params) {
+    this.store.dispatch(actions.sgmGetSummaries());
+
+    this.getClusterGroupHeaders();
   }
 }
