@@ -136,12 +136,15 @@
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "jestConfig": "libs/assortment-management/jest.config.js",
-            "tsConfig": "libs/assortment-management/tsconfig.spec.json",
-            "passWithNoTests": true,
-            "setupFile": "libs/assortment-management/src/test-setup.ts"
+            "main": "apps/home/src/test.ts",
+            "karmaConfig": "./karma.conf.js",
+            "polyfills": "apps/home/src/polyfills.ts",
+            "tsConfig": "apps/home/tsconfig.spec.json",
+            "scripts": [],
+            "styles": ["apps/home/src/assets/scss/material-dashboard.scss"],
+            "assets": ["apps/home/src/assets", "apps/home/src/favicon.ico"]
           }
         }
       },
@@ -165,12 +168,15 @@
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "jestConfig": "libs/shared/jest.config.js",
+            "main": "libs/shared/src/test.ts",
+            "karmaConfig": "./karma.conf.js",
+            "polyfills": "libs/shared/src/polyfills.ts",
             "tsConfig": "libs/shared/tsconfig.spec.json",
-            "passWithNoTests": true,
-            "setupFile": "libs/shared/src/test-setup.ts"
+            "scripts": [],
+            "styles": [],
+            "assets": []
           }
         }
       },
@@ -194,12 +200,15 @@
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "jestConfig": "libs/material/jest.config.js",
-            "tsConfig": "libs/material/tsconfig.spec.json",
-            "passWithNoTests": true,
-            "setupFile": "libs/material/src/test-setup.ts"
+            "main": "apps/home/src/test.ts",
+            "karmaConfig": "./karma.conf.js",
+            "polyfills": "apps/home/src/polyfills.ts",
+            "tsConfig": "apps/home/tsconfig.spec.json",
+            "scripts": [],
+            "styles": ["apps/home/src/assets/scss/material-dashboard.scss"],
+            "assets": ["apps/home/src/assets", "apps/home/src/favicon.ico"]
           }
         }
       },
@@ -223,12 +232,15 @@
           }
         },
         "test": {
-          "builder": "@nrwl/jest:jest",
+          "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "jestConfig": "libs/sgm/jest.config.js",
-            "tsConfig": "libs/sgm/tsconfig.spec.json",
-            "passWithNoTests": true,
-            "setupFile": "libs/sgm/src/test-setup.ts"
+            "main": "apps/home/src/test.ts",
+            "karmaConfig": "./karma.conf.js",
+            "polyfills": "apps/home/src/polyfills.ts",
+            "tsConfig": "apps/home/tsconfig.spec.json",
+            "scripts": [],
+            "styles": ["apps/home/src/assets/scss/material-dashboard.scss"],
+            "assets": ["apps/home/src/assets", "apps/home/src/favicon.ico"]
           }
         }
       },

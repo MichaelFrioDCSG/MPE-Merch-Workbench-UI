@@ -1949,7 +1949,7 @@ input.mat-input-element {
 
 .mat-tab-group.mat-primary .mat-ink-bar,
 .mat-tab-nav-bar.mat-primary .mat-ink-bar {
-  background-color: #3f51b5;
+  background-color: #f8972a !important;
 }
 
 .mat-tab-group.mat-primary.mat-background-primary .mat-ink-bar,
@@ -2081,7 +2081,7 @@ input.mat-input-element {
 .mat-tab-group.mat-background-warn .mat-tab-link:not(.mat-tab-disabled):focus,
 .mat-tab-nav-bar.mat-background-warn .mat-tab-label:not(.mat-tab-disabled):focus,
 .mat-tab-nav-bar.mat-background-warn .mat-tab-link:not(.mat-tab-disabled):focus {
-  background-color: rgba(255, 205, 210, 0.3);
+  background-color: transparent;
 }
 
 .mat-tab-group.mat-background-warn .mat-tab-header,
