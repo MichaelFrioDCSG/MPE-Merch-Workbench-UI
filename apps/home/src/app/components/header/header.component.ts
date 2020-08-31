@@ -16,7 +16,6 @@ export class HeaderComponent implements OnInit {
 
   public ngOnInit(): void {
     this.routes = routes;
-    //this.activeRoute = this.router.url.substring(1);
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         this.activeRoute = this.router.url.substring(1);
