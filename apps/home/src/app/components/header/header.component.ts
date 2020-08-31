@@ -7,7 +7,6 @@ import { Title } from '@angular/platform-browser';
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
-  encapsulation: ViewEncapsulation.None,
 })
 export class HeaderComponent implements OnInit {
   public backgroundColor = 'primary';
