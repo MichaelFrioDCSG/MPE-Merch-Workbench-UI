@@ -218,6 +218,11 @@ $DSG-theme: mat-light-theme($DSG-primary, $DSG-secondary);
   src: url('/assets/fonts/DSGSansBlack.otf');
 }
 
+@font-face {
+  font-family: 'Archivo';
+  src: url('/assets/fonts/Archivo-Regular.ttf');
+}
+
 .dicks-font {
   font-family: 'DSG Sans Black';
   font-size: 40px;
@@ -399,4 +404,18 @@ section {
   flex: 0 0 auto;
   background-color: #dcdcdc;
   font-size: small;
+}
+
+.ag-theme-alpine {
+  font-family: Archivo;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  /* line-height: 15px; */
+  letter-spacing: 0.297825px;
+  color: #191f1c;
+}
+
+.ag-header-cell-text {
+  font-weight: 600;
 }

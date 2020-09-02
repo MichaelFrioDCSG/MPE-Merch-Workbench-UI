@@ -2,7 +2,6 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Route } from '@angular/router';
 import { LandingComponent } from './components/landing/landing.component';
-import { MaterialModule } from '@mpe/material';
 
 import { BrowserModule } from '@angular/platform-browser';
 
@@ -27,6 +26,10 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { StoreModule } from '@ngrx/store';
+import * as fromStoreGroupMgmt from './store/store-group-mgmt.reducer';
+import { EffectsModule } from '@ngrx/effects';
+import StoreGroupMgmtEffects from './store/store-group-mgmt.effects';
 
 export const sgmRoutes: Route[] = [{ path: '', component: LandingComponent }];
 
@@ -53,6 +56,8 @@ export const sgmRoutes: Route[] = [{ path: '', component: LandingComponent }];
     MatChipsModule,
     MatCheckboxModule,
     MatProgressSpinnerModule,
+    StoreModule.forFeature(fromStoreGroupMgmt.storeGroupMgmtFeatureKey, fromStoreGroupMgmt.reducer),
+    EffectsModule.forFeature([StoreGroupMgmtEffects]),
   ],
   declarations: [
     LandingComponent,
