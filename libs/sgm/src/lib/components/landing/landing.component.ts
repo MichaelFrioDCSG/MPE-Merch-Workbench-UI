@@ -3,13 +3,13 @@ import { AgGridAngular } from 'ag-grid-angular';
 import { MatDialog } from '@angular/material/dialog';
 import { AllCommunityModules, Module } from '@ag-grid-community/all-modules';
 
-import { StoreGroupService } from '../../services/store-group.service';
 import { IClusterGroup } from '../../../../../shared/models/IClusterGroup';
-import { ImportStoreGroupDialogComponent } from 'libs/shared/src/lib/dialogs/import-store-group-dialog/import-store-group-dialog.component';
 import { Store, select } from '@ngrx/store';
 import { selectClusterGroups, IStoreGroupMgmtState } from '../../store/store-group-mgmt.reducer';
 import { Observable } from 'rxjs';
 import * as actions from '../../store/store-group-mgmt.actions';
+import { ImportStoreGroupDialogComponent } from '../../dialogs/import-store-group-dialog/import-store-group-dialog.component';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'mpe-landing',
@@ -44,11 +44,13 @@ export class LandingComponent implements OnInit, OnDestroy {
     // { headerName: 'Last Modified By', field: 'lastModifiedBy', sortable: true, filter: true },
   ];
 
-  constructor(private dialog: MatDialog, private storeGroupService: StoreGroupService, private store: Store<IStoreGroupMgmtState>) {}
-
-  public ngOnInit() {}
+  constructor(private dialog: MatDialog, private store: Store<IStoreGroupMgmtState>, public titleService: Title) {}
 
   public ngOnDestroy() {}
+
+  public ngOnInit() {
+    this.titleService.setTitle('Store Group Management');
+  }
 
   public getSelectedRows() {
     const selectedNodes = this.agGrid.api.getSelectedNodes();

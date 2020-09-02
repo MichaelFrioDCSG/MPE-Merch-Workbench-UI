@@ -1,10 +1,41 @@
-.app-nav {
-  ul {
-    list-style-type: none;
+@font-face {
+  font-family: 'DSG Sans Black';
+  src: url('../../../assets/fonts/DSGSansBlack.otf');
+}
 
-    li {
-      display: inline;
-      margin-right: 0.5rem;
-    }
-  }
+.dicks-font {
+  font-family: 'DSG Sans Black';
+  font-size: 2rem;
+}
+
+.display-full {
+  display: none;
+}
+
+.image-resize {
+  width: 5rem;
+  height: auto;
+}
+
+.pad-items {
+  margin-left: 2rem;
+}
+
+.fill-space {
+  // This fills the remaining space, by using flexbox.
+  // Every toolbar row uses a flexbox row layout.
+  flex: 1 1 auto;
+}
+
+.icon {
+  transform: scale(1.5);
+}
+
+.tabs {
+  opacity: 1 !important;
+  font-size: 1rem;
+}
+
+.profile {
+  font-size: 1rem;
 }

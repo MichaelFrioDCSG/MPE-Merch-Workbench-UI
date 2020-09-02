@@ -1,11 +1,16 @@
-<div class="app-nav">
-  <nav>
-    <ul>
-      <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a></li>
-      <!-- <li><a routerLink="/am" routerLinkActive="active">Assortment Management App</a></li> -->
-      <li><a routerLink="/am" routerLinkActive="active">Assortment Management</a></li>
-      <li><a routerLink="/sgm" routerLinkActive="active">Store Group Management</a></li>
-    </ul>
-  </nav>
+<div class="Monochromatic">
+  <mat-toolbar color="primary">
+    <mat-toolbar-row>
+      <img class="image-resize" src="/assets/images/dsglogo.png" />
+      <span class="pad-items dicks-font">Merch Workbench - {{ getTitle() }}</span>
+      <nav mat-tab-nav-bar class="pad-items" [backgroundColor]="backgroundColor">
+        <a mat-tab-link class="tabs" *ngFor="let route of routes" [active]="activeRoute == route.path" [routerLink]="route.path">
+          {{ route.data.name }}
+        </a>
+      </nav>
+      <span class="fill-space"></span>
+      <span class="profile">FirstName, LastName</span>
+      <mat-icon class="pad-items icon">account_circle</mat-icon>
+    </mat-toolbar-row>
+  </mat-toolbar>
 </div>
-<p>Portal APP</p>

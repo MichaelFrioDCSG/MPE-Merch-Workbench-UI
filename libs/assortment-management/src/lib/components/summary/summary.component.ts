@@ -6,6 +6,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ImportDialogComponent } from '../dialogs/import-dialog/import-dialog.component';
 import { ConfirmationDialogComponent } from '../dialogs/confirmation-dialog/confirmation-dialog.component';
 import { AlertDialogComponent } from '../dialogs/alert-dialog/alert-dialog.component';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'mpe-summary',
@@ -13,7 +14,7 @@ import { AlertDialogComponent } from '../dialogs/alert-dialog/alert-dialog.compo
   styleUrls: ['./summary.component.scss'],
 })
 export class SummaryComponent implements OnInit {
-  constructor(private http: HttpClient, private dialog: MatDialog, private snackBar: MatSnackBar) {}
+  constructor(private http: HttpClient, private dialog: MatDialog, private snackBar: MatSnackBar, private titleService: Title) {}
 
   public headerSelected: boolean;
   public rowCount: number;
@@ -71,7 +72,9 @@ export class SummaryComponent implements OnInit {
     ],
   };
 
-  public ngOnInit(): void {}
+  public ngOnInit(): void {
+    this.titleService.setTitle('Assortment Management');
+  }
   public onGridReady($event): void {
     // $event.api.sizeColumnsToFit();
     $event.api.onlySelected = true;
