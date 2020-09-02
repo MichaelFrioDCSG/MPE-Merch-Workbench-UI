@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { AgGridAngular } from 'ag-grid-angular';
 import { MatDialog } from '@angular/material/dialog';
-import { AllCommunityModules, Module } from '@ag-grid-community/all-modules';
+import { AllCommunityModules, Module, GridOptions, GridApi } from '@ag-grid-community/all-modules';
 
 import { IClusterGroup } from '../../../../../shared/models/IClusterGroup';
 import { Store, select } from '@ngrx/store';
@@ -19,6 +19,10 @@ import { Title } from '@angular/platform-browser';
 export class LandingComponent implements OnInit, OnDestroy {
   @ViewChild('agGrid', { static: false }) public agGrid: AgGridAngular;
   public clusterGroupsObs: Observable<IClusterGroup[]> = null;
+  public style: any;
+  public gridOptions: GridOptions;
+  public gridColumnApi: any;
+  public gridApi: GridApi;
 
   public modules: Module[] = AllCommunityModules;
   public selectedData: any;
@@ -29,20 +33,49 @@ export class LandingComponent implements OnInit, OnDestroy {
   };
   public columnDefs = [
     {
+      colId: 'checkboxColumn',
       headerName: '',
-      width: 40,
+      width: 50,
       editable: true,
       headerCheckboxSelection: true,
-      headerCheckboxSelectionFilteredOnly: false,
+      headerCheckboxSelectionFilteredOnly: true,
       checkboxSelection: true,
+      filter: false,
+      suppressMenu: true,
+      suppressSizeToFit: true,
+      resizable: false,
     },
-    { headerName: 'Cluster Group Name', field: 'name', sortable: true, filter: true },
-    { headerName: 'Cluster Group Desc', field: 'description', sortable: true, filter: true, width: 200 },
-    { headerName: 'Assortment Period', field: 'asmtPeriod.asmtPeriodLabel', sortable: true, filter: true },
+    { headerName: 'CLUSTER GROUP', field: 'name', sortable: true, filter: true },
+    { headerName: 'CLUSTER GROUP DESCRIPTION', field: 'description', sortable: true, filter: true },
+    { headerName: 'ASSORTMENT PERIOD', field: 'asmtPeriod.asmtPeriodLabel', sortable: true, filter: true, minWidth: 232 },
     // TODO, once available on back end:
-    // { headerName: 'Last Modified Date', field: 'lastModifiedDate', sortable: true, filter: true },
-    // { headerName: 'Last Modified By', field: 'lastModifiedBy', sortable: true, filter: true },
+    {
+      headerName: 'LAST MODIFIED DATE',
+      field: 'lastModifiedOn',
+      sortable: true,
+      filter: true,
+      minWidth: 205,
+      cellRenderer: (data: { value: string | number | Date }) => {
+        return data.value ? new Date(data.value).toLocaleDateString() + ' ' + new Date(data.value).toLocaleTimeString() : '';
+      },
+    },
+    { headerName: 'LAST MODIFIED BY', field: 'lastModifiedBy', sortable: true, filter: true },
   ];
+  public statusBar: any = {
+    statusPanels: [
+      {
+        statusPanel: 'agTotalAndFilteredRowCountComponent',
+        align: 'left',
+      },
+      {
+        statusPanel: 'agTotalRowCountComponent',
+        align: 'center',
+      },
+      { statusPanel: 'agFilteredRowCountComponent' },
+      { statusPanel: 'agSelectedRowCountComponent' },
+      { statusPanel: 'agAggregationComponent' },
+    ],
+  };
 
   constructor(private dialog: MatDialog, private store: Store<IStoreGroupMgmtState>, public titleService: Title) {}
 
@@ -74,9 +107,44 @@ export class LandingComponent implements OnInit, OnDestroy {
     });
   }
 
-  public onGridReady(params) {
+  public onGridReady(params: any) {
+    this.gridApi = params.api;
+    this.gridColumnApi = params.columnApi;
     this.store.dispatch(actions.sgmGetSummaries());
 
     this.getClusterGroupHeaders();
+  }
+
+  public onFirstDataRendered(params) {
+    this.autoSizeAll();
+  }
+
+  public autoSizeAll() {
+    let totalColsWidth = 0;
+    if (this.gridColumnApi) {
+      const allColumnIds = [];
+      this.gridColumnApi.getAllColumns().forEach(column => {
+        if (column.colId !== 'checkboxColumn') {
+          allColumnIds.push(column.colId);
+        }
+      });
+      this.gridColumnApi.autoSizeColumns(allColumnIds, false);
+      this.gridApi.setDomLayout('autoHeight');
+      this.gridColumnApi.getAllColumns().forEach(column => {
+        totalColsWidth += column.getActualWidth();
+      });
+      const gridWidth = document.getElementById('grid-wrapper').offsetWidth;
+      if (gridWidth > totalColsWidth) {
+        this.setGridWidth(totalColsWidth + 2); // +2px hides the horizontal scrollbar at bottom
+      } else {
+        this.setGridWidth(gridWidth);
+      }
+    }
+  }
+
+  public setGridWidth(widthInPixels) {
+    this.style = {
+      width: widthInPixels + 'px',
+    };
   }
 }

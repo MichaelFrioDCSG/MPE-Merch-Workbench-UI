@@ -1,7 +1,6 @@
 import { createReducer, on, createFeatureSelector, createSelector } from '@ngrx/store';
 import { IClusterGroup } from 'libs/shared/models/IClusterGroup';
 import * as actions from './store-group-mgmt.actions';
-import { IAppState } from '@mpe/home/src/store/reducer';
 
 export interface IStoreGroupMgmtState {
   clusterGroups: IClusterGroup[];
@@ -17,7 +16,7 @@ const initialState: IStoreGroupMgmtState = {
 
 const reducer$ = createReducer(
   initialState,
-  on(actions.sgmGetSummaries, (state: IStoreGroupMgmtState, action) => ({
+  on(actions.sgmGetSummaries, (state: IStoreGroupMgmtState) => ({
     ...state,
     clusterGroups: [],
     loading: true,

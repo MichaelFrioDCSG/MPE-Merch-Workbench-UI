@@ -18,6 +18,10 @@ export default class StoreGroupMgmtEffects {
       switchMap(() =>
         this.clusterGroupService.getClusterGroups().pipe(
           switchMap((clusterGroups: IClusterGroup[]) => {
+            clusterGroups.forEach(cg => {
+              cg.lastModifiedOn = new Date();
+              cg.lastModifiedBy = 'Homer Simpson';
+            });
             return of(actions.sgmGetSummariesSuccess({ clusterGroups }));
           }),
           catchError(errors => {

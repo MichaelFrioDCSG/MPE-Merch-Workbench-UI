@@ -6,4 +6,6 @@ export interface IClusterGroup {
   description: string;
   asmtPeriodId: string;
   asmtPeriod: IAsmtPeriod;
+  lastModifiedOn: Date;
+  lastModifiedBy: string;
 }

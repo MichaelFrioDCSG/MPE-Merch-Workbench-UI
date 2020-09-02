@@ -26,7 +26,7 @@
     border-left: 4px solid transparent;
   }
 
-  &[data-background-color="black"] {
+  &[data-background-color='black'] {
     background-color: #191919;
   }
 
@@ -41,7 +41,7 @@
       width: 70px;
       top: 16px;
       position: initial;
-      height: 35px
+      height: 35px;
     }
   }
 
@@ -85,9 +85,9 @@
       }
     }
 
-    >.nav,
+    > .nav,
     .user .user-info {
-      [data-toggle="collapse"]~div>ul>li>a {
+      [data-toggle='collapse'] ~ div > ul > li > a {
         span {
           display: inline-block;
           @extend .animation-transition-general;
@@ -100,7 +100,6 @@
           opacity: 1;
           white-space: nowrap;
           display: block;
-
         }
 
         .sidebar-mini {
@@ -148,9 +147,9 @@
       }
     }
 
-    >.nav,
+    > .nav,
     .user .user-info {
-      [data-toggle="collapse"]~div>ul>li>a {
+      [data-toggle='collapse'] ~ div > ul > li > a {
         span {
           display: inline-block;
           @extend .animation-transition-general;
@@ -163,7 +162,6 @@
           opacity: 1;
           white-space: nowrap;
           display: block;
-
         }
 
         .sidebar-mini {
@@ -196,8 +194,7 @@
       }
 
       li {
-        >a {
-
+        > a {
           &:hover,
           &:focus {
             background-color: transparent;
@@ -205,27 +202,27 @@
           }
         }
 
-        &:first-child>a {
+        &:first-child > a {
           margin: 0px;
         }
 
-        &:hover>a,
+        &:hover > a,
         & .dropdown-menu a:hover,
         & .dropdown-menu a:focus,
-        &.active>[data-toggle="collapse"] {
+        &.active > [data-toggle='collapse'] {
           background-color: rgba(200, 200, 200, 0.2);
           color: $black-color;
           box-shadow: none;
         }
 
-        &.active>[data-toggle="collapse"] {
+        &.active > [data-toggle='collapse'] {
           i {
             color: #a9afbb;
           }
         }
 
-        &.active>a,
-        &.active>a i {
+        &.active > a,
+        &.active > a i {
           color: $white-color;
         }
 
@@ -234,14 +231,14 @@
 
           &:after {
             width: calc(100% - 30px);
-            content: "";
+            content: '';
             position: absolute;
             height: 1px;
             left: 15px;
-            background-color: rgba(180, 180, 180, .3);
+            background-color: rgba(180, 180, 180, 0.3);
           }
 
-          &+li {
+          & + li {
             margin-top: 31px;
           }
         }
@@ -305,8 +302,7 @@
     }
 
     li {
-      >a {
-
+      > a {
         &:hover,
         &:focus {
           background-color: transparent;
@@ -314,27 +310,27 @@
         }
       }
 
-      &:first-child>a {
+      &:first-child > a {
         margin: 0 15px;
       }
 
-      &:hover>a,
+      &:hover > a,
       & .dropdown-menu a:hover,
       & .dropdown-menu a:focus,
-      &.active>[data-toggle="collapse"] {
+      &.active > [data-toggle='collapse'] {
         background-color: rgba(200, 200, 200, 0.2);
         color: $black-color;
         box-shadow: none;
       }
 
-      &.active>[data-toggle="collapse"] {
+      &.active > [data-toggle='collapse'] {
         i {
           color: #a9afbb;
         }
       }
 
-      &.active>a,
-      &.active>a i {
+      &.active > a,
+      &.active > a i {
         color: $white-color;
       }
 
@@ -343,14 +339,14 @@
 
         &:after {
           width: calc(100% - 30px);
-          content: "";
+          content: '';
           position: absolute;
           height: 1px;
           left: 15px;
-          background-color: rgba(180, 180, 180, .3);
+          background-color: rgba(180, 180, 180, 0.3);
         }
 
-        &+li {
+        & + li {
           margin-top: 31px;
         }
       }
@@ -389,7 +385,6 @@
     padding: 10px 15px;
   }
 
-
   .sidebar-background {
     position: absolute;
     z-index: 1;
@@ -406,10 +401,10 @@
       z-index: 3;
       width: 100%;
       height: 100%;
-      content: "";
+      content: '';
       display: block;
-      background: #FFFFFF;
-      opacity: .93;
+      background: #ffffff;
+      opacity: 0.93;
     }
   }
 
@@ -428,8 +423,7 @@
       right: 15px;
       height: 1px;
       width: calc(100% - 30px);
-      background-color: rgba(180, 180, 180, .3);
-
+      background-color: rgba(180, 180, 180, 0.3);
     }
 
     p {
@@ -469,8 +463,7 @@
     }
   }
 
-
-  &[data-background-color="black"] {
+  &[data-background-color='black'] {
     @include sidebar-background-color($gray-base, $white-color);
 
     .nav li .dropdown-menu .dropdown-item {
@@ -478,54 +471,53 @@
     }
   }
 
-  &[data-color="dks-primary"] {
+  &[data-color='dks-primary'] {
     @include set-background-color-button($brand-primary);
   }
 
-  &[data-color="purple"] {
+  &[data-color='purple'] {
     @include set-background-color-button($brand-primary);
   }
 
-  &[data-color="azure"] {
+  &[data-color='azure'] {
     @include set-background-color-button($brand-info);
   }
 
-  &[data-color="green"] {
+  &[data-color='green'] {
     @include set-background-color-button($brand-success);
   }
 
-  &[data-color="orange"] {
+  &[data-color='orange'] {
     @include set-background-color-button($brand-warning);
   }
 
-  &[data-color="danger"] {
+  &[data-color='danger'] {
     @include set-background-color-button($brand-danger);
   }
 
-  &[data-color="rose"] {
+  &[data-color='rose'] {
     @include set-background-color-button($brand-rose);
   }
 
-  &[data-color="white"] {
+  &[data-color='white'] {
     @include set-background-color-button($white-color);
     @include sidebar-active-color($black-color);
   }
 
-  &[data-background-color="red"] {
+  &[data-background-color='red'] {
     @include sidebar-background-color($brand-danger, $white-color);
 
     .user,
     .logo,
     .nav li.separator {
       &:after {
-        background-color: rgba(255, 255, 255, .3);
+        background-color: rgba(255, 255, 255, 0.3);
       }
     }
 
     .nav {
-
-      li:hover:not(.active)>a,
-      li.active>[data-toggle="collapse"] {
+      li:hover:not(.active) > a,
+      li.active > [data-toggle='collapse'] {
         background-color: rgba(255, 255, 255, 0.1);
       }
     }
@@ -533,37 +525,33 @@
 
   &[data-image]:after,
   &.has-image:after {
-    opacity: .77;
+    opacity: 0.77;
   }
 }
 
-
 .off-canvas-sidebar .navbar-collapse {
   .nav {
-
-    >li>a,
-    >li>a:hover {
+    > li > a,
+    > li > a:hover {
       color: $white-color;
       margin: 0 15px;
     }
 
-    >li>a:focus,
-    >li>a:hover {
+    > li > a:focus,
+    > li > a:hover {
       background: rgba(200, 200, 200, 0.2);
     }
   }
 }
 
-
 .main-panel {
   position: relative;
   float: right;
   width: $sidebar-width;
-  @include transition (0.33s, cubic-bezier(0.685, 0.0473, 0.346, 1));
+  @include transition(0.33s, cubic-bezier(0.685, 0.0473, 0.346, 1));
 
   .main-content {
-    margin-top: 70px;
-    padding: 30px 15px;
+    // padding: 15px;
     min-height: calc(100vh - 123px);
   }
 
@@ -586,7 +574,6 @@
 }
 
 .perfect-scrollbar-on {
-
   .sidebar,
   .main-panel {
     height: 100%;
@@ -594,14 +581,13 @@
   }
 }
 
-
 .sidebar,
 .main-panel,
 .sidebar-wrapper {
   -webkit-transition-property: top, bottom, width;
   transition-property: top, bottom, width;
-  -webkit-transition-duration: .2s, .2s, .35s;
-  transition-duration: .2s, .2s, .35s;
+  -webkit-transition-duration: 0.2s, 0.2s, 0.35s;
+  transition-duration: 0.2s, 0.2s, 0.35s;
   -webkit-transition-timing-function: linear, linear, ease;
   transition-timing-function: linear, linear, ease;
   -webkit-overflow-scrolling: touch;
@@ -647,11 +633,10 @@
       }
 
       .sidebar-wrapper {
-
-        >.nav [data-toggle="collapse"]~div>ul>li>a .sidebar-normal,
-        .user .user-info [data-toggle="collapse"]~div>ul>li>a .sidebar-normal,
-        .user .user-info>a>span,
-        >.nav li>a p {
+        > .nav [data-toggle='collapse'] ~ div > ul > li > a .sidebar-normal,
+        .user .user-info [data-toggle='collapse'] ~ div > ul > li > a .sidebar-normal,
+        .user .user-info > a > span,
+        > .nav li > a p {
           @include transform-translate-x(-25px);
           opacity: 0;
         }
@@ -671,10 +656,10 @@
       .sidebar-wrapper {
         width: 260px;
 
-        >.nav li>a p,
-        >.nav [data-toggle="collapse"]~div>ul>li>a .sidebar-normal,
-        .user .user-info [data-toggle="collapse"]~div>ul>li>a .sidebar-normal,
-        .user .user-info>a>span {
+        > .nav li > a p,
+        > .nav [data-toggle='collapse'] ~ div > ul > li > a .sidebar-normal,
+        .user .user-info [data-toggle='collapse'] ~ div > ul > li > a .sidebar-normal,
+        .user .user-info > a > span {
           @include transform-translate-x(0px);
           opacity: 1;
         }
