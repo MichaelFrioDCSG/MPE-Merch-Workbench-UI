@@ -4,7 +4,7 @@ resources:
     type: git
     source:
       uri: git@github.com:dsg-tech/MPE-Merch-Workbench-UI.git
-      branch: feature/nx-pipeline-build-fix
+      branch: bugfix/nx-pipeline-build-fix
       private_key: ((MPE-Merch-Workbench-UI-deploykey.private))
 
   - name: PCF-VN01-Dev
