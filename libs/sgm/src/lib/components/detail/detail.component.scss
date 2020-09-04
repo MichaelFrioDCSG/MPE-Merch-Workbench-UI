@@ -1,0 +1,40 @@
+.example-icon {
+  padding: 0 14px;
+}
+
+.example-spacer {
+  flex: 1 1 auto;
+}
+
+.breadcrumb-dsg {
+  font-family: Archivo;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 15px;
+  letter-spacing: 0.297825px;
+
+  color: #000000;
+}
+
+.button-label-dsg {
+  /* Label/Large 16px */
+  font-family: Archivo;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 20px;
+  /* or 100% */
+  display: flex;
+  align-items: center;
+  text-align: center;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.grid-wrapper {
+  min-width: 95vw;
+  max-width: 98vw;
+  display: flex;
+  justify-content: left;
+}

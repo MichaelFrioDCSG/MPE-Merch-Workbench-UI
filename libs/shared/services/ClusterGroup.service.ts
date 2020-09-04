@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { IClusterGroup } from '../models/IClusterGroup';
 import { Observable } from 'rxjs';
 import { environment } from '@mpe/home/src/environments/environment';
+import { IClusters } from '../models/IClusters';
 
 @Injectable({
   providedIn: 'root',
@@ -19,4 +20,6 @@ export class ClusterGroupService {
 
     return this.httpClient.get<IClusterGroup[]>(`${environment.mpe_asmtmgmtservice}/api/v1/clustergroups`, { params: params });
   }
+
+
 }

@@ -30,6 +30,7 @@ import { StoreModule } from '@ngrx/store';
 import * as fromStoreGroupMgmt from './store/store-group-mgmt.reducer';
 import { EffectsModule } from '@ngrx/effects';
 import StoreGroupMgmtEffects from './store/store-group-mgmt.effects';
+import { DetailComponent } from './components/detail/detail.component';
 
 export const sgmRoutes: Route[] = [{ path: '', component: LandingComponent }];
 
@@ -65,6 +66,7 @@ export const sgmRoutes: Route[] = [{ path: '', component: LandingComponent }];
     InputSpinnerComponent,
     InputMultiselectDropdownComponent,
     InputDropdownFilterComponent,
+    DetailComponent,
   ],
   exports: [LandingComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
