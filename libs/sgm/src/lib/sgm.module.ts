@@ -32,7 +32,10 @@ import { EffectsModule } from '@ngrx/effects';
 import StoreGroupMgmtEffects from './store/store-group-mgmt.effects';
 import { DetailComponent } from './components/detail/detail.component';
 
-export const sgmRoutes: Route[] = [{ path: '', component: LandingComponent }];
+export const sgmRoutes: Route[] = [
+  { path: ':id', component: DetailComponent },
+  { path: '', component: LandingComponent },
+];
 
 @NgModule({
   imports: [

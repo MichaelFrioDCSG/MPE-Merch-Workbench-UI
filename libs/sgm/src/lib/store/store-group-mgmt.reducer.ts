@@ -1,6 +1,5 @@
 import { createReducer, on, createFeatureSelector, createSelector } from '@ngrx/store';
 import { IClusterGroup } from 'libs/shared/models/IClusterGroup';
-import { IClusters } from 'libs/shared/models/IClusters';
 import * as actions from './store-group-mgmt.actions';
 
 export interface IStoreGroupMgmtState {
@@ -36,7 +35,7 @@ const reducer$ = createReducer(
     clusterGroups: [],
     loading: false,
     getSummaryErrorMesssages: action.errors,
-  })),
+  }))
 );
 
 export const storeGroupMgmtFeatureKey = 'storeGroupMgmt';
