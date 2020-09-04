@@ -1,120 +1,230 @@
 ---
-  resources:
-    - name: MerchWorkBenchMaster
-      type: git
-      source:
-        uri: git@github.com:dsg-tech/MPE-Merch-Workbench-UI.git
-        branch: master
-        private_key: ((MPE-Merch-Workbench-UI-deploykey.private))
+resources:
+  - name: MerchWorkBenchMaster
+    type: git
+    source:
+      uri: git@github.com:dsg-tech/MPE-Merch-Workbench-UI.git
+      branch: feature/nx-pipeline-build-fix
+      private_key: ((MPE-Merch-Workbench-UI-deploykey.private))
 
-    - name: PCF-VN01-Dev
-      type: cf
-      source:
-        api: https://api.sys.vn01.pcf.dcsg.com
-        username: ((cf_user_nonprod))
-        password: ((cf_password_nonprod))
-        organization: merchandise-planning-and-execution
-        space: dev
-        skip_cert_check: true
+  - name: PCF-VN01-Dev
+    type: cf
+    source:
+      api: https://api.sys.vn01.pcf.dcsg.com
+      username: ((cf_user_nonprod))
+      password: ((cf_password_nonprod))
+      organization: merchandise-planning-and-execution
+      space: dev
+      skip_cert_check: true
 
-  jobs:
-    - name: Lint
-      public: true
-      plan:
-        - get: MerchWorkBenchMaster
-          trigger: true
-        - task: ng-lint
-          config:
-            platform: linux
-            image_resource:
-              type: docker-image
-              source:
-                repository: node
-                tag: latest
-            inputs:
-              - name: MerchWorkBenchMaster
-            run:
-              path: sh
-              args:
-                - -exc
-                - |
-                  set -xe
-                  # There is still an issue/bug with this. Should
-                  # be able to use ci as value - https://github.com/angular/angular-cli/blob/master/docs/design/analytics.md4
-                  export NG_CLI_ANALYTICS="false"
-                  echo "NG_CLI_ANALYTICS="$NG_CLI_ANALYTICS
-                  cd MerchWorkBenchMaster
-                  npm install --unsafe-perm --verbose
-                  npx nx run-many --all --target=lint
-    - name: Unit-Test
-      public: true
-      plan:
-        - get: MerchWorkBenchMaster
-          trigger: true
-        - task: ng-test
-          config:
-            platform: linux
-            image_resource:
-              type: docker-image
-              source:
-                repository: node
-                tag: latest
-            inputs:
-              - name: MerchWorkBenchMaster
-            run:
-              path: sh
-              args:
-                - -exc
-                - |
-                  set -xe
-                  # There is still an issue/bug with this. Should
-                  # be able to use ci as value - https://github.com/angular/angular-cli/blob/master/docs/design/analytics.md4
-                  export NG_CLI_ANALYTICS="false"
-                  echo "NG_CLI_ANALYTICS="$NG_CLI_ANALYTICS
-                  cd MerchWorkBenchMaster
-                  npm install --unsafe-perm --verbose
-                  npx nx run-many --all --target=test "--ci"
+jobs:
+  - name: Lint
+    public: true
+    plan:
+      - get: MerchWorkBenchMaster
+        trigger: true
+      - task: ng-lint
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: node
+              tag: latest
+          inputs:
+            - name: MerchWorkBenchMaster
+          run:
+            path: sh
+            args:
+              - -exc
+              - |
+                set -xe
+                export NG_CLI_ANALYTICS="false"
+                echo "NG_CLI_ANALYTICS="$NG_CLI_ANALYTICS
+                cd MerchWorkBenchMaster
+                npm install --unsafe-perm --quiet
+                npx nx run-many --all --target=lint
 
-    - name: Publish-and-Deploy
-      plan:
-        - get: MerchWorkBenchMaster
-          trigger: true
-          passed:
-            - Lint
-            - Unit-Test
-        - task: ng-publish
-          config:
-            platform: linux
-            image_resource:
-              type: docker-image
-              source:
-                repository: node
-                tag: latest
-            inputs:
-              - name: MerchWorkBenchMaster
-            outputs:
-              - name: build-output
-            run:
-              path: sh
-              args:
-                - -exc
-                - |
-                  set -xe
-                  # There is still an issue/bug with this. Should
-                  # be able to use ci as value - https://github.com/angular/angular-cli/blob/master/docs/design/analytics.md4
-                  export NG_CLI_ANALYTICS="false"
-                  echo "NG_CLI_ANALYTICS="$NG_CLI_ANALYTICS
-                  cd MerchWorkBenchMaster
-                  npm install --unsafe-perm --verbose
-                  #./node_modules/@angular/cli/bin/ng build --output-hashing=bundles --index=${INDEX_ARGUMENT}
-                  npx ng build
-                  cp -r dist/apps/home/* ../build-output
-                  cp ci/Staticfile ../build-output
-                  cp ci/manifest.yml ../build-output
-        - put: cf-push-dev
-          resource: PCF-VN01-Dev
-          params:
-            command: push
-            path: build-output
-            manifest: build-output/manifest.yml
-            current_app_name: mpe-merch-workbench
+  - name: Unit-Test-Home
+    public: true
+    plan:
+      - get: MerchWorkBenchMaster
+        trigger: true
+      - task: ng-test
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: weboaks/node-karma-protractor-chrome
+              tag: latest
+          inputs:
+            - name: MerchWorkBenchMaster
+          run:
+            path: sh
+            args:
+              - -exc
+              - |
+                set -xe
+                export NG_CLI_ANALYTICS="false"
+                echo "NG_CLI_ANALYTICS="$NG_CLI_ANALYTICS
+                cd MerchWorkBenchMaster
+                npm install --unsafe-perm --quiet
+                npx nx test home --karma-config=karma-ci.conf.js --no-progress
+
+  - name: Unit-Test-Shared
+    public: true
+    plan:
+      - get: MerchWorkBenchMaster
+        trigger: true
+      - task: ng-test
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: weboaks/node-karma-protractor-chrome
+              tag: latest
+          inputs:
+            - name: MerchWorkBenchMaster
+          run:
+            path: sh
+            args:
+              - -exc
+              - |
+                set -xe
+                export NG_CLI_ANALYTICS="false"
+                echo "NG_CLI_ANALYTICS="$NG_CLI_ANALYTICS
+                cd MerchWorkBenchMaster
+                npm install --unsafe-perm --quiet
+                npx nx test shared --karma-config=karma-ci.conf.js --no-progress
+
+  - name: Unit-Test-Assortment-Management
+    public: true
+    plan:
+      - get: MerchWorkBenchMaster
+        trigger: true
+      - task: ng-test
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: weboaks/node-karma-protractor-chrome
+              tag: latest
+          inputs:
+            - name: MerchWorkBenchMaster
+          run:
+            path: sh
+            args:
+              - -exc
+              - |
+                set -xe
+                export NG_CLI_ANALYTICS="false"
+                echo "NG_CLI_ANALYTICS="$NG_CLI_ANALYTICS
+                cd MerchWorkBenchMaster
+                npm install --unsafe-perm --quiet
+                npx nx test assortment-management --karma-config=karma-ci.conf.js --no-progress
+
+  - name: Unit-Test-Store-Group-Management
+    public: true
+    plan:
+      - get: MerchWorkBenchMaster
+        trigger: true
+      - task: ng-test
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: weboaks/node-karma-protractor-chrome
+              tag: latest
+          inputs:
+            - name: MerchWorkBenchMaster
+          run:
+            path: sh
+            args:
+              - -exc
+              - |
+                set -xe
+                export NG_CLI_ANALYTICS="false"
+                echo "NG_CLI_ANALYTICS="$NG_CLI_ANALYTICS
+                cd MerchWorkBenchMaster
+                npm install --unsafe-perm --quiet
+                npx nx test sgm --karma-config=karma-ci.conf.js --no-progress
+
+  - name: Unit-Test-Material
+    public: true
+    plan:
+      - get: MerchWorkBenchMaster
+        trigger: true
+      - task: ng-test
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: weboaks/node-karma-protractor-chrome
+              tag: latest
+          inputs:
+            - name: MerchWorkBenchMaster
+          run:
+            path: sh
+            args:
+              - -exc
+              - |
+                set -xe
+                export NG_CLI_ANALYTICS="false"
+                echo "NG_CLI_ANALYTICS="$NG_CLI_ANALYTICS
+                cd MerchWorkBenchMaster
+                npm install --unsafe-perm --quiet
+                npx nx test material --karma-config=karma-ci.conf.js --no-progress
+
+  - name: Publish-and-Deploy
+    plan:
+      - get: MerchWorkBenchMaster
+        trigger: true
+        passed:
+          - Lint
+          - Unit-Test-Home
+          - Unit-Test-Shared
+          - Unit-Test-Assortment-Management
+          - Unit-Test-Store-Group-Management
+          - Unit-Test-Material
+      - task: ng-publish
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: node
+              tag: latest
+          inputs:
+            - name: MerchWorkBenchMaster
+          outputs:
+            - name: build-output
+          run:
+            path: sh
+            args:
+              - -exc
+              - |
+                set -xe
+                # There is still an issue/bug with this. Should
+                # be able to use ci as value - https://github.com/angular/angular-cli/blob/master/docs/design/analytics.md4
+                export NG_CLI_ANALYTICS="false"
+                echo "NG_CLI_ANALYTICS="$NG_CLI_ANALYTICS
+                cd MerchWorkBenchMaster
+                npm install --unsafe-perm --quiet
+                #./node_modules/@angular/cli/bin/ng build --output-hashing=bundles --index=${INDEX_ARGUMENT}
+                npx nx build
+                cp -r dist/apps/home/* ../build-output
+                cp ci/Staticfile ../build-output
+                cp ci/manifest.yml ../build-output
+
+      - put: cf-push-dev
+        resource: PCF-VN01-Dev
+        params:
+          command: push
+          path: build-output
+          manifest: build-output/manifest.yml
+          current_app_name: mpe-merch-workbench

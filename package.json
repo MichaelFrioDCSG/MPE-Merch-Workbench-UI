@@ -9,6 +9,7 @@
     "start": "ng serve",
     "build": "ng build",
     "test": "ng test",
+    "test-ci": "nx test --karma-config=karma-ci.conf.js --no-progress",
     "test:all": "nx run-many --all --target=test",
     "test:failed": "nx run-many --all --target=test --only-failed",
     "lint": "nx workspace-lint && ng lint",

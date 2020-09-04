@@ -143,8 +143,8 @@
             "polyfills": "apps/home/src/polyfills.ts",
             "tsConfig": "apps/home/tsconfig.spec.json",
             "scripts": [],
-            "styles": ["apps/home/src/assets/scss/material-dashboard.scss"],
-            "assets": ["apps/home/src/assets", "apps/home/src/favicon.ico"]
+            "styles": [],
+            "assets": []
           }
         }
       },
@@ -239,8 +239,8 @@
             "polyfills": "apps/home/src/polyfills.ts",
             "tsConfig": "apps/home/tsconfig.spec.json",
             "scripts": [],
-            "styles": ["apps/home/src/assets/scss/material-dashboard.scss"],
-            "assets": ["apps/home/src/assets", "apps/home/src/favicon.ico"]
+            "styles": [],
+            "assets": []
           }
         }
       },
