@@ -39,12 +39,12 @@ module.exports = function (config) {
     customLaunchers: {
       ChromeHeadlessCI: {
         base: 'ChromeHeadless',
-        flags: ['--disable-gpu', '--no-sandbox'],
+        flags: ['--disable-web-security', '--disable-gpu', '--no-sandbox', '--js-flags=--max-old-space-size=8196'],
       },
     },
     singleRun: true,
     captureTimeout: 60000,
-    browserDisconnectTimeout: 10000,
+    browserDisconnectTimeout: 100000,
     browserDisconnectTolerance: 1,
     browserNoActivityTimeout: 100000,
   });
