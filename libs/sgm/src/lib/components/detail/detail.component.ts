@@ -9,6 +9,16 @@ import { Title } from '@angular/platform-browser';
 import { ClusterGroupService } from 'libs/shared/services/ClusterGroup.service';
 import { IClusterGroup } from 'libs/shared/models/IClusterGroup';
 import { ICluster } from 'libs/shared/models/ICluster.cs';
+import { ActivatedRoute } from '@angular/router';
+
+interface IDetailRecord {
+  clusterGroupName: string;
+  clusterName: string;
+  tier: string;
+  chain: string;
+  storeNumber: number;
+  adMarket: string;
+}
 
 @Component({
   selector: 'mpe-detail',
@@ -23,20 +33,41 @@ export class DetailComponent implements OnInit, OnDestroy {
   public gridApi: GridApi;
 
   public clusters: ICluster[] = [];
+  public details: IDetailRecord[] = [];
   public modules: Module[] = AllCommunityModules;
   public selectedData: any;
   public title = 'MPE-SGM';
   public clusterGroup: IClusterGroup;
-  public clusterGroupId = 3;
+  public clusterGroupId = this.route.snapshot.paramMap.get('id');
+  public rowdata: any;
   public defaultColDef: any = {
     resizable: true,
   };
   public columnDefs = [
-    { headerName: 'LOCATIONS', field: 'locations', sortable: true, filter: true },
-    { headerName: 'CLUSTER GROUP', field: 'clusterGroupName', sortable: true, filter: true },
-    { headerName: 'CLUSTER ', field: 'clusterName', sortable: true, filter: true },
-    { headerName: 'LOC ATTRIBUTE', field: 'locationAttribute', sortable: true, filter: true },
+    // { headerName: 'CLUSTER GROUP', field: 'clusterGroupName', sortable: true, filter: true },
+    // { headerName: 'CLUSTER ', field: 'clusterName', sortable: true, filter: true },
+    // { headerName: 'TIER', field: 'tier', sortable: true, filter: true },
+    // { headerName: 'CHAIN', field: 'chain', sortable: true, filter: true },
+    // { headerName: 'STORE NUMBER', field: 'storeNumber', sortable: true, filter: true },
+    // { headerName: 'AD MARKET', field: 'adMarket', sortable: true, filter: true },
+
+    //W/O using AutoSizeAll
+    { headerName: 'CLUSTER GROUP', field: 'clusterGroupName', sortable: true, filter: true, width: 200 },
+    { headerName: 'CLUSTER ', field: 'clusterName', sortable: true, filter: true, width: 200 },
+    { headerName: 'TIER', field: 'tier', sortable: true, filter: true, width: 150 },
+    { headerName: 'CHAIN', field: 'chain', sortable: true, filter: true, width: 100 },
+    { headerName: 'STORE NUMBER', field: 'storeNumber', sortable: true, filter: true, width: 250 },
+    { headerName: 'AD MARKET', field: 'adMarket', sortable: true, filter: true, width: 250 },
   ];
+
+  /*
+  ClusterGroupName,
+  ClusterName,
+  Tier,
+  Chain,
+  StoreNumber,
+  AdMarket
+  */
   public statusBar: any = {
     statusPanels: [
       {
@@ -53,13 +84,18 @@ export class DetailComponent implements OnInit, OnDestroy {
     ],
   };
 
-  constructor(private store: Store<IStoreGroupMgmtState>, public titleService: Title, public clusterGroupService: ClusterGroupService) {}
+  constructor(
+    private store: Store<IStoreGroupMgmtState>,
+    public titleService: Title,
+    public clusterGroupService: ClusterGroupService,
+    private route: ActivatedRoute
+  ) {}
 
   public ngOnDestroy() {}
 
   public ngOnInit() {
     this.titleService.setTitle('Store Group Management');
-    this.getClusterGroup(3);
+    // this.getClusterGroup(this.clusterGroupId);
   }
 
   public getSelectedRows() {
@@ -68,9 +104,26 @@ export class DetailComponent implements OnInit, OnDestroy {
   }
 
   public getClusterGroup(clusterGroupId) {
-    clusterGroupId = 3;
+    //clusterGroupId = 3;
     this.clusterGroupService.getClusterGroup(clusterGroupId).subscribe((clusterGroup: IClusterGroup) => {
-      console.log(clusterGroup);
+      this.clusters = clusterGroup.clusters;
+
+      this.details = [];
+
+      clusterGroup.clusters.forEach(c => {
+        c.clusterLocations.forEach(cl => {
+          let detail: IDetailRecord = {
+            clusterGroupName: clusterGroup.name,
+            clusterName: c.name,
+            tier: c.tier,
+            chain: c.chain,
+            storeNumber: cl.storeNumber,
+            adMarket: cl.location.adMarket,
+          };
+          this.details.push(detail);
+        });
+      });
+      this.gridApi.refreshView();
     });
 
     //TODO: Setup state for detail
@@ -81,41 +134,43 @@ export class DetailComponent implements OnInit, OnDestroy {
   public onGridReady(params: any) {
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
-    this.store.dispatch(actions.sgmGetSummaries());
+    //this.store.dispatch(actions.sgmGetSummaries());
 
     this.getClusterGroup(this.clusterGroupId);
   }
 
-  public onFirstDataRendered() {
-    this.autoSizeAll();
-  }
+  // public onFirstDataRendered(params) {
+  //
+  //   this.autoSizeAll();
+  // }
 
-  public autoSizeAll() {
-    let totalColsWidth = 0;
-    if (this.gridColumnApi) {
-      const allColumnIds = [];
-      this.gridColumnApi.getAllColumns().forEach(column => {
-        if (column.colId !== 'checkboxColumn') {
-          allColumnIds.push(column.colId);
-        }
-      });
-      this.gridColumnApi.autoSizeColumns(allColumnIds, false);
-      this.gridApi.setDomLayout('autoHeight');
-      this.gridColumnApi.getAllColumns().forEach(column => {
-        totalColsWidth += column.getActualWidth();
-      });
-      const gridWidth = document.getElementById('grid-wrapper').offsetWidth;
-      if (gridWidth > totalColsWidth) {
-        this.setGridWidth(totalColsWidth + 2); // +2px hides the horizontal scrollbar at bottom
-      } else {
-        this.setGridWidth(gridWidth);
-      }
-    }
-  }
+  // public autoSizeAll() {
+  //   let totalColsWidth = 0;
+  //
+  //   if (this.gridColumnApi) {
+  //     const allColumnIds = [];
+  //     this.gridColumnApi.getAllColumns().forEach(column => {
+  //       allColumnIds.push(column.colId);
+  //     });
+  //     this.gridColumnApi.autoSizeColumns(allColumnIds, false);
+  //     this.gridApi.setDomLayout('autoHeight');
+  //     this.gridColumnApi.getAllColumns().forEach(column => {
+  //       totalColsWidth += column.getActualWidth();
+  //     });
+  //     const gridWidth = document.getElementById('grid-wrapper').offsetWidth;
+  //     if (gridWidth > totalColsWidth) {
+  //       this.setGridWidth(totalColsWidth + 2); // +2px hides the horizontal scrollbar at bottom
+  //     } else {
+  //       this.setGridWidth(gridWidth);
+  //     }
+  //
+  //   }
+  // }
 
-  public setGridWidth(widthInPixels) {
-    this.style = {
-      width: widthInPixels + 'px',
-    };
-  }
+  // public setGridWidth(widthInPixels) {
+  //
+  //   this.style = {
+  //     // width: widthInPixels + 'px',
+  //     width: '100%',
+  //   };
 }
