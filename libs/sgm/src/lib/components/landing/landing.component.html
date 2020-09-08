@@ -5,20 +5,18 @@
         Summary
       </div>
     </div>
-    <!-- <div class="example-button-row" style="margin-top: 2rem;">
-      <button mat-raised-button color="primary" (click)="getSelectedRows()">Get Selected Rows</button>
-    </div> -->
-
-    <!-- <div class="example-button-row mb-1" style="margin-top: 2rem;"> -->
-    <div class="row">
-      <div class="col-12 mb-2">
-        <button mat-raised-button color="primary" class="button-label-dsg" (click)="openDialog()" style="height: 39px;">
+    <div class="row mb-2">
+      <div class="col-12 button-row-container">
+        <button mat-raised-button color="primary" class="button-label-dsg mr-2" (click)="openDialog()" style="height: 39px;">
           <mat-icon>arrow_upward</mat-icon>
           Import
         </button>
+        <button mat-raised-button color="secondary" class="button-label-dsg" (click)="goToDetail()" style="height: 39px;">
+          <mat-icon>edit</mat-icon>
+          View/Edit
+        </button>
       </div>
     </div>
-    <!-- </div> -->
     <div class="row">
       <div class="col-12">
         <div id="grid-wrapper" class="grid-wrapper">

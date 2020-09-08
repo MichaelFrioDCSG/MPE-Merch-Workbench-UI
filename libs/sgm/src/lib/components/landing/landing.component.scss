@@ -17,6 +17,12 @@
   color: #000000;
 }
 
+.button-row-container {
+  flex-direction: row;
+  display: flex;
+  justify-content: flex-start;
+}
+
 .button-label-dsg {
   /* Label/Large 16px */
   font-family: Archivo;
