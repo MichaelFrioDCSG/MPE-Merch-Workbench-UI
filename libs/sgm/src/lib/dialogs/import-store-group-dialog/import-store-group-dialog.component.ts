@@ -185,11 +185,13 @@ export class ImportStoreGroupDialogComponent implements OnInit {
   }
 
   public createStoreGroups() {
+    const sourceSubclassId = this.productHierarchiesData.find(hierarchy => hierarchy.subClassDisplay === this.sourceSubclass.value).subClassId;
+
     const body: ICreateStoreGroupRequest = {
       storeGroupName: this.storeGroupName.value,
       storeGroupDescription: this.storeGroupDescription.value,
       assortmentPeriodId: this.assortmentPeriod.value.assortmentPeriodId,
-      sourceSubclassId: this.sourceSubclass.value,
+      sourceSubclassId: sourceSubclassId,
       targetSubclassIds: this.targetSubclassIds,
     };
 
