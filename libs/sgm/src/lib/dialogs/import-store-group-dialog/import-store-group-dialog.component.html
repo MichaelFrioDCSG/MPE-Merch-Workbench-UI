@@ -107,7 +107,8 @@
   <ng-container *ngIf="showErrors">
     <div class="col-md-12">
       <ng-container *ngFor="let error of createStoreGroupErrors">
-        <p>{{ error }}</p>
+        <mat-icon color="accent">warning</mat-icon>
+        <span class="error-message">{{ error }}</span>
       </ng-container>
     </div>
   </ng-container>

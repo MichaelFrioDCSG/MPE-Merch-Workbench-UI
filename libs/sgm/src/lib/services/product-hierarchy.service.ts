@@ -14,7 +14,7 @@ export class ProductHierarchyService {
     return this.http
       .get(
         // tslint:disable-next-line: max-line-length
-        `${environment.mpe_api}/api/hierarchy/assortment-period/${assortmentPeriodId}?mustHaveBuyPlan=${mustHaveBuyPlan}&mustHaveCluster=${mustHaveCluster}`
+        `${environment.mpe_api}/api/ProductHierarchy/assortment-period/${assortmentPeriodId}?mustHaveBuyPlan=${mustHaveBuyPlan}&mustHaveCluster=${mustHaveCluster}`
       )
       .pipe(
         map((data: IProductHierarchy[]) => {
