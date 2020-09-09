@@ -12,6 +12,7 @@ export const environment = {
   // TODO: Rename API and decide what endpoint it is really going to be
   // mpe_api: `https://mpe-api.apps.vn01.pcf.dcsg.com`,
   // mpe_api: `https://localhost:5001`,
+  // mpe_asmtmgmtservice: 'https://localhost:5001',
   mpe_asmtmgmtservice: 'https://mpe-asmtmgmtservice.apps.vn01.pcf.dcsg.com',
   // uri: 'https://localhost:5001/'
 };

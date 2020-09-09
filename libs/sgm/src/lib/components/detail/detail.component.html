@@ -1,0 +1,42 @@
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12 breadcrumb-dsg mt-2 mb-2">
+        Summary | Detail
+      </div>
+    </div>
+    <div class="row mb-2">
+      <div class="col-12">
+        <button mat-raised-button color="primary" class="button-label-dsg mr-2" style="height: 39px;">
+          <mat-icon>save</mat-icon>
+          Save
+        </button>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-12">
+        <div id="grid-wrapper" class="grid-wrapper">
+          <!-- <div [ngStyle]="style"> -->
+          <ag-grid-angular
+            #agGrid
+            style="height: 800px; width: 100%;"
+            class="ag-theme-alpine"
+            [rowData]="details"
+            [modules]="modules"
+            [defaultColDef]="defaultColDef"
+            [columnDefs]="columnDefs"
+            [statusBar]="statusBar"
+            [gridOptions]="gridOptions"
+            rowSelection="multiple"
+            (gridReady)="onGridReady($event)"
+          >
+          </ag-grid-angular>
+          <!-- </div> -->
+        </div>
+      </div>
+    </div>
+
+    <p style="margin-top: 2rem;">{{ selectedData }}</p>
+  </div>
+</div>

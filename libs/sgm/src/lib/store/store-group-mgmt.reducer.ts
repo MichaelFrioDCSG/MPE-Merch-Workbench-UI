@@ -4,12 +4,14 @@ import * as actions from './store-group-mgmt.actions';
 
 export interface IStoreGroupMgmtState {
   clusterGroups: IClusterGroup[];
+  clusters: IClusterGroup[];
   loading: boolean;
   getSummaryErrorMesssages: string[];
 }
 
 const initialState: IStoreGroupMgmtState = {
   clusterGroups: [],
+  clusters: [],
   loading: false,
   getSummaryErrorMesssages: [],
 };

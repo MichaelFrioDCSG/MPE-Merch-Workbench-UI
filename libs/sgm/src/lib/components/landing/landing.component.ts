@@ -10,6 +10,7 @@ import { Observable } from 'rxjs';
 import * as actions from '../../store/store-group-mgmt.actions';
 import { ImportStoreGroupDialogComponent } from '../../dialogs/import-store-group-dialog/import-store-group-dialog.component';
 import { Title } from '@angular/platform-browser';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'mpe-landing',
@@ -77,7 +78,7 @@ export class LandingComponent implements OnInit, OnDestroy {
     ],
   };
 
-  constructor(private dialog: MatDialog, private store: Store<IStoreGroupMgmtState>, public titleService: Title) {}
+  constructor(private dialog: MatDialog, private store: Store<IStoreGroupMgmtState>, public titleService: Title, private router: Router) {}
 
   public ngOnDestroy() {}
 
@@ -105,6 +106,11 @@ export class LandingComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(() => {
       this.getClusterGroupHeaders();
     });
+  }
+
+  public goToDetail(): void {
+    const clusterGroup: IClusterGroup = this.gridApi.getSelectedRows()[0];
+    this.router.navigate([`/sgm/${clusterGroup.id}`]);
   }
 
   public onGridReady(params: any) {
