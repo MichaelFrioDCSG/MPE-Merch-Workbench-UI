@@ -12,13 +12,6 @@ import { ICreateStoreGroupResponse } from '../../../../shared/src/lib/models/dto
 export class StoreGroupService {
   constructor(public http: HttpClient) {}
 
-  public getStoreInformation(body) {
-    return this.http.post(`${environment.mpe_api}/api/storegroup/store-information`, body).pipe(
-      map((data: any[]) => {
-        return data;
-      })
-    );
-  }
   public createStoreGroup(body: ICreateStoreGroupRequest): Observable<ICreateStoreGroupResponse> {
     return this.http.post(`${environment.mpe_api}/api/storegroup/create`, body).pipe(
       map((data: ICreateStoreGroupResponse) => {
