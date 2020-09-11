@@ -23,6 +23,5 @@ export class ClusterGroupService {
   public getClusterGroup(clusterGroupId: number): Observable<IClusterGroup> {
     return this.httpClient.get<IClusterGroup>(`${environment.mpe_asmtmgmtservice}/api/v1/ClusterGroups/${clusterGroupId}`);
 
-    // https://localhost:5001/api/v1/ClusterGroups/3
   }
 }
