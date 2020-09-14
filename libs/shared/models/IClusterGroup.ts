@@ -1,5 +1,5 @@
 import { IAsmtPeriod } from './IAsmtPeriod';
-import { ICluster } from './ICluster.cs';
+import { ICluster } from './ICluster';
 
 export interface IClusterGroup {
   id: number;
