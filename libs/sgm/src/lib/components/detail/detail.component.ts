@@ -8,7 +8,7 @@ import * as actions from '../../store/store-group-mgmt.actions';
 import { Title } from '@angular/platform-browser';
 import { ClusterGroupService } from 'libs/shared/services/ClusterGroup.service';
 import { IClusterGroup } from 'libs/shared/models/IClusterGroup';
-import { ICluster } from 'libs/shared/models/ICluster.cs';
+import { ICluster } from 'libs/shared/models/ICluster';
 import { ActivatedRoute } from '@angular/router';
 
 interface IDetailRecord {
