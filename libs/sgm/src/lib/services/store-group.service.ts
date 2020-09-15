@@ -27,4 +27,12 @@ export class StoreGroupService {
       })
     );
   }
+
+  public getStoreGroupDetail(): Observable<any> {
+    return this.http.get(`${environment.mpe_api}/api/storegroup/headers`).pipe(
+      map((data: any) => {
+        return data;
+      })
+    );
+  }
 }

@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { Actions, ofType } from '@ngrx/effects';
-import { createEffect } from '@ngrx/effects';
-import { switchMap, catchError } from 'rxjs/operators';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { switchMap, catchError, map, mergeMap } from 'rxjs/operators';
 
 import * as actions from './store-group-mgmt.actions';
 import { ClusterGroupService } from 'libs/shared/services/ClusterGroup.service';
 import { of } from 'rxjs';
 import { IClusterGroup } from 'libs/shared/models/IClusterGroup';
+import { ICluster } from 'libs/shared/models/ICluster';
 
 @Injectable()
 export default class StoreGroupMgmtEffects {
@@ -27,6 +27,22 @@ export default class StoreGroupMgmtEffects {
           catchError(errors => {
             return of(actions.sgmGetSummariesFailure(errors));
           })
+        )
+      )
+    )
+  );
+
+  private onGetClusterGroupDetails = createEffect(() =>
+    this.actions$.pipe(
+      ofType(actions.sgmGetDetails),
+      mergeMap(() =>
+        this.clusterGroupService.getClusterGroup().pipe(
+          map(
+            (clusterGroup: ICluster[]) => actions.sgmGetDetailsSuccess({ clusterGroup }),
+            catchError(errors => {
+              return of(actions.sgmGetDetailsFailure(errors));
+            })
+          )
         )
       )
     )
