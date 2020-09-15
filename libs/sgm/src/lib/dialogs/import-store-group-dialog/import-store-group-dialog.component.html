@@ -35,20 +35,20 @@
         <div class="row">
           <div class="col-md-4">
             <app-input-dropdown-filter
-              [placeholder]="'Source Subclass'"
-              [title]="'Choose an Source Subclass'"
-              [arrayValues]="productSourceSubclasses"
-              [inputFormControl]="sourceSubclass"
+              [placeholder]="'Lead Subclass'"
+              [title]="'Choose a Lead Subclass'"
+              [arrayValues]="productLeadSubclasses"
+              [inputFormControl]="leadSubclass"
               [loading]="loadingProductHierarchy"
-              [disable]="sourceSubclass.disabled"
+              [disable]="leadSubclass.disabled"
               [required]="true"
-              (onValueChanged)="onSourceSubclassChanged($event)"
+              (onValueChanged)="onLeadSubclassChanged($event)"
             ></app-input-dropdown-filter>
           </div>
         </div>
         <div class="row add-space-above">
           <div class="col-md-12">
-            Target(s)
+            Link(s)
           </div>
         </div>
         <div class="row row-centered">

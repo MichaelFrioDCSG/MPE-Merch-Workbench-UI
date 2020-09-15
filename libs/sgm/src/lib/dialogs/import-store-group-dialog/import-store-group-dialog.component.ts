@@ -31,15 +31,15 @@ export class ImportStoreGroupDialogComponent implements OnInit {
   public storeGroupName = new FormControl('', [Validators.required]);
   public storeGroupDescription = new FormControl('');
   public assortmentPeriod = new FormControl('', [Validators.required]);
-  public sourceSubclass = new FormControl({ value: '', disabled: true }, [Validators.required]);
+  public leadSubclass = new FormControl({ value: '', disabled: true }, [Validators.required]);
   public productDepartments = new FormControl({ value: [], disabled: true });
   public productSubDepartments = new FormControl({ value: [], disabled: true });
   public productClasses = new FormControl({ value: [], disabled: true });
   public productSubClasses = new FormControl({ value: [], disabled: true });
 
-  public targetSubclassIds: string[] = [];
+  public linkSubclassIds: string[] = [];
 
-  public productSourceSubclasses: string[] = [];
+  public productLeadSubclasses: string[] = [];
   public storeGroups: IStoreGroup[] = [];
 
   public loadingAssortmentPeriods = false;
@@ -75,8 +75,8 @@ export class ImportStoreGroupDialogComponent implements OnInit {
     this.getProductHierarchies();
   }
 
-  public onSourceSubclassChanged(value) {
-    this.sourceSubclass.setValue(value);
+  public onLeadSubclassChanged(value) {
+    this.leadSubclass.setValue(value);
   }
 
   public onProductDepartmentChanged(value) {
@@ -103,7 +103,7 @@ export class ImportStoreGroupDialogComponent implements OnInit {
         this.productHierarchiesData = productHierarchies;
         this.formatProductHierarchies();
         this.loadingProductHierarchy = false;
-        this.sourceSubclass.enable({ emitEvent: false });
+        this.leadSubclass.enable({ emitEvent: false });
         this.productDepartments.enable({ emitEvent: false });
       });
   }
@@ -116,16 +116,16 @@ export class ImportStoreGroupDialogComponent implements OnInit {
       .sort();
     this.productDepartmentsData = [...new Set(this.productDepartmentsData)];
 
-    this.productSourceSubclasses = this.productHierarchiesData
+    this.productLeadSubclasses = this.productHierarchiesData
       .map((product: IProductHierarchy) => {
         return product.subClassDisplay;
       })
       .sort();
-    this.productSourceSubclasses = [...new Set(this.productSourceSubclasses)];
+    this.productLeadSubclasses = [...new Set(this.productLeadSubclasses)];
   }
   public addProductHierarchies() {
     if (this.productDepartments.value)
-      this.targetSubclassIds = this.productHierarchiesData
+      this.linkSubclassIds = this.productHierarchiesData
         .filter(product => !this.productDepartments.value.length || this.productDepartments.value.includes(product.departmentDisplay))
         .filter(product => !this.productSubDepartments.value.length || this.productSubDepartments.value.includes(product.subDepartmentDisplay))
         .filter(product => !this.productClasses.value.length || this.productClasses.value.includes(product.classDisplay))
@@ -185,14 +185,14 @@ export class ImportStoreGroupDialogComponent implements OnInit {
   }
 
   public createStoreGroups() {
-    const sourceSubclassId = this.productHierarchiesData.find(hierarchy => hierarchy.subClassDisplay === this.sourceSubclass.value).subClassId;
+    const leadSubclassId = this.productHierarchiesData.find(hierarchy => hierarchy.subClassDisplay === this.leadSubclass.value).subClassId;
 
     const body: ICreateStoreGroupRequest = {
       storeGroupName: this.storeGroupName.value,
       storeGroupDescription: this.storeGroupDescription.value,
       assortmentPeriodId: this.assortmentPeriod.value.assortmentPeriodId,
-      sourceSubclassId: sourceSubclassId,
-      targetSubclassIds: this.targetSubclassIds,
+      sourceSubclassId: leadSubclassId,
+      targetSubclassIds: this.linkSubclassIds,
     };
 
     this.creatingStoreGroups = true;
@@ -215,7 +215,7 @@ export class ImportStoreGroupDialogComponent implements OnInit {
   }
 
   public validForm() {
-    return this.storeGroupName.valid && this.assortmentPeriod.valid && this.sourceSubclass.valid;
+    return this.storeGroupName.valid && this.assortmentPeriod.valid && this.leadSubclass.valid;
   }
 
   private resetFormAndValues() {
@@ -223,8 +223,8 @@ export class ImportStoreGroupDialogComponent implements OnInit {
     this.storeGroupDescription.reset('', { emitEvent: false });
     this.assortmentPeriod.reset('', { emitEvent: false });
 
-    this.sourceSubclass.reset('', { emitEvent: false });
-    this.sourceSubclass.disable();
+    this.leadSubclass.reset('', { emitEvent: false });
+    this.leadSubclass.disable();
 
     this.productDepartments.reset([]);
     this.productDepartments.disable();
