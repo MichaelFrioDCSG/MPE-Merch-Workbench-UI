@@ -4,12 +4,13 @@ import { AllCommunityModules, Module, GridOptions, GridApi } from '@ag-grid-comm
 
 import { Store } from '@ngrx/store';
 import { IStoreGroupMgmtState } from '../../store/store-group-mgmt.reducer';
-import * as actions from '../../store/store-group-mgmt.actions';
 import { Title } from '@angular/platform-browser';
-import { ClusterGroupService } from 'libs/shared/services/ClusterGroup.service';
-import { IClusterGroup } from 'libs/shared/models/IClusterGroup';
-import { ICluster } from 'libs/shared/models/ICluster';
+import { ClusterGroupService, IClusterGroup, ICluster } from '@mpe/shared';
 import { ActivatedRoute } from '@angular/router';
+
+import * as selectors from '../../store/store-group-mgmt.selectors';
+import * as actions from '../../store/store-group-mgmt.actions';
+import { Observable } from 'rxjs';
 
 interface IDetailRecord {
   clusterGroupName: string;
@@ -37,7 +38,6 @@ export class DetailComponent implements OnInit, OnDestroy {
   public modules: Module[] = AllCommunityModules;
   public selectedData: any;
   public title = 'MPE-SGM';
-  public clusterGroup: IClusterGroup[] = [];
   public clusterGroupId = this.route.snapshot.paramMap.get('id');
   public rowdata: any;
   public defaultColDef: any = {
@@ -60,7 +60,7 @@ export class DetailComponent implements OnInit, OnDestroy {
     { headerName: 'AD MARKET', field: 'adMarket', sortable: true, filter: true, width: 250 },
   ];
 
-  /*
+  public clusterGroup: Observable<IClusterGroup>; /*
   ClusterGroupName,
   ClusterName,
   Tier,
@@ -96,6 +96,28 @@ export class DetailComponent implements OnInit, OnDestroy {
   public ngOnInit() {
     this.titleService.setTitle('Store Group Management');
     // this.getClusterGroup(this.clusterGroupId);
+    this.clusterGroup = this.store.select(selectors.selectSummaryDetails);
+
+    this.store.select(selectors.selectSummaryDetails).subscribe(data => {
+      this.details = [];
+      if (data && data.clusters) {
+        data.clusters.forEach(c => {
+          c.clusterLocations.forEach(cl => {
+            const detail: IDetailRecord = {
+              clusterGroupName: data.name,
+              clusterName: c.name,
+              tier: c.tier,
+              chain: c.chain,
+              storeNumber: cl.storeNumber,
+              adMarket: cl.location.adMarket,
+            };
+            this.details.push(detail);
+          });
+
+          this.gridApi.setRowData(this.details);
+        });
+      }
+    });
   }
 
   public getSelectedRows() {
@@ -108,21 +130,6 @@ export class DetailComponent implements OnInit, OnDestroy {
     this.clusterGroupService.getClusterGroup(clusterGroupId).subscribe((clusterGroup: IClusterGroup) => {
       this.clusters = clusterGroup.clusters;
 
-      this.details = [];
-
-      clusterGroup.clusters.forEach(c => {
-        c.clusterLocations.forEach(cl => {
-          const detail: IDetailRecord = {
-            clusterGroupName: clusterGroup.name,
-            clusterName: c.name,
-            tier: c.tier,
-            chain: c.chain,
-            storeNumber: cl.storeNumber,
-            adMarket: cl.location.adMarket,
-          };
-          this.details.push(detail);
-        });
-      });
       this.gridApi.refreshView();
     });
 
@@ -136,7 +143,8 @@ export class DetailComponent implements OnInit, OnDestroy {
     this.gridColumnApi = params.columnApi;
     //this.store.dispatch(actions.sgmGetSummaries());
 
-    this.getClusterGroup(this.clusterGroupId);
+    this.store.dispatch(actions.sgmGetDetails({ clusterGroupId: this.clusterGroupId }));
+    // this.getClusterGroup(this.clusterGroupId);
   }
 
   // public onFirstDataRendered(params) {

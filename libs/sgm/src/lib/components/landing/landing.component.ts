@@ -3,7 +3,7 @@ import { AgGridAngular } from 'ag-grid-angular';
 import { MatDialog } from '@angular/material/dialog';
 import { AllCommunityModules, Module, GridOptions, GridApi } from '@ag-grid-community/all-modules';
 
-import { IClusterGroup } from '../../../../../shared/models/IClusterGroup';
+import { IClusterGroup } from '@mpe/shared';
 import { Store, select } from '@ngrx/store';
 import { selectClusterGroups, IStoreGroupMgmtState } from '../../store/store-group-mgmt.reducer';
 import { Observable } from 'rxjs';

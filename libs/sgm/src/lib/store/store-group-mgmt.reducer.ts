@@ -1,11 +1,10 @@
 import { createReducer, on, createFeatureSelector, createSelector } from '@ngrx/store';
-import { IClusterGroup } from 'libs/shared/models/IClusterGroup';
-import { ICluster } from 'libs/shared/models/ICluster';
+import { IClusterGroup } from '@mpe/shared';
 import * as actions from './store-group-mgmt.actions';
 
 export interface IStoreGroupMgmtState {
   clusterGroups: IClusterGroup[];
-  cluster: ICluster[];
+  selectedClusterGroup: IClusterGroup;
   loading: boolean;
   getSummaryErrorMessages: string[];
   getDetailsErrorMessages: string[];
@@ -13,7 +12,7 @@ export interface IStoreGroupMgmtState {
 
 const initialState: IStoreGroupMgmtState = {
   clusterGroups: [],
-  cluster: [],
+  selectedClusterGroup: null,
   loading: false,
   getSummaryErrorMessages: [],
   getDetailsErrorMessages: [],
@@ -41,19 +40,19 @@ const reducer$ = createReducer(
   })),
   on(actions.sgmGetDetails, (state: IStoreGroupMgmtState) => ({
     ...state,
-    cluster: [],
+    details: null,
     loading: true,
     getDetailsErrorMessages: [],
   })),
   on(actions.sgmGetDetailsSuccess, (state: IStoreGroupMgmtState, action) => ({
     ...state,
-    cluster: action.clusterGroup,
+    details: action.clusterGroup,
     loading: false,
     getDetailsErrorMessages: [],
   })),
   on(actions.sgmGetDetailsFailure, (state: IStoreGroupMgmtState, action) => ({
     ...state,
-    cluster: [],
+    details: null,
     loading: false,
     getDetailsErrorMessages: action.errors,
   }))

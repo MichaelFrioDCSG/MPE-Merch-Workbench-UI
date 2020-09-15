@@ -18,19 +18,9 @@
       <div class="col-12">
         <div id="grid-wrapper" class="grid-wrapper">
           <!-- <div [ngStyle]="style"> -->
-          <ag-grid-angular
-            #agGrid
-            style="height: 800px; width: 100%;"
-            class="ag-theme-alpine"
-            [rowData]="details"
-            [modules]="modules"
-            [defaultColDef]="defaultColDef"
-            [columnDefs]="columnDefs"
-            [statusBar]="statusBar"
-            [gridOptions]="gridOptions"
-            rowSelection="multiple"
-            (gridReady)="onGridReady($event)"
-          >
+          <ag-grid-angular #agGrid style="height: 800px; width: 100%;" class="ag-theme-alpine" [immutableData]="true"
+            [modules]="modules" [defaultColDef]="defaultColDef" [columnDefs]="columnDefs" [statusBar]="statusBar"
+            [gridOptions]="gridOptions" rowSelection="multiple" (gridReady)="onGridReady($event)">
           </ag-grid-angular>
           <!-- </div> -->
         </div>

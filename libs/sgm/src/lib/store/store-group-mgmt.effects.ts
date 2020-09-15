@@ -5,8 +5,7 @@ import { switchMap, catchError, map, mergeMap } from 'rxjs/operators';
 import * as actions from './store-group-mgmt.actions';
 import { ClusterGroupService } from 'libs/shared/services/ClusterGroup.service';
 import { of } from 'rxjs';
-import { IClusterGroup } from 'libs/shared/models/IClusterGroup';
-import { ICluster } from 'libs/shared/models/ICluster';
+import { IClusterGroup } from '@mpe/shared';
 
 @Injectable()
 export default class StoreGroupMgmtEffects {
@@ -35,10 +34,10 @@ export default class StoreGroupMgmtEffects {
   private onGetClusterGroupDetails = createEffect(() =>
     this.actions$.pipe(
       ofType(actions.sgmGetDetails),
-      mergeMap(() =>
-        this.clusterGroupService.getClusterGroup().pipe(
+      mergeMap(action =>
+        this.clusterGroupService.getClusterGroup(action.clusterGroupId).pipe(
           map(
-            (clusterGroup: ICluster[]) => actions.sgmGetDetailsSuccess({ clusterGroup }),
+            (clusterGroup: IClusterGroup) => actions.sgmGetDetailsSuccess({ clusterGroup }),
             catchError(errors => {
               return of(actions.sgmGetDetailsFailure(errors));
             })
