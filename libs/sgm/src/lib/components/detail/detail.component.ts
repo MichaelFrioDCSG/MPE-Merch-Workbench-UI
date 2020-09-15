@@ -112,7 +112,7 @@ export class DetailComponent implements OnInit, OnDestroy {
 
       clusterGroup.clusters.forEach(c => {
         c.clusterLocations.forEach(cl => {
-          let detail: IDetailRecord = {
+          const detail: IDetailRecord = {
             clusterGroupName: clusterGroup.name,
             clusterName: c.name,
             tier: c.tier,
