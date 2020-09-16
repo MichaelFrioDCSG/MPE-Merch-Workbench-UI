@@ -3,7 +3,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { switchMap, catchError, map, mergeMap } from 'rxjs/operators';
 
 import * as actions from './store-group-mgmt.actions';
-import { ClusterGroupService } from 'libs/shared/services/ClusterGroup.service';
+import { ClusterGroupService } from '@mpe/shared';
 import { of } from 'rxjs';
 import { IClusterGroup } from '@mpe/shared';
 
@@ -34,7 +34,7 @@ export default class StoreGroupMgmtEffects {
   private onGetClusterGroupDetails = createEffect(() =>
     this.actions$.pipe(
       ofType(actions.sgmGetDetails),
-      mergeMap(action =>
+      switchMap(action =>
         this.clusterGroupService.getClusterGroup(action.clusterGroupId).pipe(
           map(
             (clusterGroup: IClusterGroup) => actions.sgmGetDetailsSuccess({ clusterGroup }),
