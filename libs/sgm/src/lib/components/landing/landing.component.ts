@@ -3,9 +3,10 @@ import { AgGridAngular } from 'ag-grid-angular';
 import { MatDialog } from '@angular/material/dialog';
 import { AllCommunityModules, Module, GridOptions, GridApi } from '@ag-grid-community/all-modules';
 
-import { IClusterGroup } from '../../../../../shared/models/IClusterGroup';
+import { IClusterGroup } from '@mpe/shared';
 import { Store, select } from '@ngrx/store';
-import { selectClusterGroups, IStoreGroupMgmtState } from '../../store/store-group-mgmt.reducer';
+import { selectClusterGroups } from '../../store/store-group-mgmt.selectors';
+import { IStoreGroupMgmtState } from '../../store/store-group-mgmt.reducer';
 import { Observable } from 'rxjs';
 import * as actions from '../../store/store-group-mgmt.actions';
 import { ImportStoreGroupDialogComponent } from '../../dialogs/import-store-group-dialog/import-store-group-dialog.component';
@@ -49,7 +50,7 @@ export class LandingComponent implements OnInit, OnDestroy {
     { headerName: 'CLUSTER GROUP', field: 'name', sortable: true, filter: true },
     { headerName: 'CLUSTER GROUP DESCRIPTION', field: 'description', sortable: true, filter: true },
     { headerName: 'ASSORTMENT PERIOD', field: 'asmtPeriod.asmtPeriodLabel', sortable: true, filter: true, minWidth: 232 },
-    // TODO, once available on back end:
+
     {
       headerName: 'LAST MODIFIED DATE',
       field: 'lastModifiedOn',
