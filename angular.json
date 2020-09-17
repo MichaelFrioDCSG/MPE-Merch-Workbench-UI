@@ -21,13 +21,8 @@
             "polyfills": "apps/home/src/polyfills.ts",
             "tsConfig": "apps/home/tsconfig.app.json",
             "aot": true,
-            "assets": [
-              "apps/home/src/favicon.ico",
-              "apps/home/src/assets"
-            ],
-            "styles": [
-              "apps/home/src/styles.scss"
-            ],
+            "assets": ["apps/home/src/favicon.ico", "apps/home/src/assets"],
+            "styles": ["apps/home/src/styles.scss"],
             "scripts": [],
             "preserveSymlinks": true
           },
@@ -82,14 +77,8 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": [
-              "apps/home/tsconfig.app.json",
-              "apps/home/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**",
-              "!apps/home/**/*"
-            ]
+            "tsConfig": ["apps/home/tsconfig.app.json", "apps/home/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!apps/home/**/*"]
           }
         },
         "test": {
@@ -100,13 +89,8 @@
             "polyfills": "apps/home/src/polyfills.ts",
             "tsConfig": "apps/home/tsconfig.spec.json",
             "scripts": [],
-            "styles": [
-              "apps/home/src/assets/scss/material-dashboard.scss"
-            ],
-            "assets": [
-              "apps/home/src/assets",
-              "apps/home/src/favicon.ico"
-            ]
+            "styles": ["apps/home/src/assets/scss/material-dashboard.scss"],
+            "assets": ["apps/home/src/assets", "apps/home/src/favicon.ico"]
           }
         }
       }
@@ -132,13 +116,8 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": [
-              "apps/home-e2e/tsconfig.e2e.json"
-            ],
-            "exclude": [
-              "**/node_modules/**",
-              "!apps/home-e2e/**/*"
-            ]
+            "tsConfig": ["apps/home-e2e/tsconfig.e2e.json"],
+            "exclude": ["**/node_modules/**", "!apps/home-e2e/**/*"]
           }
         }
       }
@@ -152,23 +131,17 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": [
-              "libs/assortment-management/tsconfig.lib.json",
-              "libs/assortment-management/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**",
-              "!libs/assortment-management/**/*"
-            ]
+            "tsConfig": ["libs/assortment-management/tsconfig.lib.json", "libs/assortment-management/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/assortment-management/**/*"]
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "apps/home/src/test.ts",
+            "main": "libs/assortment-management/src/test.ts",
             "karmaConfig": "./karma.conf.js",
-            "polyfills": "apps/home/src/polyfills.ts",
-            "tsConfig": "apps/home/tsconfig.spec.json",
+            "polyfills": "libs/assortment-management/src/polyfills.ts",
+            "tsConfig": "libs/assortment-management/tsconfig.spec.json",
             "scripts": [],
             "styles": [],
             "assets": []
@@ -190,14 +163,8 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": [
-              "libs/shared/tsconfig.lib.json",
-              "libs/shared/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**",
-              "!libs/shared/**/*"
-            ]
+            "tsConfig": ["libs/shared/tsconfig.lib.json", "libs/shared/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/shared/**/*"]
           }
         },
         "test": {
@@ -228,31 +195,20 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": [
-              "libs/material/tsconfig.lib.json",
-              "libs/material/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**",
-              "!libs/material/**/*"
-            ]
+            "tsConfig": ["libs/material/tsconfig.lib.json", "libs/material/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/material/**/*"]
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "apps/home/src/test.ts",
+            "main": "libs/material/src/test.ts",
             "karmaConfig": "./karma.conf.js",
-            "polyfills": "apps/home/src/polyfills.ts",
-            "tsConfig": "apps/home/tsconfig.spec.json",
+            "polyfills": "libs/material/src/polyfills.ts",
+            "tsConfig": "libs/material/tsconfig.spec.json",
             "scripts": [],
-            "styles": [
-              "apps/home/src/assets/scss/material-dashboard.scss"
-            ],
-            "assets": [
-              "apps/home/src/assets",
-              "apps/home/src/favicon.ico"
-            ]
+            "styles": [],
+            "assets": []
           }
         }
       },
@@ -271,23 +227,17 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": [
-              "libs/sgm/tsconfig.lib.json",
-              "libs/sgm/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**",
-              "!libs/sgm/**/*"
-            ]
+            "tsConfig": ["libs/sgm/tsconfig.lib.json", "libs/sgm/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/sgm/**/*"]
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "apps/home/src/test.ts",
+            "main": "libs/sgm/src/test.ts",
             "karmaConfig": "./karma.conf.js",
-            "polyfills": "apps/home/src/polyfills.ts",
-            "tsConfig": "apps/home/tsconfig.spec.json",
+            "polyfills": "libs/sgm/src/polyfills.ts",
+            "tsConfig": "libs/sgm/tsconfig.spec.json",
             "scripts": [],
             "styles": [],
             "assets": []
