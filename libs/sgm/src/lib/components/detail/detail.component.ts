@@ -7,7 +7,6 @@ import { IStoreGroupMgmtState } from '../../store/store-group-mgmt.reducer';
 import { Title } from '@angular/platform-browser';
 import { IClusterGroup } from '@mpe/shared';
 import { ActivatedRoute } from '@angular/router';
-import { Router } from '@angular/router';
 
 import * as selectors from '../../store/store-group-mgmt.selectors';
 import * as actions from '../../store/store-group-mgmt.actions';
@@ -64,7 +63,7 @@ export class DetailComponent implements OnInit {
     ],
   };
 
-  constructor(private store: Store<IStoreGroupMgmtState>, private titleService: Title, private route: ActivatedRoute, private router: Router) {}
+  constructor(private store: Store<IStoreGroupMgmtState>, private titleService: Title, private route: ActivatedRoute) {}
 
   public ngOnInit() {
     this.titleService.setTitle('Store Group Management');
@@ -86,10 +85,6 @@ export class DetailComponent implements OnInit {
         });
       }
     });
-  }
-
-  public goToSummary(): void {
-    this.router.navigate([`/sgm/`]);
   }
 
   public onGridReady(params: any) {
