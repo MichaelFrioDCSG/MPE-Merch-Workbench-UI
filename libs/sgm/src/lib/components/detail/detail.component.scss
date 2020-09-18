@@ -5,6 +5,7 @@
   font-size: 14px;
   line-height: 15px;
   letter-spacing: 0.297825px;
+  display: inline;
 
   color: #000000;
 }
@@ -31,4 +32,10 @@
   max-width: 98vw;
   display: flex;
   justify-content: left;
+}
+
+.hover:hover {
+  text-decoration: underline;
+  text-decoration-color: #000000;
+  cursor: pointer;
 }
