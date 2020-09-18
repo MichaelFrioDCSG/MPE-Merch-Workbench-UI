@@ -20,7 +20,8 @@
       "@mpe/home/*": ["apps/home/*"],
       "@mpe/shared": ["libs/shared/src/index.ts"],
       "@mpe/material": ["libs/material/src/index.ts"],
-      "@mpe/sgm": ["libs/sgm/src/index.ts"]
+      "@mpe/sgm": ["libs/sgm/src/index.ts"],
+      "@mpe/AsmtMgmtService": ["libs/asmt-mgmt-service/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

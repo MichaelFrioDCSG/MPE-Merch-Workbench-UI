@@ -10,6 +10,8 @@ import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { MaterialModule } from '@mpe/material';
 
+import { ClusterGroupsService } from '@mpe/AsmtMgmtService';
+
 import StoreGroupMgmtEffects from './store/store-group-mgmt.effects';
 import * as fromStoreGroupMgmt from './store/store-group-mgmt.reducer';
 
@@ -49,5 +51,6 @@ export const sgmRoutes: Route[] = [
   ],
   exports: [LandingComponent, DetailComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  providers: [{ provide: ClusterGroupsService, useClass: ClusterGroupsService }],
 })
 export class SgmModule {}
