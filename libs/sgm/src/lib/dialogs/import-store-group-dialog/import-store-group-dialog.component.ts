@@ -205,12 +205,12 @@ export class ImportStoreGroupDialogComponent implements OnInit {
     this.storeGroupService.createStoreGroup(body).subscribe((data: ICreateStoreGroupResponse) => {
       this.creatingStoreGroups = false;
       if (data.isSuccess) {
-        this.showToastMessage('Clusters Created', [], false);
+        this.showToastMessage('Cluster Import Success', [], false);
         this.dialogRef.close({ data: null });
       } else {
         this.showErrors = true;
         this.createStoreGroupErrors = data.errorMessages;
-        this.showToastMessage('Error when creating Clusters', [], true);
+        this.showToastMessage('Error when Importing Clusters', [], true);
       }
     });
   }
