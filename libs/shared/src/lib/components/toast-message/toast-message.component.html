@@ -1,0 +1,5 @@
+<div class="{{ data.isError ? 'error' : 'success' }}-color">{{ data.title }}</div>
+<div class="{{ data.isError ? 'error' : 'success' }}-color" *ngFor="let message of data.messages">
+  {{ message }}
+</div>
+<button mat-button (click)="dismissSnackBar()" style="color: white;">Close</button>

@@ -11,6 +11,8 @@ import { IStoreGroup } from '../../../../../shared/src/lib/models/IStoreGroup';
 import { StoreGroupService } from 'libs/sgm/src/lib/services/store-group.service';
 import { ICreateStoreGroupResponse } from '../../../../../shared/src/lib/models/dto/ICreateStoreGroupResponse';
 import { ICreateStoreGroupRequest } from '../../../../../shared/src/lib/models/dto/ICreateStoreGroupRequest';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { ToastMessageComponent } from 'libs/shared/src/lib/components/toast-message/toast-message.component';
 
 @Component({
   selector: 'app-import-store-group-dialog',
@@ -56,7 +58,8 @@ export class ImportStoreGroupDialogComponent implements OnInit {
     public formBuilder: FormBuilder,
     public assortmentPeriodService: AssortmentPeriodService,
     public productHierarchyService: ProductHierarchyService,
-    public storeGroupService: StoreGroupService
+    public storeGroupService: StoreGroupService,
+    private snackBar: MatSnackBar
   ) {}
 
   public ngOnInit() {
@@ -202,10 +205,12 @@ export class ImportStoreGroupDialogComponent implements OnInit {
     this.storeGroupService.createStoreGroup(body).subscribe((data: ICreateStoreGroupResponse) => {
       this.creatingStoreGroups = false;
       if (data.isSuccess) {
+        this.showToastMessage('Cluster Import Success', [], false);
         this.dialogRef.close({ data: null });
       } else {
         this.showErrors = true;
         this.createStoreGroupErrors = data.errorMessages;
+        this.showToastMessage('Error when Importing Clusters', [], true);
       }
     });
   }
@@ -216,6 +221,17 @@ export class ImportStoreGroupDialogComponent implements OnInit {
 
   public validForm() {
     return this.storeGroupName.valid && this.assortmentPeriod.valid && this.leadSubclass.valid;
+  }
+
+  private showToastMessage(title: string, messages: string[], isError: boolean = false): void {
+    const snackBarRef = this.snackBar.openFromComponent(ToastMessageComponent, {
+      data: {
+        title,
+        messages,
+        isError,
+      },
+    });
+    snackBarRef.onAction().subscribe(() => this.snackBar.dismiss());
   }
 
   private resetFormAndValues() {

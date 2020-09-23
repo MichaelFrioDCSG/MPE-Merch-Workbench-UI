@@ -31,6 +31,8 @@ import * as fromStoreGroupMgmt from './store/store-group-mgmt.reducer';
 import { EffectsModule } from '@ngrx/effects';
 import StoreGroupMgmtEffects from './store/store-group-mgmt.effects';
 import { DetailComponent } from './components/detail/detail.component';
+import { ToastMessageComponent } from 'libs/shared/src/lib/components/toast-message/toast-message.component';
+import { from } from 'rxjs';
 
 export const sgmRoutes: Route[] = [
   { path: ':id', component: DetailComponent },
@@ -70,6 +72,7 @@ export const sgmRoutes: Route[] = [
     InputMultiselectDropdownComponent,
     InputDropdownFilterComponent,
     DetailComponent,
+    ToastMessageComponent,
   ],
   exports: [LandingComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
