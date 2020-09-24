@@ -19,9 +19,13 @@ describe('DetailComponent', () => {
     store = TestBed.inject(MockStore);
   }));
 
+  beforeEach(() => {
+    fixture = TestBed.createComponent(DetailComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
   it('should create', () => {
-    const fixture = TestBed.createComponent(DetailComponent);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
+    expect(component).toBeTruthy();
   });
 });
