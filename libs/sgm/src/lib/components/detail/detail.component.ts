@@ -39,13 +39,55 @@ export class DetailComponent implements OnInit {
     resizable: true,
   };
   public columnDefs = [
-    { headerName: 'CLUSTER GROUP', field: 'clusterGroupName', sortable: true, filter: true, width: 200 },
-    { headerName: 'CLUSTER ', field: 'clusterName', sortable: true, filter: true, width: 200 },
+    { headerName: 'CLUSTER GROUP', field: 'clusterGroupName', sortable: true, filter: true, enableRowGroup: true, width: 200 },
+    { headerName: 'CLUSTER ', field: 'clusterName', sortable: true, filter: true, enableRowGroup: true, width: 200 },
     { headerName: 'TIER', field: 'tier', sortable: true, filter: true, width: 150 },
     { headerName: 'CHAIN', field: 'chain', sortable: true, filter: true, width: 100 },
     { headerName: 'STORE NUMBER', field: 'storeNumber', sortable: true, filter: true, width: 250 },
     { headerName: 'AD MARKET', field: 'adMarket', sortable: true, filter: true, width: 250 },
   ];
+
+  public rowGroupPanelShow = 'always';
+
+  public sideBar = {
+    toolPanels: [
+      {
+        id: 'columns',
+        labelDefault: 'Columns',
+        labelKey: 'columns',
+        iconKey: 'columns',
+        toolPanel: 'agColumnsToolPanel',
+        toolPanelParams: {
+          suppressRowGroups: true,
+          suppressValues: true,
+          suppressPivots: true,
+          suppressPivotMode: true,
+          suppressSideButtons: false,
+          suppressColumnFilter: false,
+          suppressColumnSelectAll: true,
+          suppressColumnExpandAll: true,
+        },
+      },
+      {
+        id: 'filters',
+        labelDefault: 'Filters',
+        labelKey: 'filters',
+        iconKey: 'filters',
+        toolPanel: 'agFiltersToolPanel',
+        toolPanelParams: {
+          suppressRowGroups: true,
+          suppressValues: true,
+          suppressPivots: true,
+          suppressPivotMode: true,
+          suppressSideButtons: false,
+          suppressColumnFilter: false,
+          suppressColumnSelectAll: true,
+          suppressColumnExpandAll: true,
+        },
+      },
+    ],
+    defaultToolPanel: 'columns',
+  };
 
   public statusBar: any = {
     statusPanels: [
