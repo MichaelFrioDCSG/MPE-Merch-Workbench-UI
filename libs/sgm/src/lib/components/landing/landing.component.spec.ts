@@ -6,7 +6,6 @@ import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { Type } from '@angular/core';
-import { MatTabsModule } from '@angular/material/tabs';
 
 describe('LandingComponent', () => {
   let component: LandingComponent;

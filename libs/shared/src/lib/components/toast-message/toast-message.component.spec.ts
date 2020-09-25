@@ -1,5 +1,4 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatSnackBarModule, MAT_SNACK_BAR_DATA } from '@angular/material/snack-bar';
 import { MaterialModule } from '@mpe/material';
 
 import { ToastMessageComponent } from './toast-message.component';
@@ -12,7 +11,6 @@ describe('ToastMessageComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ToastMessageComponent],
       imports: [MaterialModule],
-      // providers: [{ provide: MAT_SNACK_BAR_DATA, useValue: {} }],
     }).compileComponents();
   }));
 
