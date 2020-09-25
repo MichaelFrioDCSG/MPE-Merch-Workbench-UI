@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -38,7 +39,7 @@ const material_modules = [
 ];
 
 @NgModule({
-  imports: [CommonModule, ...material_modules],
+  imports: [CommonModule, BrowserAnimationsModule, ...material_modules],
   exports: [...material_modules],
   providers: [{ provide: MAT_DIALOG_DATA, useValue: {} }],
 })
