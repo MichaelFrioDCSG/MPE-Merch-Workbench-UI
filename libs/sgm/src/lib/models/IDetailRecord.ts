@@ -1,4 +1,8 @@
-export interface ILocation {
+export interface IDetailRecord {
+  clusterGroupName: string;
+  clusterName: string;
+  tier: string;
+  chain: string;
   storeNumber: number;
   adMarket: string;
   city: string;
