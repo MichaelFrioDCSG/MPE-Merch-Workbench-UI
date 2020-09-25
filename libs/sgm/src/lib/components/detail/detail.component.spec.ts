@@ -58,7 +58,7 @@ describe('DetailComponent', () => {
     const toolPanels: any[] = component.sideBar.toolPanels;
     const filtersToolBarConfig = toolPanels.find(x => x.id === 'filters');
     expect(filtersToolBarConfig).toBeTruthy();
-    expect(filtersToolBarConfig.labelDefault).toEqual('Columns');
+    expect(filtersToolBarConfig.labelDefault).toEqual('Filters');
     expect(filtersToolBarConfig.suppressRowGroups).toEqual('true');
     expect(filtersToolBarConfig.suppressValues).toEqual('true');
     expect(filtersToolBarConfig.suppressPivots).toEqual('true');
