@@ -49,7 +49,7 @@ describe('DetailComponent', () => {
     expect(columnToolBarConfig.suppressPivots).toEqual('true');
     expect(columnToolBarConfig.suppressPivotMode).toEqual('true');
     expect(columnToolBarConfig.suppressSideButtons).toEqual('false');
-    expect(columnToolBarConfig.suppressColumnFilter).toEqual('true');
+    expect(columnToolBarConfig.suppressColumnFilter).toEqual('false');
     expect(columnToolBarConfig.suppressColumnSelectAll).toEqual('true');
     expect(columnToolBarConfig.suppressColumnExpandAll).toEqual('true');
   });
@@ -64,7 +64,7 @@ describe('DetailComponent', () => {
     expect(filtersToolBarConfig.suppressPivots).toEqual('true');
     expect(filtersToolBarConfig.suppressPivotMode).toEqual('true');
     expect(filtersToolBarConfig.suppressSideButtons).toEqual('false');
-    expect(filtersToolBarConfig.suppressColumnFilter).toEqual('true');
+    expect(filtersToolBarConfig.suppressColumnFilter).toEqual('false');
     expect(filtersToolBarConfig.suppressColumnSelectAll).toEqual('true');
     expect(filtersToolBarConfig.suppressColumnExpandAll).toEqual('true');
   });
