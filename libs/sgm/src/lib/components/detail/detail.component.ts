@@ -41,10 +41,10 @@ export class DetailComponent implements OnInit {
   public columnDefs = [
     { headerName: 'CLUSTER GROUP', field: 'clusterGroupName', sortable: true, filter: true, enableRowGroup: true, width: 200 },
     { headerName: 'CLUSTER ', field: 'clusterName', sortable: true, filter: true, enableRowGroup: true, width: 200 },
-    { headerName: 'TIER', field: 'tier', sortable: true, filter: true, width: 150 },
-    { headerName: 'CHAIN', field: 'chain', sortable: true, filter: true, width: 100 },
-    { headerName: 'STORE NUMBER', field: 'storeNumber', sortable: true, filter: true, width: 250 },
-    { headerName: 'AD MARKET', field: 'adMarket', sortable: true, filter: true, width: 250 },
+    { headerName: 'TIER', field: 'tier', sortable: true, filter: true, enableRowGroup: true, width: 150 },
+    { headerName: 'CHAIN', field: 'chain', sortable: true, filter: true, enableRowGroup: true, width: 100 },
+    { headerName: 'STORE NUMBER', field: 'storeNumber', sortable: true, filter: true, enableRowGroup: true, width: 250 },
+    { headerName: 'AD MARKET', field: 'adMarket', sortable: true, filter: true, enableRowGroup: true, width: 250 },
   ];
 
   public rowGroupPanelShow = 'always';
