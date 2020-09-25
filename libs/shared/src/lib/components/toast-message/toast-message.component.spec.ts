@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatSnackBarModule, MAT_SNACK_BAR_DATA } from '@angular/material/snack-bar';
 
 import { ToastMessageComponent } from './toast-message.component';
 
@@ -8,9 +9,10 @@ describe('ToastMessageComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ToastMessageComponent ]
-    })
-    .compileComponents();
+      declarations: [ToastMessageComponent],
+      imports: [MatSnackBarModule],
+      providers: [{ provide: MAT_SNACK_BAR_DATA, useValue: {} }],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

@@ -4,6 +4,7 @@ import { ImportStoreGroupDialogComponent } from './import-store-group-dialog.com
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 describe('ImportStoreGroupDialogComponent', () => {
   let component: ImportStoreGroupDialogComponent;
@@ -12,7 +13,7 @@ describe('ImportStoreGroupDialogComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ImportStoreGroupDialogComponent],
-      imports: [FormsModule, ReactiveFormsModule, HttpClientModule],
+      imports: [FormsModule, ReactiveFormsModule, HttpClientModule, MatSnackBarModule],
       providers: [
         { provide: MAT_DIALOG_DATA, useValue: {} },
         { provide: MatDialogRef, useValue: {} },
