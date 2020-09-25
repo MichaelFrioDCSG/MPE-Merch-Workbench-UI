@@ -19,7 +19,7 @@ describe('LandingComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [LandingComponent],
-      imports: [MaterialModule, RouterTestingModule, HttpClientTestingModule, MatTabsModule],
+      imports: [MaterialModule, RouterTestingModule, HttpClientTestingModule],
       providers: [{ provide: MAT_DIALOG_DATA, useValue: {} }, { provide: MatDialogRef, useValue: {} }, provideMockStore({ initialState })],
     }).compileComponents();
 
