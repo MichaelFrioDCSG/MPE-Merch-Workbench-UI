@@ -10,15 +10,7 @@ import { ActivatedRoute } from '@angular/router';
 
 import * as selectors from '../../store/store-group-mgmt.selectors';
 import * as actions from '../../store/store-group-mgmt.actions';
-
-interface IDetailRecord {
-  clusterGroupName: string;
-  clusterName: string;
-  tier: string;
-  chain: string;
-  storeNumber: number;
-  adMarket: string;
-}
+import { IDetailRecord } from '../../models/IDetailRecord';
 
 @Component({
   selector: 'mpe-detail',
@@ -41,10 +33,30 @@ export class DetailComponent implements OnInit {
   public columnDefs = [
     { headerName: 'CLUSTER GROUP', field: 'clusterGroupName', sortable: true, filter: true, enableRowGroup: true, width: 200 },
     { headerName: 'CLUSTER ', field: 'clusterName', sortable: true, filter: true, enableRowGroup: true, width: 200 },
-    { headerName: 'TIER', field: 'tier', sortable: true, filter: true, enableRowGroup: true, width: 150 },
-    { headerName: 'CHAIN', field: 'chain', sortable: true, filter: true, enableRowGroup: true, width: 100 },
-    { headerName: 'STORE NUMBER', field: 'storeNumber', sortable: true, filter: true, enableRowGroup: true, width: 250 },
-    { headerName: 'AD MARKET', field: 'adMarket', sortable: true, filter: true, enableRowGroup: true, width: 250 },
+    { headerName: 'TIER', field: 'tier', sortable: true, filter: true, width: 150 },
+    { headerName: 'CHAIN', field: 'chain', sortable: true, filter: true, width: 100 },
+    { headerName: 'STORE NUMBER', field: 'storeNumber', sortable: true, filter: true, width: 250 },
+    { headerName: 'AD MARKET', field: 'adMarket', sortable: true, filter: true, width: 250, hide: true },
+    { headerName: 'CITY', field: 'city', sortable: true, filter: true, width: 250 },
+    { headerName: 'CLIMATE', field: 'climate', sortable: true, filter: true, width: 250, hide: true },
+    { headerName: 'CLOSE DATE', field: 'closeDate', sortable: true, filter: true, width: 250, hide: true },
+    { headerName: 'CREATED AT', field: 'createdAt', sortable: true, filter: true, width: 250 },
+    { headerName: 'CREATED BY', field: 'createdBy', sortable: true, filter: true, width: 250 },
+    { headerName: 'DEMOGRAPHICS', field: 'demographics', sortable: true, filter: true, width: 250, hide: true },
+    { headerName: 'DISTRICT DESCRIPTION', field: 'districtDescription', sortable: true, filter: true, width: 250, hide: true },
+    { headerName: 'MEDIAN INCOME', field: 'medianIncome', sortable: true, filter: true, width: 250, hide: true },
+    { headerName: 'NUMBER OF ENTRANCES', field: 'numberOfEntrances', sortable: true, filter: true, width: 250 },
+    { headerName: 'NUMBER OF FLOORS', field: 'numberOfFloors', sortable: true, filter: true, width: 250, hide: true },
+    { headerName: 'OPEN DATE', field: 'openDate', sortable: true, filter: true, width: 250, hide: true },
+    { headerName: 'REGION DESCRIPTION', field: 'regionDescription', sortable: true, filter: true, width: 250, hide: true },
+    { headerName: 'SQUARE FEET', field: 'squareFeet', sortable: true, filter: true, width: 250, hide: true },
+    { headerName: 'STATE', field: 'state', sortable: true, filter: true, width: 250, hide: true },
+    { headerName: 'STORE FORMAT', field: 'storeFormat', sortable: true, filter: true, width: 250, hide: true },
+    { headerName: 'STORE STRUCTURE', field: 'storeStructure', sortable: true, filter: true, width: 250, hide: true },
+    { headerName: 'TTL RUN RATE', field: 'ttlRunRate', sortable: true, filter: true, width: 250, hide: true },
+    { headerName: 'UPDATED BY', field: 'updatedBy', sortable: true, filter: true, width: 250 },
+    { headerName: 'UPDATED ON', field: 'updatedOn', sortable: true, filter: true, width: 250 },
+    { headerName: 'WAREHOUSE NUMBER', field: 'warehouseNumber', sortable: true, filter: true, width: 250 },
   ];
 
   public rowGroupPanelShow = 'always';
@@ -121,6 +133,26 @@ export class DetailComponent implements OnInit {
               chain: c.chain,
               storeNumber: cl.storeNumber,
               adMarket: cl.location.adMarket,
+              city: cl.location.city,
+              climate: cl.location.climate,
+              closeDate: cl.location.closeDate,
+              createdAt: cl.location.createdAt,
+              createdBy: cl.location.createdBy,
+              demographics: cl.location.demographics,
+              districtDescription: cl.location.districtDescription,
+              medianIncome: cl.location.medianIncome,
+              numberOfEntrances: cl.location.numberOfEntrances,
+              numberOfFloors: cl.location.numberOfFloors,
+              openDate: cl.location.openDate,
+              regionDescription: cl.location.regionDescription,
+              squareFeet: cl.location.squareFeet,
+              state: cl.location.state,
+              storeFormat: cl.location.storeFormat,
+              storeStructure: cl.location.storeStructure,
+              ttlRunRate: cl.location.ttlRunRate,
+              updatedBy: cl.location.updatedBy,
+              updatedOn: cl.location.updatedOn,
+              warehouseNumber: cl.location.warehouseNumber,
             };
             this.details.push(detail);
           });
