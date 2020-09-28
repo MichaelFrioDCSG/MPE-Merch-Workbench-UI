@@ -249,6 +249,38 @@
           "style": "scss"
         }
       }
+    },
+    "asmt-mgmt-service": {
+      "projectType": "library",
+      "root": "libs/asmt-mgmt-service",
+      "sourceRoot": "libs/asmt-mgmt-service/src",
+      "prefix": "mpe",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/asmt-mgmt-service/tsconfig.lib.json", "libs/asmt-mgmt-service/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/asmt-mgmt-service/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "libs/asmt-mgmt-service/src/test.ts",
+            "karmaConfig": "./karma.conf.js",
+            "polyfills": "libs/asmt-mgmt-service/src/polyfills.ts",
+            "tsConfig": "libs/asmt-mgmt-service/tsconfig.spec.json",
+            "scripts": [],
+            "styles": [],
+            "assets": []
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "style": "scss"
+        }
+      }
     }
   },
   "cli": {
