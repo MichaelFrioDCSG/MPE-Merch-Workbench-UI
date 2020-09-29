@@ -40,8 +40,6 @@ export class DetailComponent implements OnInit {
     { headerName: 'CITY', field: 'city', sortable: true, filter: true, width: 250 },
     { headerName: 'CLIMATE', field: 'climate', sortable: true, filter: true, width: 250, hide: true },
     { headerName: 'CLOSE DATE', field: 'closeDate', sortable: true, filter: true, width: 250, hide: true },
-    { headerName: 'CREATED AT', field: 'createdAt', sortable: true, filter: true, width: 250 },
-    { headerName: 'CREATED BY', field: 'createdBy', sortable: true, filter: true, width: 250 },
     { headerName: 'DEMOGRAPHICS', field: 'demographics', sortable: true, filter: true, width: 250, hide: true },
     { headerName: 'DISTRICT DESCRIPTION', field: 'districtDescription', sortable: true, filter: true, width: 250, hide: true },
     { headerName: 'MEDIAN INCOME', field: 'medianIncome', sortable: true, filter: true, width: 250, hide: true },
@@ -54,8 +52,6 @@ export class DetailComponent implements OnInit {
     { headerName: 'STORE FORMAT', field: 'storeFormat', sortable: true, filter: true, width: 250, hide: true },
     { headerName: 'STORE STRUCTURE', field: 'storeStructure', sortable: true, filter: true, width: 250, hide: true },
     { headerName: 'TTL RUN RATE', field: 'ttlRunRate', sortable: true, filter: true, width: 250, hide: true },
-    { headerName: 'UPDATED BY', field: 'updatedBy', sortable: true, filter: true, width: 250 },
-    { headerName: 'UPDATED ON', field: 'updatedOn', sortable: true, filter: true, width: 250 },
     { headerName: 'WAREHOUSE NUMBER', field: 'warehouseNumber', sortable: true, filter: true, width: 250 },
   ];
 
@@ -136,8 +132,6 @@ export class DetailComponent implements OnInit {
               city: cl.location.city,
               climate: cl.location.climate,
               closeDate: cl.location.closeDate,
-              createdAt: cl.location.createdAt,
-              createdBy: cl.location.createdBy,
               demographics: cl.location.demographics,
               districtDescription: cl.location.districtDescription,
               medianIncome: cl.location.medianIncome,
@@ -150,8 +144,6 @@ export class DetailComponent implements OnInit {
               storeFormat: cl.location.storeFormat,
               storeStructure: cl.location.storeStructure,
               ttlRunRate: cl.location.ttlRunRate,
-              updatedBy: cl.location.updatedBy,
-              updatedOn: cl.location.updatedOn,
               warehouseNumber: cl.location.warehouseNumber,
             };
             this.details.push(detail);
