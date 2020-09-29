@@ -8,5 +8,6 @@ export { ILocation } from './ILocation';
 export { IProductHierarchy } from './IProductHierarchy';
 export { IStoreGroup } from './IStoreGroup';
 export { IStoreInformation } from './IStoreInformation';
+export { IStoreInformationListValue } from './IStoreInformationListValue';
 export { ICreateStoreGroupRequest } from './dto/ICreateStoreGroupRequest';
 export { ICreateStoreGroupResponse } from './dto/ICreateStoreGroupResponse';

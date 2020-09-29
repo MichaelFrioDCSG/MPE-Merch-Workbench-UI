@@ -5,11 +5,11 @@ import { AllCommunityModules, Module, GridOptions, GridApi } from '@ag-grid-comm
 import { Store } from '@ngrx/store';
 import { IStoreGroupMgmtState } from '../../store/store-group-mgmt.reducer';
 import { Title } from '@angular/platform-browser';
-import { IClusterGroup } from '@mpe/shared';
 import { ActivatedRoute } from '@angular/router';
 
 import * as selectors from '../../store/store-group-mgmt.selectors';
 import * as actions from '../../store/store-group-mgmt.actions';
+import { Observable } from 'rxjs';
 import { IDetailRecord } from '../../models/IDetailRecord';
 
 @Component({
@@ -21,7 +21,7 @@ export class DetailComponent implements OnInit {
   @ViewChild('agGrid', { static: false }) public agGrid: AgGridAngular;
   public gridOptions: GridOptions;
   public gridApi: GridApi;
-  public details: IDetailRecord[] = [];
+  public details$: Observable<IDetailRecord[]>;
   public modules: Module[] = AllCommunityModules;
   public get clusterGroupId(): number {
     return parseInt(this.route.snapshot.paramMap.get('id'), 10);
@@ -30,11 +30,71 @@ export class DetailComponent implements OnInit {
   public defaultColDef: any = {
     resizable: true,
   };
+
+  public tiers: string[] = ['ECOMM', 'Tier 1', 'Tier 2', 'Tier 3', 'Tier 4', 'Tier 5', 'Z'];
+  public chains: string[] = ['DSG', 'GG', 'FS'];
+
   public columnDefs = [
-    { headerName: 'CLUSTER GROUP', field: 'clusterGroupName', sortable: true, filter: true, enableRowGroup: true, width: 200 },
-    { headerName: 'CLUSTER ', field: 'clusterName', sortable: true, filter: true, enableRowGroup: true, width: 200 },
-    { headerName: 'TIER', field: 'tier', sortable: true, filter: true, width: 150 },
-    { headerName: 'CHAIN', field: 'chain', sortable: true, filter: true, width: 100 },
+    {
+      headerName: 'CLUSTER GROUP',
+      field: 'clusterGroupName',
+      sortable: true,
+      filter: true,
+      enableRowGroup: true,
+      width: 200,
+    },
+    {
+      headerName: 'CLUSTER LABEL',
+      field: 'clusterLabel',
+      sortable: true,
+      editable: true,
+      filter: true,
+      enableRowGroup: true,
+      width: 200,
+    },
+    {
+      headerName: 'CLUSTER',
+      field: 'clusterName',
+      sortable: true,
+      filter: true,
+      enableRowGroup: true,
+      width: 200,
+      valueGetter: this.opClusterMemberDisplay,
+    },
+    {
+      headerName: 'NOTES',
+      field: 'notes',
+      sortable: true,
+      editable: true,
+      filter: true,
+      width: 200,
+    },
+    {
+      headerName: 'TIER',
+      field: 'tier',
+      sortable: true,
+      editable: true,
+      filter: true,
+      enableRowGroup: true,
+      width: 150,
+      cellEditor: 'agRichSelectCellEditor',
+      cellEditorParams: {
+        values: this.tiers,
+      },
+    },
+    {
+      headerName: 'CHAIN',
+      field: 'chain',
+      sortable: true,
+      editable: true,
+      filter: true,
+      enableRowGroup: true,
+      width: 100,
+      cellEditor: 'agRichSelectCellEditor',
+      cellEditorParams: {
+        values: this.chains,
+      },
+    },
     { headerName: 'STORE NUMBER', field: 'storeNumber', sortable: true, filter: true, width: 250 },
     { headerName: 'AD MARKET', field: 'adMarket', sortable: true, filter: true, width: 250, hide: true },
     { headerName: 'CITY', field: 'city', sortable: true, filter: true, width: 250 },
@@ -117,44 +177,22 @@ export class DetailComponent implements OnInit {
 
   public ngOnInit() {
     this.titleService.setTitle('Store Group Management');
-    this.store.select(selectors.selectSummaryDetails).subscribe((clusterGroup: IClusterGroup) => {
-      this.details = [];
-      if (clusterGroup && clusterGroup.clusters) {
-        clusterGroup.clusters.forEach(c => {
-          c.clusterLocations.forEach(cl => {
-            const detail: IDetailRecord = {
-              clusterGroupName: clusterGroup.name,
-              clusterName: c.name,
-              tier: c.tier,
-              chain: c.chain,
-              storeNumber: cl.storeNumber,
-              adMarket: cl.location.adMarket,
-              city: cl.location.city,
-              climate: cl.location.climate,
-              closeDate: cl.location.closeDate,
-              demographics: cl.location.demographics,
-              districtDescription: cl.location.districtDescription,
-              medianIncome: cl.location.medianIncome,
-              numberOfEntrances: cl.location.numberOfEntrances,
-              numberOfFloors: cl.location.numberOfFloors,
-              openDate: cl.location.openDate,
-              regionDescription: cl.location.regionDescription,
-              squareFeet: cl.location.squareFeet,
-              state: cl.location.state,
-              storeFormat: cl.location.storeFormat,
-              storeStructure: cl.location.storeStructure,
-              ttlRunRate: cl.location.ttlRunRate,
-              warehouseNumber: cl.location.warehouseNumber,
-            };
-            this.details.push(detail);
-          });
-        });
-      }
-    });
   }
 
   public onGridReady(params: any) {
     this.gridApi = params.api;
     this.store.dispatch(actions.sgmGetDetails({ clusterGroupId: this.clusterGroupId }));
+    this.store.select(selectors.selectSummaryDetails).subscribe(details => this.gridApi.setRowData(details));
+  }
+
+  public getRowNodeId = (row: IDetailRecord) => `${row.clusterGroupId}_${row.clusterId}_${row.clusterLocationId}`;
+
+  // Display Chain, Tier, and (TODO: PL Attributes) seperated by " / "
+  private opClusterMemberDisplay(params: any) {
+    if (params.node.group) {
+      return '';
+    }
+    const data: IDetailRecord = params.data;
+    return [data.chain, data.tier].join(' / ');
   }
 }
