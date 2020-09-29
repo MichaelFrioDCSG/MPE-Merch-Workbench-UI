@@ -25,8 +25,6 @@ export const selectSummaryDetails = createSelector(selectAppState, (state: IStor
           city: cl.location.city,
           climate: cl.location.climate,
           closeDate: cl.location.closeDate,
-          createdAt: cl.location.createdAt,
-          createdBy: cl.location.createdBy,
           demographics: cl.location.demographics,
           districtDescription: cl.location.districtDescription,
           medianIncome: cl.location.medianIncome,
@@ -39,8 +37,6 @@ export const selectSummaryDetails = createSelector(selectAppState, (state: IStor
           storeFormat: cl.location.storeFormat,
           storeStructure: cl.location.storeStructure,
           ttlRunRate: cl.location.ttlRunRate,
-          updatedBy: cl.location.updatedBy,
-          updatedOn: cl.location.updatedOn,
           warehouseNumber: cl.location.warehouseNumber,
         }))
       )
