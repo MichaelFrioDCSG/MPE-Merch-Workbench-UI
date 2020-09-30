@@ -19,7 +19,6 @@
         <div id="grid-wrapper" class="grid-wrapper">
           <ag-grid-angular
             #agGrid
-            style="height: 800px; width: 100%;"
             class="ag-theme-alpine"
             [rowData]="details"
             [modules]="modules"
@@ -27,7 +26,7 @@
             [columnDefs]="columnDefs"
             [statusBar]="statusBar"
             [sideBar]="sideBar"
-            [rowGroupPanelShow]= "rowGroupPanelShow"
+            [rowGroupPanelShow]="rowGroupPanelShow"
             [gridOptions]="gridOptions"
             rowSelection="multiple"
             (gridReady)="onGridReady($event)"
