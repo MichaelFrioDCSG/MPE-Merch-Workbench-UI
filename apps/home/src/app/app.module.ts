@@ -20,6 +20,9 @@ import { HeaderComponent } from './components/header/header.component';
 import { SgmModule } from '@mpe/sgm';
 import { MaterialModule } from '@mpe/material';
 
+import { MSAL_CONFIG, MSAL_CONFIG_ANGULAR, MsalService, MsalModule } from '@azure/msal-angular';
+import { MSALConfigFactory, MSALAngularConfigFactory } from '../../../../libs/auth/src/lib/msal-configuration';
+
 @NgModule({
   declarations: [AppComponent, LandingPageComponent, HeaderComponent],
   imports: [
@@ -42,9 +45,20 @@ import { MaterialModule } from '@mpe/material';
     ),
     EffectsModule.forRoot([appEffects]),
     SgmModule,
+    MsalModule,
     !environment.production ? StoreDevtoolsModule.instrument() : [],
   ],
-  providers: [],
+  providers: [
+    {
+      provide: MSAL_CONFIG,
+      useFactory: MSALConfigFactory,
+    },
+    {
+      provide: MSAL_CONFIG_ANGULAR,
+      useFactory: MSALAngularConfigFactory,
+    },
+    MsalService,
+  ],
   bootstrap: [AppComponent],
   exports: [LandingPageComponent, HeaderComponent],
 })

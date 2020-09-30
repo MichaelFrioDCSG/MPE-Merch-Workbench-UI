@@ -3,9 +3,10 @@ import { Routes, RouterModule } from '@angular/router';
 import { amRoutes } from '@mpe/assortment-management';
 import { sgmRoutes } from '@mpe/sgm';
 import { LandingPageComponent } from './components/landing-page/landing-page.component';
+import { MsalGuard } from '@azure/msal-angular';
 
 export const routes: Routes = [
-  { path: 'sgm', data: { name: 'Store Group Management' }, children: sgmRoutes },
+  { path: 'sgm', data: { name: 'Store Group Management' }, children: sgmRoutes, canActivate: [MsalGuard] },
   { path: 'am', data: { name: 'Assortment Management' }, children: amRoutes },
 ];
 
