@@ -173,7 +173,7 @@ export class DetailComponent implements OnInit {
     ],
   };
 
-  constructor(private store: Store<IStoreGroupMgmtState>, private titleService: Title, private route: ActivatedRoute) {}
+  constructor(private store: Store<IStoreGroupMgmtState>, private titleService: Title, private route: ActivatedRoute) { }
 
   public ngOnInit() {
     this.titleService.setTitle('Store Group Management');
