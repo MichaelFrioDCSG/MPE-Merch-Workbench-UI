@@ -19,7 +19,7 @@ module.exports = function (config) {
       },
       // leave Jasmine Spec Runner output visible in browser
     },
-    files: [],
+    files: ['node_modules/ag-grid-community/dist/styles/ag-grid.css', 'node_modules/ag-grid-community/dist/styles/ag-theme-alpine.css'],
     preprocessors: {},
     mime: {
       'text/x-typescript': ['ts', 'tsx'],

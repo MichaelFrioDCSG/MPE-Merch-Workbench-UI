@@ -1,21 +1,21 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { switchMap, catchError, map, mergeMap } from 'rxjs/operators';
+import { switchMap, catchError, map } from 'rxjs/operators';
 
 import * as actions from './store-group-mgmt.actions';
-import { ClusterGroupService } from '@mpe/shared';
 import { of } from 'rxjs';
 import { IClusterGroup } from '@mpe/shared';
+import { ClusterGroupsService } from '@mpe/AsmtMgmtService';
 
 @Injectable()
 export default class StoreGroupMgmtEffects {
-  constructor(private actions$: Actions, private clusterGroupService: ClusterGroupService) {}
+  constructor(private actions$: Actions, private clusterGroupsService: ClusterGroupsService) {}
 
   private onGetClusterGroupSummaries = createEffect(() =>
     this.actions$.pipe(
       ofType(actions.sgmGetSummaries),
       switchMap(() =>
-        this.clusterGroupService.getClusterGroups().pipe(
+        this.clusterGroupsService.GetClusterGroups().pipe(
           switchMap((clusterGroups: IClusterGroup[]) => {
             clusterGroups.forEach(cg => {
               cg.lastModifiedOn = new Date();
@@ -35,7 +35,7 @@ export default class StoreGroupMgmtEffects {
     this.actions$.pipe(
       ofType(actions.sgmGetDetails),
       switchMap(action =>
-        this.clusterGroupService.getClusterGroup(action.clusterGroupId).pipe(
+        this.clusterGroupsService.GetClusterGroup(action.clusterGroupId).pipe(
           map(
             (clusterGroup: IClusterGroup) => actions.sgmGetDetailsSuccess({ clusterGroup }),
             catchError(errors => {
