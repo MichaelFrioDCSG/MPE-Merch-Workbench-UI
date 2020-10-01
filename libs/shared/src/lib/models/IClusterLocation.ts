@@ -4,5 +4,7 @@ export interface IClusterLocation {
   id: number;
   clusterId: number;
   storeNumber: number;
+  notes: string;
+  clusterLabel: string;
   location: ILocation;
 }

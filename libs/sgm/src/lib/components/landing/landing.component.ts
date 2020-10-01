@@ -136,7 +136,7 @@ export class LandingComponent implements OnInit, OnDestroy {
         }
       });
       this.gridColumnApi.autoSizeColumns(allColumnIds, false);
-      this.gridApi.setDomLayout('autoHeight');
+      this.gridApi.setDomLayout('normal');
       this.gridColumnApi.getAllColumns().forEach(column => {
         totalColsWidth += column.getActualWidth();
       });

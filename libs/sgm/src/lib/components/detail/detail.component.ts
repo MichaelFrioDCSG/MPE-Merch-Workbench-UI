@@ -102,8 +102,6 @@ export class DetailComponent implements OnInit {
     { headerName: 'CITY', field: 'city', sortable: true, filter: true, width: 250 },
     { headerName: 'CLIMATE', field: 'climate', sortable: true, filter: true, width: 250, hide: true },
     { headerName: 'CLOSE DATE', field: 'closeDate', sortable: true, filter: true, width: 250, hide: true },
-    { headerName: 'CREATED AT', field: 'createdAt', sortable: true, filter: true, width: 250 },
-    { headerName: 'CREATED BY', field: 'createdBy', sortable: true, filter: true, width: 250 },
     { headerName: 'DEMOGRAPHICS', field: 'demographics', sortable: true, filter: true, width: 250, hide: true },
     { headerName: 'DISTRICT DESCRIPTION', field: 'districtDescription', sortable: true, filter: true, width: 250, hide: true },
     { headerName: 'MEDIAN INCOME', field: 'medianIncome', sortable: true, filter: true, width: 250, hide: true },
@@ -116,8 +114,6 @@ export class DetailComponent implements OnInit {
     { headerName: 'STORE FORMAT', field: 'storeFormat', sortable: true, filter: true, width: 250, hide: true },
     { headerName: 'STORE STRUCTURE', field: 'storeStructure', sortable: true, filter: true, width: 250, hide: true },
     { headerName: 'TTL RUN RATE', field: 'ttlRunRate', sortable: true, filter: true, width: 250, hide: true },
-    { headerName: 'UPDATED BY', field: 'updatedBy', sortable: true, filter: true, width: 250 },
-    { headerName: 'UPDATED ON', field: 'updatedOn', sortable: true, filter: true, width: 250 },
     { headerName: 'WAREHOUSE NUMBER', field: 'warehouseNumber', sortable: true, filter: true, width: 250 },
   ];
 

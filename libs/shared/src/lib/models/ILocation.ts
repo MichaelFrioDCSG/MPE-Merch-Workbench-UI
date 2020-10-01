@@ -5,8 +5,6 @@ export interface ILocation {
   city: string;
   climate: string;
   closeDate: string;
-  createdAt: Date;
-  createdBy: string;
   demographics: string;
   districtDescription: string;
   medianIncome: string;
@@ -19,7 +17,5 @@ export interface ILocation {
   storeFormat: string;
   storeStructure: string;
   ttlRunRate: string;
-  updatedBy: string;
-  updatedOn: Date;
   warehouseNumber: string;
 }
