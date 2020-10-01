@@ -2,11 +2,9 @@ import { IStoreGroupMgmtState, storeGroupMgmtFeatureKey } from './store-group-mg
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { IClusterGroup } from '@mpe/shared';
 import { IDetailRecord } from '../models/IDetailRecord';
-import { ClassGetter } from '@angular/compiler/src/output/output_ast';
 
 export const selectAppState = createFeatureSelector<IStoreGroupMgmtState>(storeGroupMgmtFeatureKey);
 export const selectClusterGroups = createSelector(selectAppState, (state: IStoreGroupMgmtState): IClusterGroup[] => state.clusterGroups);
-// export const selectSummaryDetails = createSelector(selectAppState, (state: IStoreGroupMgmtState): IClusterGroup => state.selectedClusterGroup);
 export const selectSummaryDetails = createSelector(selectAppState, (state: IStoreGroupMgmtState): IDetailRecord[] => {
   let details: IDetailRecord[] = [];
   if (state.selectedClusterGroup && state.selectedClusterGroup.clusters) {
