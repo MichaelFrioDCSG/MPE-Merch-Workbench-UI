@@ -51,7 +51,7 @@ describe('DetailComponent', () => {
   });
 
   it('should have the expected number column headers', () => {
-    expect(component.columnDefs.length).toEqual(30);
+    expect(component.columnDefs.length).toEqual(26);
   });
 
   it('Cluster Group Column configured correctly', () => {
@@ -390,10 +390,7 @@ function getMockSDetailRecords(): IDetailRecord[] {
       storeName: 'PITTSBURGH, PA',
       adMarket: 'TEST MARKET 1',
       city: '',
-      updatedBy: '',
-      updatedOn: new Date(),
-      createdBy: '',
-      createdAt: new Date(),
+
       climate: 'climate',
       closeDate: 'closeDate',
       demographics: 'demographics',
