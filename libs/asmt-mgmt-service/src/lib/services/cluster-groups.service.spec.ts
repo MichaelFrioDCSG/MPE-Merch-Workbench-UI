@@ -182,7 +182,7 @@ function getFakeIStoreInformation(): IStoreInformation {
 }
 
 function randomStr(len: number, charString: string = '1234567890abcdefghijklmnopqrstuvwxyz') {
-  let result: string = '';
+  let result = '';
   for (let i = len; i > 0; i--) {
     result += charString[Math.floor(Math.random() * charString.length)];
   }
