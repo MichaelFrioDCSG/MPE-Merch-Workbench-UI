@@ -15,7 +15,7 @@ export default class StoreGroupMgmtEffects {
     this.actions$.pipe(
       ofType(actions.sgmGetSummaries),
       switchMap(() =>
-        this.clusterGroupsService.GetClusterGroups().pipe(
+        this.clusterGroupsService.getClusterGroups().pipe(
           switchMap((clusterGroups: IClusterGroup[]) => {
             clusterGroups.forEach(cg => {
               cg.lastModifiedOn = new Date();
@@ -35,7 +35,7 @@ export default class StoreGroupMgmtEffects {
     this.actions$.pipe(
       ofType(actions.sgmGetDetails),
       switchMap(action =>
-        this.clusterGroupsService.GetClusterGroup(action.clusterGroupId).pipe(
+        this.clusterGroupsService.getClusterGroup(action.clusterGroupId).pipe(
           map(
             (clusterGroup: IClusterGroup) => actions.sgmGetDetailsSuccess({ clusterGroup }),
             catchError(errors => {

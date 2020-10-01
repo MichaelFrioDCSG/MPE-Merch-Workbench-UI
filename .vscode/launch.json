@@ -7,29 +7,26 @@
   "configurations": [
     {
       "name": "Launch Chrome against localhost",
-      "request": "launch",
       "type": "chrome",
+      "request": "launch",
       "url": "http://localhost:4200",
       "webRoot": "${workspaceFolder}"
     },
     {
       "name": "Launch Edge against localhost",
-      "request": "launch",
       "type": "edge",
+      "request": "launch",
       "version": "canary",
       "url": "http://localhost:4200",
       "webRoot": "${workspaceFolder}"
     },
     {
+      "name": "Attach Karma Chrome",
       "type": "chrome",
       "request": "attach",
-      "name": "Attach Karma Chrome",
-      "address": "localhost",
-      "port": 9876,
-      "pathMapping": {
-        "/": "${workspaceRoot}/",
-        "/base/": "${workspaceRoot}/"
-      }
+      "port": 9333,
+      "sourceMaps": true,
+      "webRoot": "${workspaceFolder}"
     }
   ]
 }

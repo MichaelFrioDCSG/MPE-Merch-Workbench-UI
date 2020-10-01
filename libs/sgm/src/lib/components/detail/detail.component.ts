@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { AgGridAngular } from 'ag-grid-angular';
+import { Observable } from 'rxjs';
 import { AllCommunityModules, Module, GridOptions, GridApi } from '@ag-grid-community/all-modules';
 
 import { Store } from '@ngrx/store';
@@ -9,7 +10,6 @@ import { ActivatedRoute } from '@angular/router';
 
 import * as selectors from '../../store/store-group-mgmt.selectors';
 import * as actions from '../../store/store-group-mgmt.actions';
-import { Observable } from 'rxjs';
 import { IDetailRecord } from '../../models/IDetailRecord';
 
 @Component({
@@ -51,6 +51,22 @@ export class DetailComponent implements OnInit {
       filter: true,
       enableRowGroup: true,
       width: 200,
+      valueSetter: params => {
+        const record: IDetailRecord = params.data;
+        this.store.dispatch(
+          actions.setDetailValues({
+            values: [
+              {
+                clusterGroupId: record.clusterGroupId,
+                clusterId: record.clusterId,
+                clusterLocationId: record.clusterLocationId,
+                field: params.column.colId,
+                value: params.newValue,
+              },
+            ],
+          })
+        );
+      },
     },
     {
       headerName: 'CLUSTER',
@@ -68,6 +84,22 @@ export class DetailComponent implements OnInit {
       editable: true,
       filter: true,
       width: 200,
+      valueSetter: params => {
+        const record: IDetailRecord = params.data;
+        this.store.dispatch(
+          actions.setDetailValues({
+            values: [
+              {
+                clusterGroupId: record.clusterGroupId,
+                clusterId: record.clusterId,
+                clusterLocationId: record.clusterLocationId,
+                field: params.column.colId,
+                value: params.newValue,
+              },
+            ],
+          })
+        );
+      },
     },
     {
       headerName: 'TIER',
@@ -81,6 +113,22 @@ export class DetailComponent implements OnInit {
       cellEditorParams: {
         values: this.tiers,
       },
+      valueSetter: params => {
+        const record: IDetailRecord = params.data;
+        this.store.dispatch(
+          actions.setDetailValues({
+            values: [
+              {
+                clusterGroupId: record.clusterGroupId,
+                clusterId: record.clusterId,
+                clusterLocationId: record.clusterLocationId,
+                field: params.column.colId,
+                value: params.newValue,
+              },
+            ],
+          })
+        );
+      },
     },
     {
       headerName: 'CHAIN',
@@ -93,6 +141,22 @@ export class DetailComponent implements OnInit {
       cellEditor: 'agRichSelectCellEditor',
       cellEditorParams: {
         values: this.chains,
+      },
+      valueSetter: params => {
+        const record: IDetailRecord = params.data;
+        this.store.dispatch(
+          actions.setDetailValues({
+            values: [
+              {
+                clusterGroupId: record.clusterGroupId,
+                clusterId: record.clusterId,
+                clusterLocationId: record.clusterLocationId,
+                field: params.column.colId,
+                value: params.newValue,
+              },
+            ],
+          })
+        );
       },
     },
     { headerName: 'STORE NUMBER', field: 'storeNumber', sortable: true, filter: true, width: 250 },
@@ -184,10 +248,13 @@ export class DetailComponent implements OnInit {
   public onGridReady(params: any) {
     this.gridApi = params.api;
     this.store.dispatch(actions.sgmGetDetails({ clusterGroupId: this.clusterGroupId }));
-    this.store.select(selectors.selectSummaryDetails).subscribe(details => this.gridApi.setRowData(details));
+    this.store.select(selectors.selectSummaryDetails).subscribe(details => {
+      this.gridApi.setRowData(details);
+      this.gridApi.refreshCells();
+    });
   }
 
-  public getRowNodeId = (row: IDetailRecord) => `${row.clusterGroupId}_${row.clusterId}_${row.clusterLocationId}`;
+  public getRowNodeId = (row: IDetailRecord) => `${row.clusterGroupId}_${row.chain}_${row.tier}_${row.storeNumber}`;
 
   // Display Chain, Tier, and (TODO: PL Attributes) seperated by " / "
   private opClusterMemberDisplay(params: any) {

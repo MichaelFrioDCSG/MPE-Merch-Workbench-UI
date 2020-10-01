@@ -30,7 +30,7 @@ describe('ClusterGroupsService', () => {
 
     // Use the service to get a cluster group
     const spy = jasmine.createSpy('spy');
-    service.GetClusterGroup(1).subscribe(spy);
+    service.getClusterGroup(1).subscribe(spy);
 
     // Verify that the service returned mock data
     expect(spy).toHaveBeenCalledWith(clusterGroupMock);
@@ -46,7 +46,7 @@ describe('ClusterGroupsService', () => {
 
     // Use the service to get a list of cluster groups
     const spy = jasmine.createSpy('spy');
-    service.GetClusterGroups('600').subscribe(spy);
+    service.getClusterGroups('600').subscribe(spy);
 
     // Verify that the service returned mock data
     expect(spy).toHaveBeenCalledWith(clusterGroupsMock);
@@ -62,7 +62,7 @@ describe('ClusterGroupsService', () => {
 
     // Use the service to get a StoreInformation
     const spy = jasmine.createSpy('spy');
-    service.GetStoreInformationByAssortmentPeriodAndSubclass('abc123', ['123-123-123-123', '321-321-321-321']).subscribe(spy);
+    service.getStoreInformationByAssortmentPeriodAndSubclass('abc123', ['123-123-123-123', '321-321-321-321']).subscribe(spy);
 
     // Verify that the service returned mock data
     expect(spy).toHaveBeenCalledWith(resultMock);
@@ -82,7 +82,7 @@ describe('ClusterGroupsService', () => {
 
     // Use the service to get a StoreInformation
     const spy = jasmine.createSpy('spy');
-    service.GetChains('abc123', ['123-123-123-123']).subscribe(spy);
+    service.getChains('abc123', ['123-123-123-123']).subscribe(spy);
 
     // Verify that the service returned mock data
     expect(spy).toHaveBeenCalledWith(resultMock);
@@ -100,7 +100,7 @@ describe('ClusterGroupsService', () => {
 
     // Use the service to get a StoreInformation
     const spy = jasmine.createSpy('spy');
-    service.GetTiers('abc123', ['123-123-123-123']).subscribe(spy);
+    service.getTiers('abc123', ['123-123-123-123']).subscribe(spy);
 
     // Verify that the service returned mock data
     expect(spy).toHaveBeenCalledWith(resultMock);

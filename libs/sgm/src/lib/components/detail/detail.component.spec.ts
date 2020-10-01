@@ -1,46 +1,40 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { DetailComponent } from './detail.component';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { AgGridModule } from 'ag-grid-angular';
 import { FormsModule } from '@angular/forms';
-import { IStoreGroupMgmtState } from '../../store/store-group-mgmt.reducer';
-import { MemoizedSelector } from '@ngrx/store';
-import { selectSummaryDetails } from '../../store/store-group-mgmt.selectors';
-import { ColDef } from '@ag-grid-community/all-modules';
 import { MaterialModule } from '@mpe/material';
-import { _fixedSizeVirtualScrollStrategyFactory } from '@angular/cdk/scrolling';
 
-import 'ag-grid-enterprise';
+import { IStoreGroupMgmtState, initialState } from '../../store/store-group-mgmt.reducer';
+
+import { DetailComponent } from './detail.component';
 import { ClusterGroupsService } from '@mpe/AsmtMgmtService';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { IDetailRecord } from '../../models/IDetailRecord';
-// import { AllCommunityModules } from '@ag-grid-community/all-modules';
+
+import 'ag-grid-enterprise';
 
 describe('DetailComponent', () => {
   let component: DetailComponent;
   let fixture: ComponentFixture<DetailComponent>;
 
   let store: MockStore;
-  let mockSelectedClusterGroupSelector: MemoizedSelector<IStoreGroupMgmtState, IDetailRecord[]>;
 
-  beforeEach(async(() => {
+  beforeEach(() => {
+    const thisState = getMockState();
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, RouterTestingModule, FormsModule, AgGridModule.withComponents([DetailComponent]), MaterialModule],
       declarations: [DetailComponent],
-      providers: [provideMockStore({}), { provides: ClusterGroupsService, useValue: {} }],
+      providers: [provideMockStore({ initialState: thisState }), { provides: ClusterGroupsService, useValue: {} }],
     }).compileComponents();
 
     // Setup mock ngrx store & data for the init selector
     store = TestBed.inject(MockStore);
-    mockSelectedClusterGroupSelector = store.overrideSelector(selectSummaryDetails, getMockSDetailRecords());
-
     fixture = TestBed.createComponent(DetailComponent);
     component = fixture.componentInstance;
 
     // Run component life cycle events
     fixture.detectChanges();
-  }));
+  });
 
   it('should create', () => {
     expect(component).toBeTruthy();
@@ -54,199 +48,298 @@ describe('DetailComponent', () => {
     expect(component.columnDefs.length).toEqual(26);
   });
 
-  it('Cluster Group Column configured correctly', () => {
-    const columnDef: ColDef = component.gridApi.getColumnDef('clusterGroupName');
-    expect(columnDef).toBeTruthy();
+  it('Row Group panel is visible', () => {
+    expect(component.rowGroupPanelShow).toEqual('always');
+  });
 
-    expect(columnDef.headerName).toEqual('CLUSTER GROUP');
-    expect(columnDef.resizable).toEqual(true);
-    expect(columnDef.editable).toBeFalsy();
-    expect(columnDef.sortable).toEqual(true);
-    expect(columnDef.filter).toEqual(true);
-    expect(columnDef.width).toEqual(200);
+  it('Side Bar is confugured correctly', () => {
+    const sideBar = component.sideBar;
+    expect(sideBar).toBeTruthy();
+    expect(sideBar.defaultToolPanel).toEqual('columns');
+  });
+
+  it('Side Bar columns tool panel is configured correctly', () => {
+    const toolPanels: any[] = component.sideBar.toolPanels;
+    expect(toolPanels).toBeTruthy();
+    const columnToolBarConfig = toolPanels.find(x => x.id === 'columns');
+    expect(columnToolBarConfig).toBeTruthy();
+    expect(columnToolBarConfig.labelDefault).toEqual('Columns');
+    expect(columnToolBarConfig.toolPanelParams.suppressRowGroups).toEqual(true);
+    expect(columnToolBarConfig.toolPanelParams.suppressValues).toEqual(true);
+    expect(columnToolBarConfig.toolPanelParams.suppressPivots).toEqual(true);
+    expect(columnToolBarConfig.toolPanelParams.suppressPivotMode).toEqual(true);
+    expect(columnToolBarConfig.toolPanelParams.suppressSideButtons).toEqual(false);
+    expect(columnToolBarConfig.toolPanelParams.suppressColumnFilter).toEqual(false);
+    expect(columnToolBarConfig.toolPanelParams.suppressColumnSelectAll).toEqual(true);
+    expect(columnToolBarConfig.toolPanelParams.suppressColumnExpandAll).toEqual(true);
+  });
+
+  it('Side Bar filters tool panel is configured correctly', () => {
+    const toolPanels: any[] = component.sideBar.toolPanels;
+    expect(toolPanels).toBeTruthy();
+    const filtersToolBarConfig = toolPanels.find(x => x.id === 'filters');
+    expect(filtersToolBarConfig).toBeTruthy();
+    expect(filtersToolBarConfig.labelDefault).toEqual('Filters');
+    expect(filtersToolBarConfig.toolPanelParams.suppressRowGroups).toEqual(true);
+    expect(filtersToolBarConfig.toolPanelParams.suppressValues).toEqual(true);
+    expect(filtersToolBarConfig.toolPanelParams.suppressPivots).toEqual(true);
+    expect(filtersToolBarConfig.toolPanelParams.suppressPivotMode).toEqual(true);
+    expect(filtersToolBarConfig.toolPanelParams.suppressSideButtons).toEqual(false);
+    expect(filtersToolBarConfig.toolPanelParams.suppressColumnFilter).toEqual(false);
+    expect(filtersToolBarConfig.toolPanelParams.suppressColumnSelectAll).toEqual(true);
+    expect(filtersToolBarConfig.toolPanelParams.suppressColumnExpandAll).toEqual(true);
+  });
+
+  it('Status bar is configured correctly', () => {
+    const statusPanels: any[] = component.statusBar.statusPanels;
+    const TotalAndFiltersStatusPanelConfig = statusPanels.find(x => x.statusPanel === 'agTotalAndFilteredRowCountComponent' && x.align === 'left');
+    expect(TotalAndFiltersStatusPanelConfig).toBeTruthy();
+    const TotalRowCountStatusPanelConfig = statusPanels.find(x => x.statusPanel === 'agTotalRowCountComponent' && x.align === 'center');
+    expect(TotalRowCountStatusPanelConfig).toBeTruthy();
+    const FilteredRowCountStatusPanelConfig = statusPanels.find(x => x.statusPanel === 'agFilteredRowCountComponent');
+    expect(FilteredRowCountStatusPanelConfig).toBeTruthy();
+    const SelectedRowCountComponentStatusPanelConfig = statusPanels.find(x => x.statusPanel === 'agSelectedRowCountComponent');
+    expect(SelectedRowCountComponentStatusPanelConfig).toBeTruthy();
+    const AggregationComponentStatusPanelConfig = statusPanels.find(x => x.statusPanel === 'agAggregationComponent');
+    expect(AggregationComponentStatusPanelConfig).toBeTruthy();
+  });
+
+  it('Cluster Group Column configured correctly', () => {
+    waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
+      const columnDef = component.agGrid.gridOptions.api.getColumnDef('clusterGroupName');
+      expect(columnDef).toBeTruthy();
+
+      expect(columnDef.headerName).toEqual('CLUSTER GROUP');
+      expect(columnDef.resizable).toEqual(true);
+      expect(columnDef.editable).toBeFalsy();
+      expect(columnDef.sortable).toEqual(true);
+      expect(columnDef.filter).toEqual(true);
+      expect(columnDef.width).toEqual(200);
+    });
   });
 
   it('Cluster Label Column configured correctly', () => {
-    const columnDef: ColDef = component.gridApi.getColumnDef('clusterLabel');
-    expect(columnDef).toBeTruthy();
+    waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
+      const columnDef = component.agGrid.gridOptions.api.getColumnDef('clusterLabel');
+      expect(columnDef).toBeTruthy();
 
-    expect(columnDef.headerName).toEqual('CLUSTER LABEL');
-    expect(columnDef.resizable).toEqual(true);
-    expect(columnDef.editable).toEqual(true);
-    expect(columnDef.sortable).toEqual(true);
-    expect(columnDef.filter).toEqual(true);
-    expect(columnDef.width).toEqual(200);
+      expect(columnDef.headerName).toEqual('CLUSTER LABEL');
+      expect(columnDef.resizable).toEqual(true);
+      expect(columnDef.editable).toEqual(true);
+      expect(columnDef.sortable).toEqual(true);
+      expect(columnDef.filter).toEqual(true);
+      expect(columnDef.width).toEqual(200);
+    });
   });
 
   it('Notes Column configured correctly', () => {
-    const columnDef: ColDef = component.gridApi.getColumnDef('notes');
-    expect(columnDef).toBeTruthy();
+    waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
+      const columnDef = component.agGrid.gridOptions.api.getColumnDef('notes');
+      expect(columnDef).toBeTruthy();
 
-    expect(columnDef.headerName).toEqual('NOTES');
-    expect(columnDef.resizable).toEqual(true);
-    expect(columnDef.editable).toEqual(true);
-    expect(columnDef.sortable).toEqual(true);
-    expect(columnDef.filter).toEqual(true);
-    expect(columnDef.width).toEqual(200);
+      expect(columnDef.headerName).toEqual('NOTES');
+      expect(columnDef.resizable).toEqual(true);
+      expect(columnDef.editable).toEqual(true);
+      expect(columnDef.sortable).toEqual(true);
+      expect(columnDef.filter).toEqual(true);
+      expect(columnDef.width).toEqual(200);
+    });
   });
 
   it('Cluster Column configured correctly', () => {
-    const columnDef: ColDef = component.gridApi.getColumnDef('clusterName');
-    expect(columnDef).toBeTruthy();
+    waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
+      const columnDef = component.agGrid.gridOptions.api.getColumnDef('clusterName');
+      expect(columnDef).toBeTruthy();
 
-    expect(columnDef.headerName).toEqual('CLUSTER');
-    expect(columnDef.resizable).toEqual(true);
-    expect(columnDef.editable).toBeFalsy();
-    expect(columnDef.sortable).toEqual(true);
-    expect(columnDef.filter).toEqual(true);
-    expect(columnDef.width).toEqual(200);
+      expect(columnDef.headerName).toEqual('CLUSTER');
+      expect(columnDef.resizable).toEqual(true);
+      expect(columnDef.editable).toBeFalsy();
+      expect(columnDef.sortable).toEqual(true);
+      expect(columnDef.filter).toEqual(true);
+      expect(columnDef.width).toEqual(200);
+    });
   });
 
-  //Ignored for future changes
+  // ignored for now, querySelectorAll only captures clusterGroupName and clusterLabel for some reason
   xit('Cluster Column displays correctly', () => {
-    const targetCellIndex = 2;
-    // Test to make sure the value initializes correctly
-    const startingElement = fixture.nativeElement;
-    const startingElements = startingElement.querySelectorAll('.ag-cell-value');
-    expect(startingElements[targetCellIndex].textContent).toEqual('DSG / TIER 1');
+    waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
+      const targetCellIndex = 2;
+      // Test to make sure the value initializes correctly
+      const componentElement = fixture.nativeElement;
+      const cellElements = componentElement.querySelectorAll('.ag-cell-value');
+      expect(cellElements[targetCellIndex].textContent).toEqual('DSG / TIER 1');
+    });
   });
 
   it('Tier Column configured correctly', () => {
-    const columnDef: ColDef = component.gridApi.getColumnDef('tier');
-    expect(columnDef).toBeTruthy();
+    waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
+      const columnDef = component.agGrid.gridOptions.api.getColumnDef('tier');
+      expect(columnDef).toBeTruthy();
 
-    expect(columnDef.headerName).toEqual('TIER');
-    expect(columnDef.resizable).toEqual(true);
-    expect(columnDef.editable).toEqual(true);
-    expect(columnDef.sortable).toEqual(true);
-    expect(columnDef.filter).toEqual(true);
-    expect(columnDef.width).toEqual(150);
-    //John add PUR-970
-    expect(columnDef.cellEditorParams.values).toContain('ECOMM');
-    expect(columnDef.cellEditorParams.values).toContain('Tier 1');
-    expect(columnDef.cellEditorParams.values).toContain('Tier 2');
-    expect(columnDef.cellEditorParams.values).toContain('Tier 3');
-    expect(columnDef.cellEditorParams.values).toContain('Tier 4');
-    expect(columnDef.cellEditorParams.values).toContain('Z');
+      expect(columnDef.headerName).toEqual('TIER');
+      expect(columnDef.resizable).toEqual(true);
+      expect(columnDef.editable).toEqual(true);
+      expect(columnDef.sortable).toEqual(true);
+      expect(columnDef.filter).toEqual(true);
+      expect(columnDef.width).toEqual(150);
+      //John add PUR-970
+      expect(columnDef.cellEditorParams.values).toContain('ECOMM');
+      expect(columnDef.cellEditorParams.values).toContain('Tier 1');
+      expect(columnDef.cellEditorParams.values).toContain('Tier 2');
+      expect(columnDef.cellEditorParams.values).toContain('Tier 3');
+      expect(columnDef.cellEditorParams.values).toContain('Tier 4');
+      expect(columnDef.cellEditorParams.values).toContain('Z');
+    });
   });
 
   it('Chain Column configured correctly', () => {
-    const columnDef: ColDef = component.gridApi.getColumnDef('chain');
-    expect(columnDef).toBeTruthy();
+    waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
+      const columnDef = component.agGrid.gridOptions.api.getColumnDef('chain');
+      expect(columnDef).toBeTruthy();
 
-    expect(columnDef.headerName).toEqual('CHAIN');
-    expect(columnDef.resizable).toEqual(true);
-    expect(columnDef.editable).toEqual(true);
-    expect(columnDef.sortable).toEqual(true);
-    expect(columnDef.filter).toEqual(true);
-    expect(columnDef.width).toEqual(100);
+      expect(columnDef.headerName).toEqual('CHAIN');
+      expect(columnDef.resizable).toEqual(true);
+      expect(columnDef.editable).toEqual(true);
+      expect(columnDef.sortable).toEqual(true);
+      expect(columnDef.filter).toEqual(true);
+      expect(columnDef.width).toEqual(100);
 
-    expect(columnDef.cellEditorParams.values).toContain('DSG');
-    expect(columnDef.cellEditorParams.values).toContain('FS');
-    expect(columnDef.cellEditorParams.values).toContain('GG');
+      expect(columnDef.cellEditorParams.values).toContain('DSG');
+      expect(columnDef.cellEditorParams.values).toContain('FS');
+      expect(columnDef.cellEditorParams.values).toContain('GG');
+    });
   });
 
   it('Store Number Column configured correctly', () => {
-    const columnDef: ColDef = component.gridApi.getColumnDef('storeNumber');
-    expect(columnDef).toBeTruthy();
+    waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
+      const columnDef = component.agGrid.gridOptions.api.getColumnDef('storeNumber');
+      expect(columnDef).toBeTruthy();
 
-    expect(columnDef.headerName).toEqual('STORE NUMBER');
-    expect(columnDef.resizable).toEqual(true);
-    expect(columnDef.editable).toBeFalsy();
-    expect(columnDef.sortable).toEqual(true);
-    expect(columnDef.filter).toEqual(true);
-    expect(columnDef.width).toEqual(250);
+      expect(columnDef.headerName).toEqual('STORE NUMBER');
+      expect(columnDef.resizable).toEqual(true);
+      expect(columnDef.editable).toBeFalsy();
+      expect(columnDef.sortable).toEqual(true);
+      expect(columnDef.filter).toEqual(true);
+      expect(columnDef.width).toEqual(250);
+    });
   });
 
   it('Assortment Period Column configured correctly', () => {
-    const columnDef: ColDef = component.gridApi.getColumnDef('assortmentPeriod');
-    expect(columnDef).toBeTruthy();
+    waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
+      const columnDef = component.agGrid.gridOptions.api.getColumnDef('assortmentPeriod');
+      expect(columnDef).toBeTruthy();
 
-    expect(columnDef.headerName).toEqual('ASSORTMENT PERIOD');
-    expect(columnDef.resizable).toEqual(true);
-    expect(columnDef.editable).toBeFalsy();
-    expect(columnDef.sortable).toEqual(true);
-    expect(columnDef.filter).toEqual(true);
-    expect(columnDef.hide).toEqual(true);
-    expect(columnDef.width).toEqual(250);
+      expect(columnDef.headerName).toEqual('ASSORTMENT PERIOD');
+      expect(columnDef.resizable).toEqual(true);
+      expect(columnDef.editable).toBeFalsy();
+      expect(columnDef.sortable).toEqual(true);
+      expect(columnDef.filter).toEqual(true);
+      expect(columnDef.hide).toEqual(true);
+      expect(columnDef.width).toEqual(250);
+    });
   });
 
   it('Store Name Column configured correctly', () => {
-    const columnDef: ColDef = component.gridApi.getColumnDef('storeName');
-    expect(columnDef).toBeTruthy();
+    waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
+      const columnDef = component.agGrid.gridOptions.api.getColumnDef('storeName');
+      expect(columnDef).toBeTruthy();
 
-    expect(columnDef.headerName).toEqual('STORE NAME');
-    expect(columnDef.resizable).toEqual(true);
-    expect(columnDef.editable).toBeFalsy();
-    expect(columnDef.sortable).toEqual(true);
-    expect(columnDef.filter).toEqual(true);
-    expect(columnDef.hide).toEqual(true);
-    expect(columnDef.width).toEqual(250);
+      expect(columnDef.headerName).toEqual('STORE NAME');
+      expect(columnDef.resizable).toEqual(true);
+      expect(columnDef.editable).toBeFalsy();
+      expect(columnDef.sortable).toEqual(true);
+      expect(columnDef.filter).toEqual(true);
+      expect(columnDef.hide).toEqual(true);
+      expect(columnDef.width).toEqual(250);
+    });
   });
 
   it('Ad Market Column configured correctly', () => {
-    const columnDef: ColDef = component.gridApi.getColumnDef('adMarket');
-    expect(columnDef).toBeTruthy();
+    waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
+      const columnDef = component.agGrid.gridOptions.api.getColumnDef('adMarket');
+      expect(columnDef).toBeTruthy();
 
-    expect(columnDef.headerName).toEqual('AD MARKET');
-    expect(columnDef.resizable).toEqual(true);
-    expect(columnDef.editable).toBeFalsy();
-    expect(columnDef.sortable).toEqual(true);
-    expect(columnDef.filter).toEqual(true);
-    expect(columnDef.width).toEqual(250);
+      expect(columnDef.headerName).toEqual('AD MARKET');
+      expect(columnDef.resizable).toEqual(true);
+      expect(columnDef.editable).toBeFalsy();
+      expect(columnDef.sortable).toEqual(true);
+      expect(columnDef.filter).toEqual(true);
+      expect(columnDef.width).toEqual(250);
+    });
   });
 
+  // ignored for now, querySelectorAll only captures clusterGroupName and clusterLabel for some reason
   xit('Cluster Label Column edits correctly', () => {
-    const targetCellIndex = 1;
+    waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
+      const targetCellIndex = 1;
 
-    // Test to make sure the value initializes correctly
-    const startingElement = fixture.nativeElement;
-    const startingElements = startingElement.querySelectorAll('.ag-cell-value');
-    expect(startingElements[targetCellIndex].textContent).toEqual('');
+      // Test to make sure the value initializes correctly
+      const startingElement = fixture.nativeElement;
+      const startingElements = startingElement.querySelectorAll('.ag-cell-value');
+      expect(startingElements[targetCellIndex].textContent).toEqual('TEST LABEL');
 
-    // we use the API to start and stop editing - in a real e2e test we could actually double click on the cell etc
-    component.gridApi.startEditingCell({
-      rowIndex: 0,
-      colKey: 'clusterLabel',
-      charPress: 'test 123',
+      // we use the API to start and stop editing - in a real e2e test we could actually double click on the cell etc
+      component.gridApi.startEditingCell({
+        rowIndex: 0,
+        colKey: 'clusterLabel',
+        charPress: 'test 123',
+      });
+
+      const cellDefs = component.agGrid.gridOptions.api.getEditingCells();
+      expect(cellDefs.length).toEqual(1);
+      expect(cellDefs.find(x => x.column.getId() === 'clusterLabel')).toBeTruthy();
+
+      component.agGrid.gridOptions.api.stopEditing();
+
+      // Update the state
+      const newState = getMockState();
+      newState.selectedClusterGroup.clusters[0].clusterLocations[0].clusterLabel = 'test 123';
+      store.setState(newState);
+      store.refreshState();
+      fixture.detectChanges();
+
+      // Test new state
+      const element = fixture.nativeElement;
+      const cellElements = element.querySelectorAll('.ag-cell-value');
+      expect(cellElements[targetCellIndex].textContent).toEqual('test 123');
     });
-
-    const cellDefs = component.gridApi.getEditingCells();
-    expect(cellDefs.length).toEqual(1);
-    expect(cellDefs.find(x => x.column.getId() === 'clusterLabel')).toBeTruthy();
-
-    component.gridApi.stopEditing();
-
-    const element = fixture.nativeElement;
-    const cellElements = element.querySelectorAll('.ag-cell-value');
-    expect(cellElements[targetCellIndex].textContent).toEqual('test 123');
   });
 
-  //Ignored for future changes
+  // ignored for now, querySelectorAll only captures clusterGroupName and clusterLabel for some reason
   xit('Notes Column edits correctly', () => {
-    const targetCellIndex = 3;
+    waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
+      const targetCellIndex = 3;
 
-    // Test to make sure the value initializes correctly
-    const startingElement = fixture.nativeElement;
-    const startingElements = startingElement.querySelectorAll('.ag-cell-value');
-    expect(startingElements[targetCellIndex].textContent).toEqual('');
+      // Test to make sure the value initializes correctly
+      const startingElement = fixture.nativeElement;
+      const startingElements = startingElement.querySelectorAll('.ag-cell-value');
+      expect(startingElements[targetCellIndex].textContent).toEqual('');
 
-    // we use the API to start and stop editing - in a real e2e test we could actually double click on the cell etc
-    component.gridApi.startEditingCell({
-      rowIndex: 0,
-      colKey: 'notes',
-      charPress: 'test notes 123',
+      // we use the API to start and stop editing - in a real e2e test we could actually double click on the cell etc
+      component.agGrid.gridOptions.api.startEditingCell({
+        rowIndex: 0,
+        colKey: 'notes',
+        charPress: 'test notes 123',
+      });
+
+      const cellDefs = component.agGrid.gridOptions.api.getEditingCells();
+      expect(cellDefs.length).toEqual(1);
+      expect(cellDefs.find(x => x.column.getId() === 'notes')).toBeTruthy();
+
+      component.agGrid.gridOptions.api.stopEditing();
+
+      // Update the state
+      const newState = getMockState();
+      newState.selectedClusterGroup.clusters[0].clusterLocations[0].notes = 'test notes 123';
+      store.setState(newState);
+      store.refreshState();
+      fixture.detectChanges();
+
+      // Test new state
+      const element = fixture.nativeElement;
+      const cellElements = element.querySelectorAll('.ag-cell-value');
+      expect(cellElements[targetCellIndex].textContent).toEqual('test notes 123');
     });
-
-    const cellDefs = component.gridApi.getEditingCells();
-    expect(cellDefs.length).toEqual(1);
-    expect(cellDefs.find(x => x.column.getId() === 'notes')).toBeTruthy();
-
-    component.gridApi.stopEditing();
-
-    const element = fixture.nativeElement;
-    const cellElements = element.querySelectorAll('.ag-cell-value');
-    expect(cellElements[targetCellIndex].textContent).toEqual('test notes 123');
   });
 
   //Shelved due to potential race condition. Will re-visit.
@@ -274,18 +367,8 @@ describe('DetailComponent', () => {
     //Grab chain from list this isn't selected chain
     const instances = component.gridApi.getCellEditorInstances();
     expect(instances.length).toEqual(1);
-    const cellEditItem: any = instances[0];
-
-    // var wrapperInstance = cellEditItem.getFrameworkComponentInstance()[0];
-    // wrapperInstance.setValue('GG');
-
-    // dropdownItems.find(item => item.textContent == 'GG').click();
 
     component.gridApi.stopEditing();
-
-    // const element = fixture.nativeElement;
-    // const cellElements = element.querySelectorAll('.ag-cell-value');
-    // expect(cellElements[targetCellIndex].textContent).toEqual('GG');
   });
 
   //Shelved due to potential race condition. Will re-visit.
@@ -317,97 +400,95 @@ describe('DetailComponent', () => {
     const element = fixture.nativeElement;
     const cellElements = element.querySelectorAll('.ag-cell-value');
     expect(cellElements[targetCellIndex].textContent).toEqual('TIER 999');
-    it('Row Group panel is visible', () => {
-      expect(component.rowGroupPanelShow).toEqual('always');
-    });
-
-    it('Side Bar is confugured correctly', () => {
-      const sideBar = component.sideBar;
-      expect(sideBar).toBeTruthy();
-      expect(sideBar.defaultToolPanel).toEqual('columns');
-    });
-
-    it('Side Bar columns tool panel is configured correctly', () => {
-      const toolPanels: any[] = component.sideBar.toolPanels;
-      expect(toolPanels).toBeTruthy();
-      const columnToolBarConfig = toolPanels.find(x => x.id === 'columns');
-      expect(columnToolBarConfig).toBeTruthy();
-      expect(columnToolBarConfig.labelDefault).toEqual('Columns');
-      expect(columnToolBarConfig.toolPanelParams.suppressRowGroups).toEqual(true);
-      expect(columnToolBarConfig.toolPanelParams.suppressValues).toEqual(true);
-      expect(columnToolBarConfig.toolPanelParams.suppressPivots).toEqual(true);
-      expect(columnToolBarConfig.toolPanelParams.suppressPivotMode).toEqual(true);
-      expect(columnToolBarConfig.toolPanelParams.suppressSideButtons).toEqual(false);
-      expect(columnToolBarConfig.toolPanelParams.suppressColumnFilter).toEqual(false);
-      expect(columnToolBarConfig.toolPanelParams.suppressColumnSelectAll).toEqual(true);
-      expect(columnToolBarConfig.toolPanelParams.suppressColumnExpandAll).toEqual(true);
-    });
-
-    it('Side Bar filters tool panel is configured correctly', () => {
-      const toolPanels: any[] = component.sideBar.toolPanels;
-      expect(toolPanels).toBeTruthy();
-      const filtersToolBarConfig = toolPanels.find(x => x.id === 'filters');
-      expect(filtersToolBarConfig).toBeTruthy();
-      expect(filtersToolBarConfig.labelDefault).toEqual('Filters');
-      expect(filtersToolBarConfig.toolPanelParams.suppressRowGroups).toEqual(true);
-      expect(filtersToolBarConfig.toolPanelParams.suppressValues).toEqual(true);
-      expect(filtersToolBarConfig.toolPanelParams.suppressPivots).toEqual(true);
-      expect(filtersToolBarConfig.toolPanelParams.suppressPivotMode).toEqual(true);
-      expect(filtersToolBarConfig.toolPanelParams.suppressSideButtons).toEqual(false);
-      expect(filtersToolBarConfig.toolPanelParams.suppressColumnFilter).toEqual(false);
-      expect(filtersToolBarConfig.toolPanelParams.suppressColumnSelectAll).toEqual(true);
-      expect(filtersToolBarConfig.toolPanelParams.suppressColumnExpandAll).toEqual(true);
-    });
-
-    it('Status bar is configured correctly', () => {
-      const statusPanels: any[] = component.statusBar.statusPanels;
-      const TotalAndFiltersStatusPanelConfig = statusPanels.find(x => x.statusPanel === 'agTotalAndFilteredRowCountComponent' && x.align === 'left');
-      expect(TotalAndFiltersStatusPanelConfig).toBeTruthy();
-      const TotalRowCountStatusPanelConfig = statusPanels.find(x => x.statusPanel === 'agTotalRowCountComponent' && x.align === 'center');
-      expect(TotalRowCountStatusPanelConfig).toBeTruthy();
-      const FilteredRowCountStatusPanelConfig = statusPanels.find(x => x.statusPanel === 'agFilteredRowCountComponent');
-      expect(FilteredRowCountStatusPanelConfig).toBeTruthy();
-      const SelectedRowCountComponentStatusPanelConfig = statusPanels.find(x => x.statusPanel === 'agSelectedRowCountComponent');
-      expect(SelectedRowCountComponentStatusPanelConfig).toBeTruthy();
-      const AggregationComponentStatusPanelConfig = statusPanels.find(x => x.statusPanel === 'agAggregationComponent');
-      expect(AggregationComponentStatusPanelConfig).toBeTruthy();
-    });
   });
 });
 
 // Data Helper methods below
-function getMockSDetailRecords(): IDetailRecord[] {
-  return [
-    {
-      clusterGroupId: '1',
-      clusterId: '1',
-      clusterLocationId: '1',
-      clusterGroupName: 'Mens Running Footwear',
-      clusterName: 'TEST CLUSTER',
-      clusterLabel: '',
-      tier: 'TIER 1',
-      chain: 'DSG',
-      assortmentPeriod: 'bpdddpm0000073',
-      storeNumber: 99,
-      storeName: 'PITTSBURGH, PA',
-      adMarket: 'TEST MARKET 1',
-      city: '',
-
-      climate: 'climate',
-      closeDate: 'closeDate',
-      demographics: 'demographics',
-      districtDescription: 'districtDescription',
-      medianIncome: 'medianIncome',
-      numberOfEntrances: 'numberOfEntrances',
-      numberOfFloors: 'numberOfFloors',
-      openDate: new Date(),
-      regionDescription: 'regionDescription',
-      squareFeet: 999,
-      state: 'PA',
-      storeFormat: 'storeFormat',
-      storeStructure: 'storeStructure',
-      ttlRunRate: 'ttlRunRate',
-      warehouseNumber: 'warehouseNumber',
+function getMockState(): IStoreGroupMgmtState {
+  return {
+    ...initialState,
+    selectedClusterGroup: {
+      clusterGroupAttributes: [],
+      createdAt: null,
+      createdBy: null,
+      lastModifiedBy: null,
+      lastModifiedOn: null,
+      updatedBy: null,
+      updatedOn: null,
+      id: 33,
+      name: 'Mens Running Footwear',
+      description: 'Running',
+      asmtPeriodId: 'bpdddpm0000073',
+      isActive: true,
+      asmtPeriod: {
+        asmtPeriodId: 'bpdddpm0000073',
+        asmtPeriodLabel: '2021_Wks 10-22',
+        startFiscalWeekId: 202110,
+        startFiscalWeek: {
+          fiscalWeekId: 202110,
+          weekBeginDate: new Date('2021-04-04T00:00:00'),
+          weekEndDate: new Date('2021-04-10T00:00:00'),
+        },
+        endFiscalWeekId: 202122,
+        endFiscalWeek: {
+          fiscalWeekId: 202122,
+          weekBeginDate: new Date('2021-06-27T00:00:00'),
+          weekEndDate: new Date('2021-07-03T00:00:00'),
+        },
+        asmtPeriodBeginDate: new Date('2021-04-04T00:00:00'),
+        asmtPeriodEndDate: new Date('2021-07-03T00:00:00'),
+      },
+      clusters: [
+        {
+          id: 11391,
+          name: 'DSG_Tier 1 / PFSFW',
+          tier: 'Tier 1',
+          chain: 'DSG',
+          clusterGroupId: 33,
+          clusterLocations: [
+            {
+              id: 182815,
+              clusterId: 11391,
+              storeNumber: 1506,
+              location: {
+                storeNumber: 1506,
+                storeName: 'ANNAPOLIS-MD',
+                adMarket: 'BALTIMORE',
+                regionDescription: 'Pre-Open Stores',
+                districtDescription: 'Pre-Open Stores',
+                state: 'MD',
+                openDate: new Date('2020-10-13T00:00:00'),
+                closeDate: null,
+                squareFeet: 69000,
+                warehouseNumber: '51',
+                medianIncome: null,
+                storeFormat: null,
+                ttlRunRate: null,
+                demographics: null,
+                storeStructure: null,
+                climate: 'MODERATE',
+                numberOfFloors: '2 FLOORS',
+                numberOfEntrances: '1 ENTRANCE',
+                city: 'ANNAPOLIS',
+              },
+              notes: 'Test Note',
+              clusterLabel: 'Green Tier',
+            },
+          ],
+        },
+      ],
     },
-  ];
+  };
+}
+
+function waitForGridApiToBeAvailable(gridOptions, success) {
+  // recursive without a terminating condition,
+  // but jasmines default test timeout will kill it (jasmine.DEFAULT_TIMEOUT_INTERVAL)
+  if (gridOptions.api) {
+    success();
+  } else {
+    setTimeout(function () {
+      waitForGridApiToBeAvailable(gridOptions, success);
+    }, 500);
+  }
 }
