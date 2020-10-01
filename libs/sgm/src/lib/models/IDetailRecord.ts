@@ -9,4 +9,5 @@ export interface IDetailRecord extends ILocation {
   clusterLabel: string;
   tier: string;
   chain: string;
+  assortmentPeriod: string;
 }

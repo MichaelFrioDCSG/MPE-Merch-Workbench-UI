@@ -51,7 +51,7 @@ describe('DetailComponent', () => {
   });
 
   it('should have the expected number column headers', () => {
-    expect(component.columnDefs.length).toEqual(28);
+    expect(component.columnDefs.length).toEqual(30);
   });
 
   it('Cluster Group Column configured correctly', () => {
@@ -154,6 +154,32 @@ describe('DetailComponent', () => {
     expect(columnDef.editable).toBeFalsy();
     expect(columnDef.sortable).toEqual(true);
     expect(columnDef.filter).toEqual(true);
+    expect(columnDef.width).toEqual(250);
+  });
+
+  it('Assortment Period Column configured correctly', () => {
+    const columnDef: ColDef = component.gridApi.getColumnDef('assortmentPeriod');
+    expect(columnDef).toBeTruthy();
+
+    expect(columnDef.headerName).toEqual('ASSORTMENT PERIOD');
+    expect(columnDef.resizable).toEqual(true);
+    expect(columnDef.editable).toBeFalsy();
+    expect(columnDef.sortable).toEqual(true);
+    expect(columnDef.filter).toEqual(true);
+    expect(columnDef.hide).toEqual(true);
+    expect(columnDef.width).toEqual(250);
+  });
+
+  it('Store Name Column configured correctly', () => {
+    const columnDef: ColDef = component.gridApi.getColumnDef('storeName');
+    expect(columnDef).toBeTruthy();
+
+    expect(columnDef.headerName).toEqual('STORE NAME');
+    expect(columnDef.resizable).toEqual(true);
+    expect(columnDef.editable).toBeFalsy();
+    expect(columnDef.sortable).toEqual(true);
+    expect(columnDef.filter).toEqual(true);
+    expect(columnDef.hide).toEqual(true);
     expect(columnDef.width).toEqual(250);
   });
 
@@ -359,14 +385,15 @@ function getMockSDetailRecords(): IDetailRecord[] {
       clusterLabel: '',
       tier: 'TIER 1',
       chain: 'DSG',
+      assortmentPeriod: 'bpdddpm0000073',
       storeNumber: 99,
+      storeName: 'PITTSBURGH, PA',
       adMarket: 'TEST MARKET 1',
       city: '',
       updatedBy: '',
       updatedOn: new Date(),
       createdBy: '',
       createdAt: new Date(),
-
       climate: 'climate',
       closeDate: 'closeDate',
       demographics: 'demographics',

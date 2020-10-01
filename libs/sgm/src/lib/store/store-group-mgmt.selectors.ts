@@ -2,6 +2,7 @@ import { IStoreGroupMgmtState, storeGroupMgmtFeatureKey } from './store-group-mg
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { IClusterGroup } from '@mpe/shared';
 import { IDetailRecord } from '../models/IDetailRecord';
+import { ClassGetter } from '@angular/compiler/src/output/output_ast';
 
 export const selectAppState = createFeatureSelector<IStoreGroupMgmtState>(storeGroupMgmtFeatureKey);
 export const selectClusterGroups = createSelector(selectAppState, (state: IStoreGroupMgmtState): IClusterGroup[] => state.clusterGroups);
@@ -20,7 +21,9 @@ export const selectSummaryDetails = createSelector(selectAppState, (state: IStor
           clusterLabel: '',
           tier: c.tier,
           chain: c.chain,
+          assortmentPeriod: state.selectedClusterGroup.asmtPeriod.asmtPeriodLabel,
           storeNumber: cl.storeNumber,
+          storeName: cl.location.storeName,
           adMarket: cl.location.adMarket,
           city: cl.location.city,
           climate: cl.location.climate,
