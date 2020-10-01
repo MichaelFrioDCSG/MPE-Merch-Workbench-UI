@@ -96,6 +96,8 @@ export class DetailComponent implements OnInit {
       },
     },
     { headerName: 'STORE NUMBER', field: 'storeNumber', sortable: true, filter: true, width: 250 },
+    { headerName: 'STORE NAME', field: 'storeName', sortable: true, filter: true, width: 250, hide: true },
+    { headerName: 'ASSORTMENT PERIOD', field: 'assortmentPeriod', sortable: true, filter: true, width: 250, hide: true},
     { headerName: 'AD MARKET', field: 'adMarket', sortable: true, filter: true, width: 250, hide: true },
     { headerName: 'CITY', field: 'city', sortable: true, filter: true, width: 250 },
     { headerName: 'CLIMATE', field: 'climate', sortable: true, filter: true, width: 250, hide: true },
@@ -173,7 +175,7 @@ export class DetailComponent implements OnInit {
     ],
   };
 
-  constructor(private store: Store<IStoreGroupMgmtState>, private titleService: Title, private route: ActivatedRoute) { }
+  constructor(private store: Store<IStoreGroupMgmtState>, private titleService: Title, private route: ActivatedRoute) {}
 
   public ngOnInit() {
     this.titleService.setTitle('Store Group Management');

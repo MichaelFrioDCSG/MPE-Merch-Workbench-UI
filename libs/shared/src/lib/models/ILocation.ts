@@ -1,5 +1,6 @@
 export interface ILocation {
   storeNumber: number;
+  storeName: string;
   adMarket: string;
   city: string;
   climate: string;
