@@ -113,17 +113,20 @@ describe('ClusterGroupsService', () => {
 });
 
 function getFakeChainResults(assortmentPeriodId: string, subClassId: string): IStoreInformationListValue {
-  return {
+  const result: IStoreInformationListValue = {
     AssortmentPeriodId: assortmentPeriodId,
     SubClassId: subClassId,
     Value: randomStr(20),
   };
+
+  return result;
 }
 
 function getFakeClusterGroup(): IClusterGroup {
-  return {
+  const result: IClusterGroup = {
     id: 1,
     name: randomStr(8),
+    isActive: true,
     description: randomStr(8),
     asmtPeriodId: randomStr(8),
     asmtPeriod: null,
@@ -145,10 +148,12 @@ function getFakeClusterGroup(): IClusterGroup {
       },
     ],
   };
+
+  return result;
 }
 
 function getFakeIStoreInformation(): IStoreInformation {
-  return {
+  const result: IStoreInformation = {
     locationId: randomNumber(999).toString(),
     subClassId: randomStr(8),
     chain: randomStr(8),
@@ -172,16 +177,20 @@ function getFakeIStoreInformation(): IStoreInformation {
     state: randomStr(8),
     openDate: new Date(),
   };
+
+  return result;
 }
 
 function randomStr(len: number, charString: string = '1234567890abcdefghijklmnopqrstuvwxyz') {
-  let result = '';
+  let result: string = '';
   for (let i = len; i > 0; i--) {
     result += charString[Math.floor(Math.random() * charString.length)];
   }
   return result;
 }
 
-function randomNumber(max: number) {
-  return Math.floor(Math.random() * (max + 1));
+function randomNumber(max: number): number {
+  const result: number = Math.floor(Math.random() * (max + 1));
+
+  return result;
 }
