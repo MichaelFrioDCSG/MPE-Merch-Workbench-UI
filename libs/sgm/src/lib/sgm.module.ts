@@ -21,6 +21,7 @@ import { InputDropdownFilterComponent } from 'libs/shared/src/lib/components/inp
 import { InputMultiselectDropdownComponent } from 'libs/shared/src/lib/components/inputs/input-multiselect-dropdown/input-multiselect-dropdown.component';
 import { DetailComponent } from './components/detail/detail.component';
 import { LandingComponent } from './components/landing/landing.component';
+import { ToastMessageComponent } from 'libs/shared/src/lib/components/toast-message/toast-message.component';
 
 export const sgmRoutes: Route[] = [
   { path: ':id', component: DetailComponent },
@@ -48,9 +49,10 @@ export const sgmRoutes: Route[] = [
     InputMultiselectDropdownComponent,
     InputDropdownFilterComponent,
     DetailComponent,
+    ToastMessageComponent,
   ],
   exports: [LandingComponent, DetailComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [{ provide: ClusterGroupsService, useClass: ClusterGroupsService }],
 })
-export class SgmModule {}
+export class SgmModule { }

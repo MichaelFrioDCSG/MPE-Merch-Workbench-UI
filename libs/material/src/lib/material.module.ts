@@ -1,10 +1,11 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSnackBarModule, MAT_SNACK_BAR_DATA } from '@angular/material/snack-bar';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatChipsModule } from '@angular/material/chips';
@@ -38,8 +39,11 @@ const material_modules = [
 ];
 
 @NgModule({
-  imports: [CommonModule, ...material_modules],
+  imports: [CommonModule, BrowserAnimationsModule, ...material_modules],
   exports: [...material_modules],
-  providers: [{ provide: MAT_DIALOG_DATA, useValue: {} }],
+  providers: [
+    { provide: MAT_DIALOG_DATA, useValue: {} },
+    { provide: MAT_SNACK_BAR_DATA, useValue: {} },
+  ],
 })
 export class MaterialModule {}

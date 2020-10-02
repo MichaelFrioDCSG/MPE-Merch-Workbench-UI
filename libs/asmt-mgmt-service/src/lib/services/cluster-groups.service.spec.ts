@@ -3,7 +3,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { HttpClient } from '@angular/common/http';
 import { of } from 'rxjs';
 
-import { IClusterGroup, IStoreInformation } from '@mpe/shared';
+import { IClusterGroup, IStoreInformation, IStoreInformationListValue } from '@mpe/shared';
 import { ClusterGroupsService } from './cluster-groups.service';
 import { environment } from '@mpe/home/src/environments/environment';
 
@@ -30,7 +30,7 @@ describe('ClusterGroupsService', () => {
 
     // Use the service to get a cluster group
     const spy = jasmine.createSpy('spy');
-    service.GetClusterGroup(1).subscribe(spy);
+    service.getClusterGroup(1).subscribe(spy);
 
     // Verify that the service returned mock data
     expect(spy).toHaveBeenCalledWith(clusterGroupMock);
@@ -46,7 +46,7 @@ describe('ClusterGroupsService', () => {
 
     // Use the service to get a list of cluster groups
     const spy = jasmine.createSpy('spy');
-    service.GetClusterGroups('600').subscribe(spy);
+    service.getClusterGroups('600').subscribe(spy);
 
     // Verify that the service returned mock data
     expect(spy).toHaveBeenCalledWith(clusterGroupsMock);
@@ -62,7 +62,7 @@ describe('ClusterGroupsService', () => {
 
     // Use the service to get a StoreInformation
     const spy = jasmine.createSpy('spy');
-    service.GetStoreInformationByAssortmentPeriodAndSubclass('abc123', ['123-123-123-123', '321-321-321-321']).subscribe(spy);
+    service.getStoreInformationByAssortmentPeriodAndSubclass('abc123', ['123-123-123-123', '321-321-321-321']).subscribe(spy);
 
     // Verify that the service returned mock data
     expect(spy).toHaveBeenCalledWith(resultMock);
@@ -74,23 +74,86 @@ describe('ClusterGroupsService', () => {
     };
     expect(httpClient.post).toHaveBeenCalledWith(`${environment.mpe_api}/api/v1/ClusterGroups/store-information`, body);
   });
+
+  it('GetChains should return a list of chains', () => {
+    // Spy on and mock the HttpClient
+    const resultMock: IStoreInformationListValue[] = [getFakeChainResults('abc123', '123-123-123-123')];
+    spyOn(httpClient, 'get').and.returnValue(of(resultMock));
+
+    // Use the service to get a StoreInformation
+    const spy = jasmine.createSpy('spy');
+    service.getChains('abc123', ['123-123-123-123']).subscribe(spy);
+
+    // Verify that the service returned mock data
+    expect(spy).toHaveBeenCalledWith(resultMock);
+
+    // Verify that the service called the proper URL
+    expect(httpClient.get).toHaveBeenCalledWith(
+      `${environment.mpe_api}/api/v1/ClusterGroups/store-information/chains?assortmentPeriodId=abc123&subClassIds=123-123-123-123`
+    );
+  });
+
+  it('GetTiers should return a list of chains', () => {
+    // Spy on and mock the HttpClient
+    const resultMock: IStoreInformationListValue[] = [getFakeChainResults('abc123', '123-123-123-123')];
+    spyOn(httpClient, 'get').and.returnValue(of(resultMock));
+
+    // Use the service to get a StoreInformation
+    const spy = jasmine.createSpy('spy');
+    service.getTiers('abc123', ['123-123-123-123']).subscribe(spy);
+
+    // Verify that the service returned mock data
+    expect(spy).toHaveBeenCalledWith(resultMock);
+
+    // Verify that the service called the proper URL
+    expect(httpClient.get).toHaveBeenCalledWith(
+      `${environment.mpe_api}/api/v1/ClusterGroups/store-information/tiers?assortmentPeriodId=abc123&subClassIds=123-123-123-123`
+    );
+  });
 });
 
+function getFakeChainResults(assortmentPeriodId: string, subClassId: string): IStoreInformationListValue {
+  const result: IStoreInformationListValue = {
+    AssortmentPeriodId: assortmentPeriodId,
+    SubClassId: subClassId,
+    Value: randomStr(20),
+  };
+
+  return result;
+}
+
 function getFakeClusterGroup(): IClusterGroup {
-  return {
+  const result: IClusterGroup = {
     id: 1,
     name: randomStr(8),
+    isActive: true,
     description: randomStr(8),
     asmtPeriodId: randomStr(8),
     asmtPeriod: null,
     lastModifiedOn: new Date(),
     lastModifiedBy: randomStr(8),
+    createdAt: new Date(),
+    createdBy: randomStr(8),
+    updatedOn: new Date(),
+    updatedBy: randomStr(8),
     clusters: null,
+    clusterGroupAttributes: [
+      {
+        id: 1,
+        classId: randomStr(8),
+        clusterGroupId: 1,
+        deptId: randomStr(8),
+        subclassId: randomStr(8),
+        subdeptId: randomStr(8),
+      },
+    ],
   };
+
+  return result;
 }
 
 function getFakeIStoreInformation(): IStoreInformation {
-  return {
+  const result: IStoreInformation = {
     locationId: randomNumber(999).toString(),
     subClassId: randomStr(8),
     chain: randomStr(8),
@@ -114,6 +177,8 @@ function getFakeIStoreInformation(): IStoreInformation {
     state: randomStr(8),
     openDate: new Date(),
   };
+
+  return result;
 }
 
 function randomStr(len: number, charString: string = '1234567890abcdefghijklmnopqrstuvwxyz') {
@@ -124,6 +189,8 @@ function randomStr(len: number, charString: string = '1234567890abcdefghijklmnop
   return result;
 }
 
-function randomNumber(max: number) {
-  return Math.floor(Math.random() * (max + 1));
+function randomNumber(max: number): number {
+  const result: number = Math.floor(Math.random() * (max + 1));
+
+  return result;
 }
