@@ -10,7 +10,7 @@ export function MSALConfigFactory(): Configuration {
       validateAuthority: true,
       redirectUri: environment.redirectUrl,
       postLogoutRedirectUri: environment.redirectUrl,
-      navigateToLoginRequestUrl: true,
+      navigateToLoginRequestUrl: false,
     },
     cache: {
       storeAuthStateInCookie: false,
@@ -20,6 +20,6 @@ export function MSALConfigFactory(): Configuration {
 
 export function MSALAngularConfigFactory(): MsalAngularConfiguration {
   return {
-    popUp: false,
+    popUp: true,
   };
 }
