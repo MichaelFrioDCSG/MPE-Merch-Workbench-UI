@@ -5,24 +5,35 @@
         <p><span class="hover" [routerLink]="['/sgm']">Summary</span> | Detail</p>
       </div>
     </div>
-    <div class="row mb-2">
-      <div class="col-12">
-        <button mat-raised-button color="primary" class="button-label-dsg mr-2">
-          <mat-icon>save</mat-icon>
-          Save
-        </button>
-      </div>
-    </div>
 
     <div class="row">
-      <div class="col-12">
-        <div id="grid-wrapper" class="grid-wrapper">
-          <ag-grid-angular #agGrid class="ag-theme-alpine" [immutableData]="true"
-            [getRowNodeId]="getRowNodeId" [modules]="modules" [defaultColDef]="defaultColDef" [columnDefs]="columnDefs"
-            [statusBar]="statusBar" [sideBar]="sideBar" [rowGroupPanelShow]="rowGroupPanelShow"
-            [gridOptions]="gridOptions" rowSelection="multiple" (gridReady)="onGridReady($event)">
-          </ag-grid-angular>
+      <div class="col-10">
+        <h1 class="cluster-group-text">Cluster Group Detail</h1>
+      </div>
+      <div class="col-2">
+        <div class="row">
+          <button mat-raised-button color="primary" class="button-label-cancel">
+            <mat-icon>cancel</mat-icon>
+            Cancel
+          </button>
+          <button mat-raised-button color="accent" class="btn-secondary button-label-dsg">
+            <mat-icon>save</mat-icon>
+            Commit
+          </button>
         </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="row">
+    <div class="col-12">
+      <div id="grid-wrapper" class="grid-wrapper">
+        <ag-grid-angular #agGrid class="ag-theme-alpine" [immutableData]="true" [getRowNodeId]="getRowNodeId"
+          [modules]="modules" [defaultColDef]="defaultColDef" [columnDefs]="columnDefs" [statusBar]="statusBar"
+          [sideBar]="sideBar" [rowGroupPanelShow]="rowGroupPanelShow" [gridOptions]="gridOptions"
+          rowSelection="multiple" (gridReady)="onGridReady($event)">
+        </ag-grid-angular>
       </div>
     </div>
   </div>
