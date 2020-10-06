@@ -11,3 +11,7 @@ export const sgmGetDetailsSuccess = createAction('[StoreGroupMgmt] Getting Detai
 export const sgmGetDetailsFailure = createAction('[StoreGroupMgmt] Getting Details Failure', props<{ errors: string[] }>());
 
 export const setDetailValues = createAction('[StoreGroupMgmt] Set Detail Values', props<{ values: IModifiedDetailRecord[] }>());
+
+export const saveDetails = createAction('[StoreGroupMgmt] Save Details');
+export const saveDetailsSuccess = createAction('[StoreGroupMgmt] Save Details Success');
+export const saveDetailsFailure = createAction('[StoreGroupMgmt] Save Details Failure', props<{ errors: string[] }>());
