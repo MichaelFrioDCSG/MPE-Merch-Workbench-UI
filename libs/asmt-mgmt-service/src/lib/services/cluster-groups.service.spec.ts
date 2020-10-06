@@ -110,6 +110,23 @@ describe('ClusterGroupsService', () => {
       `${environment.mpe_api}/api/v1/ClusterGroups/store-information/tiers?assortmentPeriodId=abc123&subClassIds=123-123-123-123`
     );
   });
+
+  it('updateClusterGroups should be called with the correct signature', () => {
+    // Spy on and mock the HttpClient
+    const resultMock: any[] = [];
+    spyOn(httpClient, 'put').and.returnValue(of(resultMock));
+
+    // Use the service to get a StoreInformation
+    const spy = jasmine.createSpy('spy');
+    const body = [getFakeClusterGroup()];
+    service.updateClusterGroups(body).subscribe(spy);
+
+    // Verify that the service returned mock data
+    expect(spy).toHaveBeenCalledWith(resultMock);
+
+    // Verify that the service called the proper URL
+    expect(httpClient.put).toHaveBeenCalledWith(`${environment.mpe_api}/api/v1/ClusterGroups`, { clusterGroups: body });
+  });
 });
 
 function getFakeChainResults(assortmentPeriodId: string, subClassId: string): IStoreInformationListValue {

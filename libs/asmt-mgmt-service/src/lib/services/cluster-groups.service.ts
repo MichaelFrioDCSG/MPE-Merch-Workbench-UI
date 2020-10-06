@@ -12,7 +12,7 @@ import { environment } from '@mpe/home/src/environments/environment';
 export class ClusterGroupsService {
   private endPointUrl = `${environment.mpe_api}/api/v1/ClusterGroups`;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   public getClusterGroups(dept?: string): Observable<IClusterGroup[]> {
     return this.http.get<IClusterGroup[]>(`${this.endPointUrl}${dept ? '/' + dept : ''}`).pipe(map((data: IClusterGroup[]) => data));
@@ -42,6 +42,12 @@ export class ClusterGroupsService {
     return this.http
       .get<IStoreInformationListValue[]>(`${this.endPointUrl}/store-information/tiers?assortmentPeriodId=${assortmentPeriodId}${subClassIdString}`)
       .pipe(map((data: IStoreInformationListValue[]) => data));
+  }
+
+  public updateClusterGroups(clusterGroups: IClusterGroup[]): Observable<any> {
+    return this.http
+      .put<any>(`${this.endPointUrl}`, { clusterGroups: clusterGroups })
+      .pipe(map((data: any) => data));
   }
 }
 
