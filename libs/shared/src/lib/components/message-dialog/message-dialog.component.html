@@ -1,0 +1,9 @@
+<h1 mat-dialog-title style="text-align: center"><b>ATTENTION</b></h1>
+<div mat-dialog-content style="text-align: center">
+  <p *ngFor="let message of data.messages">
+    <b>{{message}}</b>
+  </p>
+</div>
+<div class="col text-center actionPanel" style="text-align: center">
+  <button type="button" mat-raised-button class="btn btn-primary" (click)="onClose()" cdkFocusInitial>Ok</button>
+</div>
