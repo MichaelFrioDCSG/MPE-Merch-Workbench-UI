@@ -268,4 +268,8 @@ export class DetailComponent implements OnInit {
   public onCommitClick() {
     this.store.dispatch(actions.saveDetails());
   }
+
+  public onCancelClick() {
+    this.store.dispatch(actions.sgmGetDetails({ clusterGroupId: this.clusterGroupId }));
+  }
 }
