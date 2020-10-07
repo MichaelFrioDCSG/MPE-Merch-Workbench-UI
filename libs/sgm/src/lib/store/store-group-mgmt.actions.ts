@@ -15,3 +15,5 @@ export const setDetailValues = createAction('[StoreGroupMgmt] Set Detail Values'
 export const saveDetails = createAction('[StoreGroupMgmt] Save Details');
 export const saveDetailsSuccess = createAction('[StoreGroupMgmt] Save Details Success');
 export const saveDetailsFailure = createAction('[StoreGroupMgmt] Save Details Failure', props<{ errors: string[] }>());
+
+export const revertDetails = createAction('[StoreGroupMgmt] Revert Details');

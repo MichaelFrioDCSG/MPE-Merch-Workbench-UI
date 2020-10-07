@@ -78,4 +78,12 @@ export default class StoreGroupMgmtEffects {
       })
     )
   );
+
+  private onRevertDetails = createEffect(() =>
+    this.actions$.pipe(
+      ofType(actions.revertDetails),
+      concatMap(action => of(action).pipe(withLatestFrom(this.store.select(selectors.selectAppState)))),
+      switchMap(([action, state]) => of(actions.sgmGetDetails({ clusterGroupId: state.selectedClusterGroup.id })))
+    )
+  );
 }

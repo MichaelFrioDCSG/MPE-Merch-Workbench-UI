@@ -270,6 +270,6 @@ export class DetailComponent implements OnInit {
   }
 
   public onCancelClick() {
-    this.store.dispatch(actions.sgmGetDetails({ clusterGroupId: this.clusterGroupId }));
+    this.store.dispatch(actions.revertDetails());
   }
 }
