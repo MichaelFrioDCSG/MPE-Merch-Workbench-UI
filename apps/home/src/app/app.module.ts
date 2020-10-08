@@ -5,7 +5,6 @@ import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { AgGridModule } from 'ag-grid-angular';
-import 'ag-grid-enterprise';
 
 import { environment } from '../environments/environment';
 import { AssortmentManagementModule } from '@mpe/assortment-management';
@@ -13,6 +12,7 @@ import appReducer, { appReducerKey } from '../store/reducer';
 import appEffects from '../store/effects';
 
 import { AppComponent } from './app.component';
+import { CommonModule } from '@angular/common';
 import { SharedModule } from '@mpe/shared';
 import { AppRoutingModule } from './app-routing.module';
 import { LandingPageComponent } from './components/landing-page/landing-page.component';
@@ -23,6 +23,7 @@ import { MaterialModule } from '@mpe/material';
 @NgModule({
   declarations: [AppComponent, LandingPageComponent, HeaderComponent],
   imports: [
+    CommonModule,
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,

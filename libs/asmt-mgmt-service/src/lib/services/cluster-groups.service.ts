@@ -44,12 +44,17 @@ export class ClusterGroupsService {
       .pipe(map((data: IStoreInformationListValue[]) => data));
   }
 
-  public updateClusterGroups(clusterGroups: IClusterGroup[]): Observable<any> {
-    return this.http.put<any>(`${this.endPointUrl}`, clusterGroups).pipe(map((data: any) => data));
+  public updateClusterGroups(clusterGroups: IClusterGroup[]): Observable<boolean> {
+    return this.http.put<IServerResponse>(`${this.endPointUrl}`, clusterGroups).pipe(map((data: IServerResponse) => data.isSuccess));
   }
 }
 
 interface IStoreInformationRequest {
   assortmentPeriodId: string;
   subClassIds: string[];
+}
+
+interface IServerResponse {
+  isSuccess: boolean;
+  errorMessages: string[];
 }

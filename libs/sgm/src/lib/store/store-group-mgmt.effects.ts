@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { switchMap, catchError, map, concatMap, withLatestFrom } from 'rxjs/operators';
+import { switchMap, catchError, map, concatMap, withLatestFrom, mergeMap } from 'rxjs/operators';
 
 import * as actions from './store-group-mgmt.actions';
 import * as selectors from './store-group-mgmt.selectors';
-import { of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { IClusterGroup } from '@mpe/shared';
 import { ClusterGroupsService } from '@mpe/AsmtMgmtService';
 import { Action, Store } from '@ngrx/store';
@@ -54,16 +54,15 @@ export default class StoreGroupMgmtEffects {
     this.actions$.pipe(
       ofType(actions.saveDetails),
       concatMap(action => of(action).pipe(withLatestFrom(this.store.select(selectors.selectAppState)))),
-      switchMap(([action, state]) =>
+      mergeMap(([action, state]) =>
         this.clusterGroupsService.updateClusterGroups([state.selectedClusterGroup]).pipe(
-          map(
-            () => actions.saveDetailsSuccess(),
-            catchError(errors => of(actions.saveDetailsFailure(errors)))
-          )
+          map(data => actions.saveDetailsSuccess()),
+          catchError(error => of(actions.saveDetailsFailure({ errors: ['An error has occured while saving the cluster group'] })))
         )
       )
     )
   );
+
   private onSaveDetailsSuccess = createEffect(() =>
     this.actions$.pipe(
       ofType(actions.saveDetailsSuccess),
