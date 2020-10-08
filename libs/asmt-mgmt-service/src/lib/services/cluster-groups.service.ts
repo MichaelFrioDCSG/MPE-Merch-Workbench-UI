@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { IClusterGroup, IStoreInformation, IStoreInformationListValue } from '@mpe/shared';
@@ -45,9 +45,7 @@ export class ClusterGroupsService {
   }
 
   public updateClusterGroups(clusterGroups: IClusterGroup[]): Observable<any> {
-    return this.http
-      .put<any>(`${this.endPointUrl}`, { clusterGroups: clusterGroups })
-      .pipe(map((data: any) => data));
+    return this.http.put<any>(`${this.endPointUrl}`, clusterGroups).pipe(map((data: any) => data));
   }
 }
 

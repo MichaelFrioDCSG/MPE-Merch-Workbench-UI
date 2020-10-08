@@ -53,29 +53,27 @@ export default class StoreGroupMgmtEffects {
   private onSaveDetails = createEffect(() =>
     this.actions$.pipe(
       ofType(actions.saveDetails),
-
       concatMap(action => of(action).pipe(withLatestFrom(this.store.select(selectors.selectAppState)))),
-      switchMap(([action, state]) => {
-        return this.clusterGroupsService.updateClusterGroups([state.selectedClusterGroup]).pipe(
+      switchMap(([action, state]) =>
+        this.clusterGroupsService.updateClusterGroups([state.selectedClusterGroup]).pipe(
           map(
-            (data: any) => actions.saveDetailsSuccess(),
-            catchError(errors => {
-              return of(actions.saveDetailsFailure(errors));
-            })
+            () => actions.saveDetailsSuccess(),
+            catchError(errors => of(actions.saveDetailsFailure(errors)))
           )
-        );
-      }),
-      switchMap((res: Action) => {
-        let dispatchActions = [res];
-        if (res.type === actions.saveDetailsSuccess.type) {
-          dispatchActions.push(sharedActions.showNotificaion({ title: 'Cluster group was saved.', messages: [], isError: false }));
-        } else if (res.type === actions.saveDetailsFailure.type) {
-          const err: any = res;
-          dispatchActions.push(sharedActions.showMessageDialog({ messages: err.errors }));
-        }
-
-        return dispatchActions;
-      })
+        )
+      )
+    )
+  );
+  private onSaveDetailsSuccess = createEffect(() =>
+    this.actions$.pipe(
+      ofType(actions.saveDetailsSuccess),
+      map(action => sharedActions.showNotificaion({ title: 'Cluster group was saved.', messages: [], isError: false }))
+    )
+  );
+  private onSaveDetailsFailure = createEffect(() =>
+    this.actions$.pipe(
+      ofType(actions.saveDetailsFailure, actions.sgmGetDetailsFailure),
+      map(action => sharedActions.showMessageDialog({ messages: action.errors }))
     )
   );
 
