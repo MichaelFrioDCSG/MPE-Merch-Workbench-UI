@@ -4,10 +4,10 @@ import { switchMap, catchError, map, concatMap, withLatestFrom, mergeMap } from 
 
 import * as actions from './store-group-mgmt.actions';
 import * as selectors from './store-group-mgmt.selectors';
-import { Observable, of } from 'rxjs';
+import { of } from 'rxjs';
 import { IClusterGroup } from '@mpe/shared';
 import { ClusterGroupsService } from '@mpe/AsmtMgmtService';
-import { Action, Store } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { IStoreGroupMgmtState } from './store-group-mgmt.reducer';
 import { actions as sharedActions } from '@mpe/shared';
 @Injectable()
