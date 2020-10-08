@@ -144,7 +144,7 @@ function moveLocation(clusterGroup: IClusterGroup, sourceCluster: ICluster, targ
   if (targetCluster === undefined) {
     targetCluster = {
       ...sourceCluster,
-      id: undefined,
+      id: -1,
       [mod.field]: mod.value,
       clusterLocations: [],
     };
@@ -154,7 +154,6 @@ function moveLocation(clusterGroup: IClusterGroup, sourceCluster: ICluster, targ
   // Create target location
   const targetLocation: IClusterLocation = {
     ...sourceLocation,
-    id: undefined,
     clusterId: targetCluster.id,
   };
 
