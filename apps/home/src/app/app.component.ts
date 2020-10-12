@@ -10,8 +10,6 @@ import { IAppState } from '../store/state';
 })
 export class AppComponent implements OnInit {
   public title = 'home';
-  public name: string;
-  public username: string;
   constructor(private store: Store<IAppState>) {}
 
   public ngOnInit(): void {

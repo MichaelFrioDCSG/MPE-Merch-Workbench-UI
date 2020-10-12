@@ -20,14 +20,16 @@ export class LoginComponent implements OnInit {
   public ngOnInit(): void {
     this.userProfile = this.store.pipe(select(AuthSections.selectUserProfile));
     const account = this._msalService.getAccount();
-    this.store.dispatch(
-      AuthActions.setUserProfile({
-        UserProfile: {
-          name: account.name,
-          roles: Array.from(account.idToken.roles),
-          username: account.userName,
-        },
-      })
-    );
+    if (account) {
+      this.store.dispatch(
+        AuthActions.setUserProfile({
+          UserProfile: {
+            name: account.name,
+            roles: Array.from(account.idToken.roles),
+            username: account.userName,
+          },
+        })
+      );
+    }
   }
 }
