@@ -21,9 +21,9 @@ import { SgmModule } from '@mpe/sgm';
 import { AuthModule } from '@mpe/auth';
 import { MaterialModule } from '@mpe/material';
 
-import { MSAL_CONFIG, MSAL_CONFIG_ANGULAR, MsalService, MsalModule } from '@azure/msal-angular';
-import { AuthInterceptor, MSALConfigFactory, MSALAngularConfigFactory } from '@mpe/auth';
+import { AuthInterceptor, authProviders } from '@mpe/auth';
 import { CommonModule } from '@angular/common';
+import { MsalModule } from '@azure/msal-angular';
 
 @NgModule({
   declarations: [AppComponent, LandingPageComponent, HeaderComponent],
@@ -48,7 +48,6 @@ import { CommonModule } from '@angular/common';
     ),
     EffectsModule.forRoot([appEffects]),
     SgmModule,
-    MsalModule,
     AuthModule,
     !environment.production ? StoreDevtoolsModule.instrument() : [],
   ],
@@ -58,18 +57,9 @@ import { CommonModule } from '@angular/common';
       useClass: AuthInterceptor,
       multi: true,
     },
-    {
-      provide: MSAL_CONFIG,
-      useFactory: MSALConfigFactory,
-    },
-    {
-      provide: MSAL_CONFIG_ANGULAR,
-      useFactory: MSALAngularConfigFactory,
-    },
-    MsalService,
+    ...authProviders,
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  exports: [LandingPageComponent, HeaderComponent],
 })
 export class AppModule {}
