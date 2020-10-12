@@ -5,7 +5,6 @@ import { IUserProfile } from '../../models/IUserProfile';
 import { IAuthState } from '../../store/models/IAuthState';
 import * as AuthSections from '../../store/auth.state';
 import * as AuthActions from '../../store/auth.actions';
-import { NavigationEnd, Router } from '@angular/router';
 import { MsalService } from '@azure/msal-angular';
 
 @Component({
@@ -16,7 +15,7 @@ import { MsalService } from '@azure/msal-angular';
 export class LoginComponent implements OnInit {
   public userProfile: Observable<IUserProfile>;
 
-  constructor(private store: Store<IAuthState>, private router: Router, private _msalService: MsalService) {}
+  constructor(private store: Store<IAuthState>, private _msalService: MsalService) {}
 
   public ngOnInit(): void {
     this.userProfile = this.store.pipe(select(AuthSections.selectUserProfile));

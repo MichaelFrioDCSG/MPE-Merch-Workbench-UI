@@ -1,4 +1,4 @@
-import { environment } from '../../../../apps/home/src/environments/environment';
+import { environment } from '@mpe/home/src/environments/environment';
 import { Configuration } from 'msal';
 import { MsalAngularConfiguration } from '@azure/msal-angular';
 

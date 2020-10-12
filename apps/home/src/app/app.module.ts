@@ -22,8 +22,7 @@ import { AuthModule } from '@mpe/auth';
 import { MaterialModule } from '@mpe/material';
 
 import { MSAL_CONFIG, MSAL_CONFIG_ANGULAR, MsalService, MsalModule } from '@azure/msal-angular';
-import { MSALConfigFactory, MSALAngularConfigFactory } from '../../../../libs/auth/src/lib/msal-configuration';
-import { AuthInterceptor } from '../../../../libs/auth/src/lib/interceptors/auth-interceptor';
+import { AuthInterceptor, MSALConfigFactory, MSALAngularConfigFactory } from '@mpe/auth';
 import { CommonModule } from '@angular/common';
 
 @NgModule({
