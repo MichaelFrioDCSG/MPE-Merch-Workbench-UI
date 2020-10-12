@@ -83,9 +83,7 @@ export class LandingComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy() {}
 
-  public ngOnInit() {
-    this.titleService.setTitle('Store Group Management');
-  }
+  public ngOnInit() {}
 
   public getSelectedRows() {
     const selectedNodes = this.agGrid.api.getSelectedNodes();

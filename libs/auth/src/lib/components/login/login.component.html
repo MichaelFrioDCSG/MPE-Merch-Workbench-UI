@@ -1,0 +1,13 @@
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="profile-loader col-md-12" *ngIf="userProfile">
+        <h1>You are logged in as</h1>
+        <p>
+          User: <strong>{{ (userProfile | async)?.name }} - {{ (userProfile | async)?.username }}</strong>
+        </p>
+        <button mat-raised-button class="btn btn-danger pull-center" (click)="onLogoutClick()">Logout</button>
+      </div>
+    </div>
+  </div>
+</div>

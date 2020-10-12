@@ -33,7 +33,6 @@ export const sgmRoutes: Route[] = [
     CommonModule,
     RouterModule,
     BrowserModule,
-    HttpClientModule,
     BrowserAnimationsModule,
     FormsModule,
     ReactiveFormsModule,

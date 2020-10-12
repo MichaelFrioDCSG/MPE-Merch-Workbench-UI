@@ -1,5 +1,5 @@
-import { NgModule } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
@@ -18,14 +18,18 @@ import { AppRoutingModule } from './app-routing.module';
 import { LandingPageComponent } from './components/landing-page/landing-page.component';
 import { HeaderComponent } from './components/header/header.component';
 import { SgmModule } from '@mpe/sgm';
+import { AuthModule } from '@mpe/auth';
 import { MaterialModule } from '@mpe/material';
 
 import { MSAL_CONFIG, MSAL_CONFIG_ANGULAR, MsalService, MsalModule } from '@azure/msal-angular';
 import { MSALConfigFactory, MSALAngularConfigFactory } from '../../../../libs/auth/src/lib/msal-configuration';
+import { AuthInterceptor } from '../../../../libs/auth/src/lib/interceptors/auth-interceptor';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [AppComponent, LandingPageComponent, HeaderComponent],
   imports: [
+    CommonModule,
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
@@ -46,9 +50,15 @@ import { MSALConfigFactory, MSALAngularConfigFactory } from '../../../../libs/au
     EffectsModule.forRoot([appEffects]),
     SgmModule,
     MsalModule,
+    AuthModule,
     !environment.production ? StoreDevtoolsModule.instrument() : [],
   ],
   providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true,
+    },
     {
       provide: MSAL_CONFIG,
       useFactory: MSALConfigFactory,
@@ -60,6 +70,7 @@ import { MSALConfigFactory, MSALAngularConfigFactory } from '../../../../libs/au
     MsalService,
   ],
   bootstrap: [AppComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   exports: [LandingPageComponent, HeaderComponent],
 })
 export class AppModule {}

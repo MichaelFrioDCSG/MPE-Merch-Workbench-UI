@@ -22,8 +22,4 @@ export class HeaderComponent implements OnInit {
       }
     });
   }
-
-  public getTitle() {
-    return this.titleService.getTitle();
-  }
 }
