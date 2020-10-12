@@ -152,7 +152,7 @@ jobs:
                 cd MerchWorkBenchMaster
                 npm install --unsafe-perm --quiet
                 npx nx test sgm --karma-config=karma-ci.conf.js --no-progress
-  - name: Unit-Test-Store-Group-Management
+  - name: Unit-Test-Auth
       public: true
       plan:
         - get: MerchWorkBenchMaster
