@@ -6,25 +6,16 @@
       </div>
     </div>
 
-    <div class="row">
-      <div class="col-10">
-        <h1 class="cluster-group-text">Cluster Group Detail</h1>
+    <div class="row grid-header">
+      <div class="col-9 grid-header-text">
+        Cluster Group Detail
       </div>
-      <div class="col-2">
-        <div class="row">
-          <button mat-raised-button color="primary" class="button-label-cancel" (click)="onCancelClick()">
-            <mat-icon>cancel</mat-icon>
-            Cancel
-          </button>
-          <button mat-raised-button color="accent" class="btn-secondary button-label-dsg" (click)="onCommitClick()">
-            <mat-icon>save</mat-icon>
-            Commit
-          </button>
-        </div>
+      <div class="col-3 actionButons">
+        <button mat-flat-button class="btn-primary" (click)="onCancelClick()">Cancel</button>
+        <button mat-flat-button class="btn-secondary" (click)="onCommitClick()">Commit</button>
       </div>
     </div>
   </div>
-
 
   <div class="row">
     <div class="col-12">

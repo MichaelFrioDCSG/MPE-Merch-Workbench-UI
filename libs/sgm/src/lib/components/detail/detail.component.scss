@@ -1,6 +1,63 @@
-.breadcrumb-dsg {
+button {
   font-family: Archivo;
   font-style: normal;
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 16px;
+  /* or 100% */
+
+  letter-spacing: 1.5px;
+}
+
+button:hover {
+  cursor: pointer;
+  text-decoration: underline solid;
+}
+
+button:disabled:hover {
+  cursor: default;
+  text-decoration: inherit;
+  border: inherit;
+}
+
+button.btn-primary {
+  color: #191f1c;
+  background-color: #c8c8c8;
+}
+
+button.btn-primary:disabled {
+  color: #797979;
+  background-color: #c8c8c8;
+}
+
+button.btn-primary:hover {
+  text-decoration-color: #000000;
+  border: 1px solid black;
+}
+
+button.btn-secondary {
+  color: #ffffff;
+  background-color: #c57135;
+}
+
+button.btn-secondary:disabled {
+  color: #797979;
+  border: 2px solid #c8c8c8;
+  background-color: #ffffff;
+}
+
+button.btn-secondary:hover {
+  text-decoration-color: #ffffff;
+  border: 1px solid #ffffff;
+}
+
+.main-content {
+  font-family: Archivo;
+  font-style: normal;
+}
+
+.breadcrumb-dsg {
+  font-family: Archivo;
   font-weight: bold;
   font-size: 14px;
   line-height: 15px;
@@ -10,71 +67,42 @@
   color: #000000;
 }
 
-.button-label-dsg {
-  /* Label/Large 16px */
+.grid-header {
+  background-color: #c8c8c8;
+  line-height: 22px;
+
+  height: 37px;
+}
+
+.grid-header-text {
   font-family: Archivo;
   font-style: normal;
   font-weight: bold;
-  font-size: 16px;
-  line-height: 20px;
-  /* or 100% */
-  display: flex;
-  margin-bottom: 10px;
-  margin-right: 10px;
-  align-items: center;
-  text-align: center;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  height: 39px;
-  
+  font-size: 20px;
+  line-height: 22px;
+
+  letter-spacing: 0.297825px;
+  color: #000000;
+
+  margin-top: 7px;
 }
 
-.button-label-cancel {
-  font-family: Archivo;
-  font-style: normal;
-  font-weight: bold;
-  font-size: 16px;
-  line-height: 20px;
-  /* or 100% */
-  display: flex;
-  margin-bottom: 10px;
-  margin-right: 10px;
-  align-items: center;
-  text-align: center;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  height: 39px;
-  /* Gray/Black - 900 */
-  background-color: #C8C8C8;
-  color: #191F1C;
-}
+.grid-header .actionButons {
+  text-align: right;
+  padding-right: 0px;
 
-.grid-wrapper {
-  min-width: 95vw;
-  max-width: 98vw;
-  display: flex;
-  justify-content: left;
+  button {
+    display: inline;
+    width: 132px;
+    height: 37px;
+    margin-right: 0px;
+    border-radius: 0px;
+    text-transform: uppercase;
+  }
 }
 
 .hover:hover {
   text-decoration: underline;
   text-decoration-color: #000000;
   cursor: pointer;
-}
-
-.cluster-group-text {
-  font-family: Archivo;
-  font-style: normal;
-  font-weight: bold;
-  font-size: 20px;
-  line-height: 22px;
-  /* identical to box height */
-
-  letter-spacing: 0.297825px;
-
-  color: #000000;
-}
-
-.btn-secondary {
-  background-color: #BB5811; 
 }
