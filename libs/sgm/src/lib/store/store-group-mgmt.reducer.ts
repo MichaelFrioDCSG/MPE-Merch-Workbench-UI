@@ -7,6 +7,7 @@ export interface IStoreGroupMgmtState {
   clusterGroups: IClusterGroup[];
   selectedClusterGroup: IClusterGroup;
   loading: boolean;
+  edited: boolean;
   getSummaryErrorMessages: string[];
   getDetailsErrorMessages: string[];
 }
@@ -15,6 +16,7 @@ export const initialState: IStoreGroupMgmtState = {
   clusterGroups: [],
   selectedClusterGroup: null,
   loading: false,
+  edited: false,
   getSummaryErrorMessages: [],
   getDetailsErrorMessages: [],
 };
@@ -63,6 +65,7 @@ const reducer$ = createReducer(
       ...state,
       selectedClusterGroup: action.clusterGroup,
       loading: false,
+      edited: false,
       getDetailsErrorMessages: [],
     })
   ),
@@ -80,6 +83,7 @@ const reducer$ = createReducer(
     (state: IStoreGroupMgmtState, action): IStoreGroupMgmtState => ({
       ...state,
       loading: false,
+      edited: action.values.length > 0,
       selectedClusterGroup: updateSelectedClusterGroupRecords(state, action.values),
     })
   )

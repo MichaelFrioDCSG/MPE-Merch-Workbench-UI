@@ -46,3 +46,4 @@ export const selectSummaryDetails = createSelector(selectAppState, (state: IStor
   }
   return details;
 });
+export const selectDetailsEdited = createSelector(selectAppState, (state: IStoreGroupMgmtState): boolean => state.edited);

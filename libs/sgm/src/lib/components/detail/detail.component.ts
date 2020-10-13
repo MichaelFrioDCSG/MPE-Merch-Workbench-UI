@@ -31,6 +31,7 @@ export class DetailComponent implements OnInit {
     resizable: true,
   };
 
+  public edited$: Observable<boolean>;
   public tiers: string[] = ['ECOMM', 'Tier 1', 'Tier 2', 'Tier 3', 'Tier 4', 'Tier 5', 'Z'];
   public chains: string[] = ['DSG', 'GG', 'FS'];
 
@@ -252,6 +253,8 @@ export class DetailComponent implements OnInit {
       this.gridApi.setRowData(details);
       this.gridApi.refreshCells();
     });
+
+    this.edited$ = this.store.select(selectors.selectDetailsEdited);
   }
 
   public getRowNodeId = (row: IDetailRecord) => `${row.clusterGroupId}_${row.chain}_${row.tier}_${row.storeNumber}`;
