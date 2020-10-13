@@ -262,7 +262,7 @@ export class DetailComponent implements OnInit {
       return '';
     }
     const data: IDetailRecord = params.data;
-    return [data.chain, data.tier].join(' / ');
+    return [data.chain, data.tier].join('_');
   }
 
   public onCommitClick() {
