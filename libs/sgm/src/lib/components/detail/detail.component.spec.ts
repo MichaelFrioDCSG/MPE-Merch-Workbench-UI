@@ -1,22 +1,24 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { AgGridModule } from 'ag-grid-angular';
+import { MemoizedSelector } from '@ngrx/store';
 import { FormsModule } from '@angular/forms';
 import { MaterialModule } from '@mpe/material';
 
 import { IStoreGroupMgmtState, initialState } from '../../store/store-group-mgmt.reducer';
+import * as selectors from '../../store/store-group-mgmt.selectors';
 
 import { DetailComponent } from './detail.component';
 import { ClusterGroupsService } from '@mpe/AsmtMgmtService';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import 'ag-grid-enterprise';
+import { By } from '@angular/platform-browser';
 
 describe('DetailComponent', () => {
   let component: DetailComponent;
   let fixture: ComponentFixture<DetailComponent>;
-
   let store: MockStore;
 
   beforeEach(() => {
@@ -401,12 +403,51 @@ describe('DetailComponent', () => {
     const cellElements = element.querySelectorAll('.ag-cell-value');
     expect(cellElements[targetCellIndex].textContent).toEqual('TIER 999');
   });
+
+  it('Commit button should be disabled when no modificaions', () => {
+    // TODO: This needs to later interact with state
+    component.actionsDisabled = true;
+    store.refreshState();
+    fixture.detectChanges();
+
+    const btn = query('[data-test="commit-button"]');
+    expect(btn.disabled).toEqual(true);
+  });
+
+  it('Revert button should be disabled when no modificaions', () => {
+    // TODO: This needs to later interact with state
+    component.actionsDisabled = true;
+    store.refreshState();
+    fixture.detectChanges();
+
+    const btn = query('[data-test="revert-button"]');
+    expect(btn.disabled).toEqual(true);
+  });
+
+  it('Commit button should be enabled when there are modificaions', () => {
+    store.refreshState();
+    fixture.detectChanges();
+
+    const btn = query('[data-test="commit-button"]');
+    expect(btn.disabled).toEqual(false);
+  });
+
+  it('Revert button should be enabled when there are modificaions', () => {
+    store.refreshState();
+    fixture.detectChanges();
+
+    const btn = query('[data-test="revert-button"]');
+    expect(btn.disabled).toEqual(false);
+  });
+
+  const query = selector => fixture.debugElement.queryAll(By.css(selector))[0].nativeElement;
 });
 
 // Data Helper methods below
 function getMockState(): IStoreGroupMgmtState {
   return {
     ...initialState,
+    edited: false,
     selectedClusterGroup: {
       clusterGroupAttributes: [],
       createdAt: null,

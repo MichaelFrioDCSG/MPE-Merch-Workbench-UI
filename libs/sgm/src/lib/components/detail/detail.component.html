@@ -11,8 +11,8 @@
         Cluster Group Detail
       </div>
       <div class="col-3 actionButons">
-        <button mat-flat-button class="btn-primary" (click)="onCancelClick()"
-          [disabled]="actionsDisabled">Cancel</button>
+        <button mat-flat-button class="btn-primary" (click)="onCancelClick()" [disabled]="actionsDisabled"
+          data-test="revert-button">Cancel</button>
         <button mat-flat-button class="btn-secondary" (click)="onCommitClick()" [disabled]="actionsDisabled"
           data-test="commit-button">Commit</button>
       </div>
