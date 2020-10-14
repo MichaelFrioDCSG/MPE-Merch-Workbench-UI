@@ -439,6 +439,7 @@ describe('DetailComponent', () => {
   });
 
   const query = selector => fixture.debugElement.queryAll(By.css(selector))[0].nativeElement;
+  const queryAll = selector => fixture.debugElement.queryAll(By.css(selector)).map(element => element.nativeElement);
 });
 
 // Data Helper methods below
