@@ -3,15 +3,13 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { AgGridModule } from 'ag-grid-angular';
-import { MemoizedSelector } from '@ngrx/store';
 import { FormsModule } from '@angular/forms';
 import { MaterialModule } from '@mpe/material';
+import { ClusterGroupsService } from '@mpe/AsmtMgmtService';
 
 import { IStoreGroupMgmtState, initialState } from '../../store/store-group-mgmt.reducer';
-import * as selectors from '../../store/store-group-mgmt.selectors';
 
 import { DetailComponent } from './detail.component';
-import { ClusterGroupsService } from '@mpe/AsmtMgmtService';
 
 import 'ag-grid-enterprise';
 import { By } from '@angular/platform-browser';
