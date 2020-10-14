@@ -12,9 +12,9 @@
       </div>
       <div class="col-3 actionButons">
         <button mat-flat-button class="btn-primary" (click)="onCancelClick()"
-          [disabled]="!(edited$ | async)">Cancel</button>
-        <button mat-flat-button class="btn-secondary" (click)="onCommitClick()"
-          [disabled]="!(edited$ | async)">Commit</button>
+          [disabled]="actionsDisabled">Cancel</button>
+        <button mat-flat-button class="btn-secondary" (click)="onCommitClick()" [disabled]="actionsDisabled"
+          data-test="commit-button">Commit</button>
       </div>
     </div>
   </div>

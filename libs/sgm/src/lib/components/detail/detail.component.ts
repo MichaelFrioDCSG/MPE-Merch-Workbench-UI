@@ -31,7 +31,8 @@ export class DetailComponent implements OnInit {
     resizable: true,
   };
 
-  public edited$: Observable<boolean>;
+  public actionsDisabled = false;
+
   public tiers: string[] = ['ECOMM', 'Tier 1', 'Tier 2', 'Tier 3', 'Tier 4', 'Tier 5', 'Z'];
   public chains: string[] = ['DSG', 'GG', 'FS'];
 
@@ -254,7 +255,9 @@ export class DetailComponent implements OnInit {
       this.gridApi.refreshCells();
     });
 
-    this.edited$ = this.store.select(selectors.selectDetailsEdited);
+    this.store.select(selectors.selectDetailsEdited).subscribe(val => {
+      this.actionsDisabled = !val;
+    });
   }
 
   public getRowNodeId = (row: IDetailRecord) => `${row.clusterGroupId}_${row.chain}_${row.tier}_${row.storeNumber}`;
@@ -269,10 +272,12 @@ export class DetailComponent implements OnInit {
   }
 
   public onCommitClick() {
+    this.actionsDisabled = true;
     this.store.dispatch(actions.saveDetails());
   }
 
   public onCancelClick() {
+    this.actionsDisabled = true;
     this.store.dispatch(actions.revertDetails());
   }
 }
