@@ -14,7 +14,9 @@
         <button mat-flat-button class="btn-primary" (click)="onCancelClick()" [disabled]="actionsDisabled"
           data-test="revert-button">Cancel</button>
         <button mat-flat-button class="btn-secondary" (click)="onCommitClick()" [disabled]="actionsDisabled"
-          data-test="commit-button">Commit</button>
+          data-test="commit-button">
+          <mat-icon>save</mat-icon> Commit
+        </button>
       </div>
     </div>
   </div>
