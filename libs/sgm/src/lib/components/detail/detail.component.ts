@@ -26,7 +26,7 @@ export class DetailComponent implements OnInit {
   public get clusterGroupId(): number {
     return parseInt(this.route.snapshot.paramMap.get('id'), 10);
   }
-
+  public selectedClusterGroupId: number;
   public defaultColDef: any = {
     resizable: true,
   };
@@ -245,11 +245,19 @@ export class DetailComponent implements OnInit {
 
   public ngOnInit() {
     this.titleService.setTitle('Store Group Management');
+
+    this.store.select(selectors.selectClusterGroupId).subscribe(clusterGroupId => {
+      this.selectedClusterGroupId = clusterGroupId;
+    });
   }
 
   public onGridReady(params: any) {
     this.gridApi = params.api;
-    this.store.dispatch(actions.sgmGetDetails({ clusterGroupId: this.clusterGroupId }));
+
+    if (this.clusterGroupId !== this.selectedClusterGroupId) {
+      this.store.dispatch(actions.sgmGetDetails({ clusterGroupId: this.clusterGroupId }));
+    }
+
     this.store.select(selectors.selectSummaryDetails).subscribe(details => {
       this.gridApi.setRowData(details);
       this.gridApi.refreshCells();
