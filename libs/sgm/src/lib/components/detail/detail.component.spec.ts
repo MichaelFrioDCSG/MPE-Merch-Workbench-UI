@@ -33,6 +33,7 @@ describe('DetailComponent', () => {
     component = fixture.componentInstance;
 
     // Run component life cycle events
+    store.refreshState();
     fixture.detectChanges();
   });
 
@@ -88,20 +89,6 @@ describe('DetailComponent', () => {
     expect(filtersToolBarConfig.toolPanelParams.suppressColumnFilter).toEqual(false);
     expect(filtersToolBarConfig.toolPanelParams.suppressColumnSelectAll).toEqual(true);
     expect(filtersToolBarConfig.toolPanelParams.suppressColumnExpandAll).toEqual(true);
-  });
-
-  it('Status bar is configured correctly', () => {
-    const statusPanels: any[] = component.statusBar.statusPanels;
-    const TotalAndFiltersStatusPanelConfig = statusPanels.find(x => x.statusPanel === 'agTotalAndFilteredRowCountComponent' && x.align === 'left');
-    expect(TotalAndFiltersStatusPanelConfig).toBeTruthy();
-    const TotalRowCountStatusPanelConfig = statusPanels.find(x => x.statusPanel === 'agTotalRowCountComponent' && x.align === 'center');
-    expect(TotalRowCountStatusPanelConfig).toBeTruthy();
-    const FilteredRowCountStatusPanelConfig = statusPanels.find(x => x.statusPanel === 'agFilteredRowCountComponent');
-    expect(FilteredRowCountStatusPanelConfig).toBeTruthy();
-    const SelectedRowCountComponentStatusPanelConfig = statusPanels.find(x => x.statusPanel === 'agSelectedRowCountComponent');
-    expect(SelectedRowCountComponentStatusPanelConfig).toBeTruthy();
-    const AggregationComponentStatusPanelConfig = statusPanels.find(x => x.statusPanel === 'agAggregationComponent');
-    expect(AggregationComponentStatusPanelConfig).toBeTruthy();
   });
 
   it('Cluster Group Column configured correctly', () => {

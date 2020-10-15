@@ -8,7 +8,7 @@
 
     <div class="row grid-header">
       <div class="col-9 grid-header-text">
-        Cluster Group Detail
+        Data Results ({{ totalRecords}})
       </div>
       <div class="col-3 actionButons">
         <button mat-flat-button class="btn-primary" (click)="onCancelClick()" [disabled]="actionsDisabled"
@@ -25,9 +25,9 @@
     <div class="col-12">
       <div id="grid-wrapper" class="grid-wrapper">
         <ag-grid-angular #agGrid class="ag-theme-alpine" [immutableData]="true" [getRowNodeId]="getRowNodeId"
-          [modules]="modules" [defaultColDef]="defaultColDef" [columnDefs]="columnDefs" [statusBar]="statusBar"
-          [sideBar]="sideBar" [rowGroupPanelShow]="rowGroupPanelShow" [gridOptions]="gridOptions"
-          rowSelection="multiple" (gridReady)="onGridReady($event)">
+          [modules]="modules" [defaultColDef]="defaultColDef" [columnDefs]="columnDefs" [sideBar]="sideBar"
+          [rowGroupPanelShow]="rowGroupPanelShow" [gridOptions]="gridOptions" rowSelection="multiple"
+          (gridReady)="onGridReady($event)">
         </ag-grid-angular>
       </div>
     </div>

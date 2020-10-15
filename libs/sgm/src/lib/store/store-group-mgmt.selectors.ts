@@ -47,4 +47,4 @@ export const selectSummaryDetails = createSelector(selectAppState, (state: IStor
   return details;
 });
 export const selectDetailsEdited = createSelector(selectAppState, (state: IStoreGroupMgmtState): boolean => state.edited);
-export const selectClusterGroupId = createSelector(selectAppState, (state: IStoreGroupMgmtState): number => state.selectedClusterGroup?.id);
+export const selectClusterGroupId = createSelector(selectAppState, (state: IStoreGroupMgmtState): number => state?.selectedClusterGroup?.id);

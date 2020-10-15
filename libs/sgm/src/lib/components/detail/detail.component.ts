@@ -27,6 +27,7 @@ export class DetailComponent implements OnInit {
     return parseInt(this.route.snapshot.paramMap.get('id'), 10);
   }
   public selectedClusterGroupId: number;
+  public totalRecords: number;
   public defaultColDef: any = {
     resizable: true,
   };
@@ -225,22 +226,6 @@ export class DetailComponent implements OnInit {
     defaultToolPanel: 'columns',
   };
 
-  public statusBar: any = {
-    statusPanels: [
-      {
-        statusPanel: 'agTotalAndFilteredRowCountComponent',
-        align: 'left',
-      },
-      {
-        statusPanel: 'agTotalRowCountComponent',
-        align: 'center',
-      },
-      { statusPanel: 'agFilteredRowCountComponent' },
-      { statusPanel: 'agSelectedRowCountComponent' },
-      { statusPanel: 'agAggregationComponent' },
-    ],
-  };
-
   constructor(private store: Store<IStoreGroupMgmtState>, private titleService: Title, private route: ActivatedRoute) {}
 
   public ngOnInit() {
@@ -259,6 +244,7 @@ export class DetailComponent implements OnInit {
     }
 
     this.store.select(selectors.selectSummaryDetails).subscribe(details => {
+      this.totalRecords = details.length;
       this.gridApi.setRowData(details);
       this.gridApi.refreshCells();
     });
