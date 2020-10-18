@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
+import { By } from '@angular/platform-browser';
 import { AgGridModule } from 'ag-grid-angular';
 import { FormsModule } from '@angular/forms';
 import { MaterialModule } from '@mpe/material';
@@ -12,7 +13,6 @@ import { IStoreGroupMgmtState, initialState } from '../../store/store-group-mgmt
 import { DetailComponent } from './detail.component';
 
 import 'ag-grid-enterprise';
-import { By } from '@angular/platform-browser';
 
 describe('DetailComponent', () => {
   let component: DetailComponent;
@@ -31,6 +31,8 @@ describe('DetailComponent', () => {
     store = TestBed.inject(MockStore);
     fixture = TestBed.createComponent(DetailComponent);
     component = fixture.componentInstance;
+
+    store.setState(getMockState());
 
     // Run component life cycle events
     store.refreshState();
@@ -68,7 +70,7 @@ describe('DetailComponent', () => {
     expect(columnToolBarConfig.toolPanelParams.suppressRowGroups).toEqual(true);
     expect(columnToolBarConfig.toolPanelParams.suppressValues).toEqual(true);
     expect(columnToolBarConfig.toolPanelParams.suppressPivots).toEqual(true);
-    expect(columnToolBarConfig.toolPanelParams.suppressPivotMode).toEqual(true);
+    expect(columnToolBarConfig.toolPanelParams.suppressPivotMode).toEqual(false);
     expect(columnToolBarConfig.toolPanelParams.suppressSideButtons).toEqual(false);
     expect(columnToolBarConfig.toolPanelParams.suppressColumnFilter).toEqual(false);
     expect(columnToolBarConfig.toolPanelParams.suppressColumnSelectAll).toEqual(true);
@@ -423,6 +425,24 @@ describe('DetailComponent', () => {
 
     const btn = query('[data-test="revert-button"]');
     expect(btn.disabled).toEqual(false);
+  });
+
+  it('Shown records should be shown correctly', () => {
+    component.shownRecords = 45;
+    store.refreshState();
+    fixture.detectChanges();
+
+    const span = query('[data-test="shown-records"]');
+    expect(span.textContent).toEqual('45');
+  });
+
+  it('Total records should be shown correctly', () => {
+    component.totalRecords = 87;
+    store.refreshState();
+    fixture.detectChanges();
+
+    const span = query('[data-test="total-records"]');
+    expect(span.textContent).toEqual('87');
   });
 
   const query = selector => fixture.debugElement.queryAll(By.css(selector))[0].nativeElement;

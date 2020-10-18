@@ -14,7 +14,8 @@
 
     <div class="row grid-header">
       <div class="col-9 grid-header-text">
-        Data Results ({{ totalRecords}})
+        Data Results (<span data-test="shown-records">{{ shownRecords}}</span> of <span
+          data-test="total-records">{{ totalRecords}}</span>)
       </div>
       <div class="col-3 actionButons">
         <button mat-flat-button class="btn-primary" (click)="onCancelClick()" [disabled]="actionsDisabled"
@@ -33,7 +34,7 @@
         <ag-grid-angular #agGrid class="ag-theme-alpine" [immutableData]="true" [getRowNodeId]="getRowNodeId"
           [modules]="modules" [defaultColDef]="defaultColDef" [columnDefs]="columnDefs" [sideBar]="sideBar"
           [rowGroupPanelShow]="rowGroupPanelShow" [gridOptions]="gridOptions" rowSelection="multiple"
-          (gridReady)="onGridReady($event)">
+          (gridReady)="onGridReady($event)" (filterChanged)="onFilterChanged($event)">
         </ag-grid-angular>
       </div>
     </div>

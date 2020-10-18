@@ -26,6 +26,7 @@ export class DetailComponent implements OnInit {
   public get clusterGroupId(): number {
     return parseInt(this.route.snapshot.paramMap.get('id'), 10);
   }
+  public shownRecords: number;
   public totalRecords: number;
   public defaultColDef: any = {
     resizable: true,
@@ -240,11 +241,17 @@ export class DetailComponent implements OnInit {
       this.totalRecords = details.length;
       this.gridApi.setRowData(details);
       this.gridApi.refreshCells();
+
+      this.shownRecords = this.gridApi.getDisplayedRowCount();
     });
 
     this.store.select(selectors.selectDetailsEdited).subscribe(val => {
       this.actionsDisabled = !val;
     });
+  }
+
+  public onFilterChanged(params: any) {
+    this.shownRecords = this.gridApi.getDisplayedRowCount();
   }
 
   public getRowNodeId = (row: IDetailRecord) => `${row.clusterGroupId}_${row.chain}_${row.tier}_${row.storeNumber}`;
