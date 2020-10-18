@@ -119,8 +119,7 @@ describe('ClusterGroupsService', () => {
     };
     const spy = spyOn(httpClient, 'put').and.returnValue(of(httpResult));
 
-    // Use the service to get a StoreInformation
-    // const spy = jasmine.createSpy('spy');
+    // Use the service to get a response
     const mockClusterGroup: IClusterGroup = getFakeClusterGroup();
     const args: IClusterGroup[] = [mockClusterGroup];
     service.updateClusterGroups(args).subscribe((result: boolean) => {
