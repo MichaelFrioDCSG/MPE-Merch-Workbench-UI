@@ -20,11 +20,10 @@ describe('DetailComponent', () => {
   let store: MockStore;
 
   beforeEach(() => {
-    const thisState = getMockState();
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, RouterTestingModule, FormsModule, AgGridModule.withComponents([DetailComponent]), MaterialModule],
       declarations: [DetailComponent],
-      providers: [provideMockStore({ initialState: thisState }), { provides: ClusterGroupsService, useValue: {} }],
+      providers: [provideMockStore({ initialState }), { provides: ClusterGroupsService, useValue: {} }],
     }).compileComponents();
 
     // Setup mock ngrx store & data for the init selector
@@ -32,7 +31,8 @@ describe('DetailComponent', () => {
     fixture = TestBed.createComponent(DetailComponent);
     component = fixture.componentInstance;
 
-    store.setState(getMockState());
+    const thisState = getMockState();
+    store.setState(thisState);
 
     // Run component life cycle events
     store.refreshState();
@@ -429,7 +429,6 @@ describe('DetailComponent', () => {
 
   it('Shown records should be shown correctly', () => {
     component.shownRecords = 45;
-    store.refreshState();
     fixture.detectChanges();
 
     const span = query('[data-test="shown-records"]');
@@ -438,7 +437,6 @@ describe('DetailComponent', () => {
 
   it('Total records should be shown correctly', () => {
     component.totalRecords = 87;
-    store.refreshState();
     fixture.detectChanges();
 
     const span = query('[data-test="total-records"]');
