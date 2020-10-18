@@ -49,12 +49,12 @@ export class ClusterGroupsService {
   }
 }
 
-interface IStoreInformationRequest {
+export interface IStoreInformationRequest {
   assortmentPeriodId: string;
   subClassIds: string[];
 }
 
-interface IServerResponse {
+export interface IServerResponse {
   isSuccess: boolean;
   errorMessages: string[];
 }

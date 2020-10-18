@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { of } from 'rxjs';
 
 import { IClusterGroup, IStoreInformation, IStoreInformationListValue } from '@mpe/shared';
-import { ClusterGroupsService } from './cluster-groups.service';
+import { ClusterGroupsService, IServerResponse } from './cluster-groups.service';
 import { environment } from '@mpe/home/src/environments/environment';
 
 describe('ClusterGroupsService', () => {
@@ -113,19 +113,22 @@ describe('ClusterGroupsService', () => {
 
   it('updateClusterGroups should be called with the correct signature', () => {
     // Spy on and mock the HttpClient
-    const resultMock: any[] = [];
-    spyOn(httpClient, 'put').and.returnValue(of(resultMock));
+    const httpResult: IServerResponse = {
+      isSuccess: true,
+      errorMessages: [],
+    };
+    const spy = spyOn(httpClient, 'put').and.returnValue(of(httpResult));
 
     // Use the service to get a StoreInformation
-    const spy = jasmine.createSpy('spy');
-    const body = [getFakeClusterGroup()];
-    service.updateClusterGroups(body).subscribe(spy);
+    // const spy = jasmine.createSpy('spy');
+    const mockClusterGroup: IClusterGroup = getFakeClusterGroup();
+    const args: IClusterGroup[] = [mockClusterGroup];
+    service.updateClusterGroups(args).subscribe((result: boolean) => {
+      expect(result).toEqual(true);
+    });
 
     // Verify that the service returned mock data
-    expect(spy).toHaveBeenCalledWith(resultMock);
-
-    // Verify that the service called the proper URL
-    expect(httpClient.put).toHaveBeenCalledWith(`${environment.mpe_api}/api/v1/ClusterGroups`, { clusterGroups: body });
+    expect(spy).toHaveBeenCalledWith(`${environment.mpe_api}/api/v1/ClusterGroups`, args);
   });
 });
 
