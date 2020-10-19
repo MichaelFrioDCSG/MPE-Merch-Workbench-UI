@@ -1,5 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MatSnackBar, MAT_SNACK_BAR_DATA } from '@angular/material/snack-bar';
+import { INotificationData } from './INotificationData';
 
 @Component({
   selector: 'app-toast-message',
@@ -16,10 +17,4 @@ export class ToastMessageComponent {
   public dismissSnackBar(): void {
     this.snackBar.dismiss();
   }
-}
-
-export interface INotificationData {
-  title: string;
-  isError?: boolean;
-  messages: string[];
 }
