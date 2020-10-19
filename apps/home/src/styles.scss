@@ -3,7 +3,7 @@
 @import '~ag-grid-community/dist/styles/ag-theme-alpine';
 @import '~ag-grid-community/dist/styles/ag-theme-balham';
 
-// @import './assets/scss/material-dashboard.scss';
+@import './assets/scss/material-dashboard.scss';
 @import 'assets/scss/DSG-theme.scss';
 // @import 'assets/scss/Monochromatic-theme.scss';
 @import '~bootstrap/dist/css/bootstrap.css';
@@ -424,5 +424,3 @@ ag-grid-angular {
 .ag-header-cell-text {
   font-weight: 600;
 }
-
-
