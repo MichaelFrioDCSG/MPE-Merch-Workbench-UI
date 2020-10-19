@@ -1,5 +1,6 @@
 import { Component, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { IMessageDialogData } from './IMessageDialogData';
 
 @Component({
   selector: 'mpe-message-dialog',
@@ -9,15 +10,6 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 export class MessageDialogComponent {
   constructor(
     @Inject(MAT_DIALOG_DATA)
-    public data: IMessageDialogData,
-    public dialogRef: MatDialogRef<MessageDialogComponent>
+    public data: IMessageDialogData
   ) {}
-
-  public onClose(): void {
-    this.dialogRef.close(null);
-  }
-}
-
-export interface IMessageDialogData {
-  messages: string[];
 }

@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { IMessageDialogData } from '../components/message-dialog/message-dialog.component';
+import { IMessageDialogData } from '../components/message-dialog/IMessageDialogData';
 import { INotificationData } from '../components/toast-message/INotificationData';
 
 export const showNotificaion = createAction('[Shrared] Show Notification', props<INotificationData>());
