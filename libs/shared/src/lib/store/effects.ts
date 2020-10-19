@@ -12,7 +12,7 @@ import * as actions from './actions';
 export default class SharedEffects {
   constructor(private actions$: Actions, private snackBar: MatSnackBar, private dialog: MatDialog) {}
 
-  private onShowNitification = createEffect(
+  private onShowNotificaion = createEffect(
     () =>
       this.actions$.pipe(
         ofType(actions.showNotificaion),
