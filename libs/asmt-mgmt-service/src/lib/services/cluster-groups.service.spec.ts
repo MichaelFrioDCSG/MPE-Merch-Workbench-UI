@@ -4,8 +4,9 @@ import { HttpClient } from '@angular/common/http';
 import { of } from 'rxjs';
 
 import { IClusterGroup, IStoreInformation, IStoreInformationListValue } from '@mpe/shared';
-import { ClusterGroupsService, IServerResponse } from './cluster-groups.service';
+import { ClusterGroupsService } from './cluster-groups.service';
 import { environment } from '@mpe/home/src/environments/environment';
+import { IServerResponse } from './IServerResponse';
 
 describe('ClusterGroupsService', () => {
   let service: ClusterGroupsService;
