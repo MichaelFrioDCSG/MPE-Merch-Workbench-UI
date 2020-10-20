@@ -1,15 +1,18 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { switchMap, catchError, map } from 'rxjs/operators';
+import { switchMap, catchError, map, concatMap, withLatestFrom, mergeMap } from 'rxjs/operators';
 
 import * as actions from './store-group-mgmt.actions';
+import * as selectors from './store-group-mgmt.selectors';
 import { of } from 'rxjs';
 import { IClusterGroup } from '@mpe/shared';
 import { ClusterGroupsService } from '@mpe/AsmtMgmtService';
-
+import { Store } from '@ngrx/store';
+import { IStoreGroupMgmtState } from './store-group-mgmt.reducer';
+import { actions as sharedActions } from '@mpe/shared';
 @Injectable()
 export default class StoreGroupMgmtEffects {
-  constructor(private actions$: Actions, private clusterGroupsService: ClusterGroupsService) {}
+  constructor(private actions$: Actions, private store: Store<IStoreGroupMgmtState>, private clusterGroupsService: ClusterGroupsService) {}
 
   private onGetClusterGroupSummaries = createEffect(() =>
     this.actions$.pipe(
@@ -44,6 +47,40 @@ export default class StoreGroupMgmtEffects {
           )
         )
       )
+    )
+  );
+
+  private onSaveDetails = createEffect(() =>
+    this.actions$.pipe(
+      ofType(actions.saveDetails),
+      concatMap(action => of(action).pipe(withLatestFrom(this.store.select(selectors.selectAppState)))),
+      mergeMap(([action, state]) =>
+        this.clusterGroupsService.updateClusterGroups([state.selectedClusterGroup]).pipe(
+          map(data => actions.saveDetailsSuccess()),
+          catchError(error => of(actions.saveDetailsFailure({ errors: ['An error has occured while saving the cluster group'] })))
+        )
+      )
+    )
+  );
+
+  private onSaveDetailsSuccess = createEffect(() =>
+    this.actions$.pipe(
+      ofType(actions.saveDetailsSuccess),
+      map(action => sharedActions.showNotificaion({ title: 'Cluster group was saved.', messages: [], isError: false }))
+    )
+  );
+  private onSaveDetailsFailure = createEffect(() =>
+    this.actions$.pipe(
+      ofType(actions.saveDetailsFailure, actions.sgmGetDetailsFailure),
+      map(action => sharedActions.showMessageDialog({ messages: action.errors }))
+    )
+  );
+
+  private onRevertDetails = createEffect(() =>
+    this.actions$.pipe(
+      ofType(actions.revertDetails),
+      concatMap(action => of(action).pipe(withLatestFrom(this.store.select(selectors.selectAppState)))),
+      switchMap(([action, state]) => of(actions.sgmGetDetails({ clusterGroupId: state.selectedClusterGroup.id })))
     )
   );
 }

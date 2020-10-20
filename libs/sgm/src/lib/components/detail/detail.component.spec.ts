@@ -1,30 +1,29 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
+import { By } from '@angular/platform-browser';
 import { AgGridModule } from 'ag-grid-angular';
 import { FormsModule } from '@angular/forms';
 import { MaterialModule } from '@mpe/material';
+import { ClusterGroupsService } from '@mpe/AsmtMgmtService';
 
 import { IStoreGroupMgmtState, initialState } from '../../store/store-group-mgmt.reducer';
 
 import { DetailComponent } from './detail.component';
-import { ClusterGroupsService } from '@mpe/AsmtMgmtService';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import 'ag-grid-enterprise';
 
 describe('DetailComponent', () => {
   let component: DetailComponent;
   let fixture: ComponentFixture<DetailComponent>;
-
   let store: MockStore;
 
-  beforeEach(() => {
-    const thisState = getMockState();
+  beforeEach(async () => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, RouterTestingModule, FormsModule, AgGridModule.withComponents([DetailComponent]), MaterialModule],
       declarations: [DetailComponent],
-      providers: [provideMockStore({ initialState: thisState }), { provides: ClusterGroupsService, useValue: {} }],
+      providers: [provideMockStore({ initialState }), { provides: ClusterGroupsService, useValue: {} }],
     }).compileComponents();
 
     // Setup mock ngrx store & data for the init selector
@@ -32,33 +31,42 @@ describe('DetailComponent', () => {
     fixture = TestBed.createComponent(DetailComponent);
     component = fixture.componentInstance;
 
+    const thisState = getMockState();
+    store.setState(thisState);
+
     // Run component life cycle events
+    store.refreshState();
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  afterEach(async () => {
+    store.resetSelectors();
+    fixture.destroy();
+  });
+
+  it('should create', async () => {
     expect(component).toBeTruthy();
   });
 
-  it('Title service title should be correct', () => {
+  it('Title service title should be correct', async () => {
     expect(document.title).toEqual('Store Group Management');
   });
 
-  it('should have the expected number column headers', () => {
+  it('should have the expected number column headers', async () => {
     expect(component.columnDefs.length).toEqual(26);
   });
 
-  it('Row Group panel is visible', () => {
+  it('Row Group panel is visible', async () => {
     expect(component.rowGroupPanelShow).toEqual('always');
   });
 
-  it('Side Bar is confugured correctly', () => {
+  it('Side Bar is confugured correctly', async () => {
     const sideBar = component.sideBar;
     expect(sideBar).toBeTruthy();
     expect(sideBar.defaultToolPanel).toEqual('columns');
   });
 
-  it('Side Bar columns tool panel is configured correctly', () => {
+  it('Side Bar columns tool panel is configured correctly', async () => {
     const toolPanels: any[] = component.sideBar.toolPanels;
     expect(toolPanels).toBeTruthy();
     const columnToolBarConfig = toolPanels.find(x => x.id === 'columns');
@@ -67,14 +75,14 @@ describe('DetailComponent', () => {
     expect(columnToolBarConfig.toolPanelParams.suppressRowGroups).toEqual(true);
     expect(columnToolBarConfig.toolPanelParams.suppressValues).toEqual(true);
     expect(columnToolBarConfig.toolPanelParams.suppressPivots).toEqual(true);
-    expect(columnToolBarConfig.toolPanelParams.suppressPivotMode).toEqual(true);
+    expect(columnToolBarConfig.toolPanelParams.suppressPivotMode).toEqual(false);
     expect(columnToolBarConfig.toolPanelParams.suppressSideButtons).toEqual(false);
     expect(columnToolBarConfig.toolPanelParams.suppressColumnFilter).toEqual(false);
     expect(columnToolBarConfig.toolPanelParams.suppressColumnSelectAll).toEqual(true);
     expect(columnToolBarConfig.toolPanelParams.suppressColumnExpandAll).toEqual(true);
   });
 
-  it('Side Bar filters tool panel is configured correctly', () => {
+  it('Side Bar filters tool panel is configured correctly', async () => {
     const toolPanels: any[] = component.sideBar.toolPanels;
     expect(toolPanels).toBeTruthy();
     const filtersToolBarConfig = toolPanels.find(x => x.id === 'filters');
@@ -90,21 +98,7 @@ describe('DetailComponent', () => {
     expect(filtersToolBarConfig.toolPanelParams.suppressColumnExpandAll).toEqual(true);
   });
 
-  it('Status bar is configured correctly', () => {
-    const statusPanels: any[] = component.statusBar.statusPanels;
-    const TotalAndFiltersStatusPanelConfig = statusPanels.find(x => x.statusPanel === 'agTotalAndFilteredRowCountComponent' && x.align === 'left');
-    expect(TotalAndFiltersStatusPanelConfig).toBeTruthy();
-    const TotalRowCountStatusPanelConfig = statusPanels.find(x => x.statusPanel === 'agTotalRowCountComponent' && x.align === 'center');
-    expect(TotalRowCountStatusPanelConfig).toBeTruthy();
-    const FilteredRowCountStatusPanelConfig = statusPanels.find(x => x.statusPanel === 'agFilteredRowCountComponent');
-    expect(FilteredRowCountStatusPanelConfig).toBeTruthy();
-    const SelectedRowCountComponentStatusPanelConfig = statusPanels.find(x => x.statusPanel === 'agSelectedRowCountComponent');
-    expect(SelectedRowCountComponentStatusPanelConfig).toBeTruthy();
-    const AggregationComponentStatusPanelConfig = statusPanels.find(x => x.statusPanel === 'agAggregationComponent');
-    expect(AggregationComponentStatusPanelConfig).toBeTruthy();
-  });
-
-  it('Cluster Group Column configured correctly', () => {
+  it('Cluster Group Column configured correctly', async () => {
     waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
       const columnDef = component.agGrid.gridOptions.api.getColumnDef('clusterGroupName');
       expect(columnDef).toBeTruthy();
@@ -118,7 +112,7 @@ describe('DetailComponent', () => {
     });
   });
 
-  it('Cluster Label Column configured correctly', () => {
+  it('Cluster Label Column configured correctly', async () => {
     waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
       const columnDef = component.agGrid.gridOptions.api.getColumnDef('clusterLabel');
       expect(columnDef).toBeTruthy();
@@ -132,7 +126,7 @@ describe('DetailComponent', () => {
     });
   });
 
-  it('Notes Column configured correctly', () => {
+  it('Notes Column configured correctly', async () => {
     waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
       const columnDef = component.agGrid.gridOptions.api.getColumnDef('notes');
       expect(columnDef).toBeTruthy();
@@ -146,7 +140,7 @@ describe('DetailComponent', () => {
     });
   });
 
-  it('Cluster Column configured correctly', () => {
+  it('Cluster Column configured correctly', async () => {
     waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
       const columnDef = component.agGrid.gridOptions.api.getColumnDef('clusterName');
       expect(columnDef).toBeTruthy();
@@ -161,7 +155,7 @@ describe('DetailComponent', () => {
   });
 
   // ignored for now, querySelectorAll only captures clusterGroupName and clusterLabel for some reason
-  xit('Cluster Column displays correctly', () => {
+  xit('Cluster Column displays correctly', async () => {
     waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
       const targetCellIndex = 2;
       // Test to make sure the value initializes correctly
@@ -171,7 +165,7 @@ describe('DetailComponent', () => {
     });
   });
 
-  it('Tier Column configured correctly', () => {
+  it('Tier Column configured correctly', async () => {
     waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
       const columnDef = component.agGrid.gridOptions.api.getColumnDef('tier');
       expect(columnDef).toBeTruthy();
@@ -192,7 +186,7 @@ describe('DetailComponent', () => {
     });
   });
 
-  it('Chain Column configured correctly', () => {
+  it('Chain Column configured correctly', async () => {
     waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
       const columnDef = component.agGrid.gridOptions.api.getColumnDef('chain');
       expect(columnDef).toBeTruthy();
@@ -210,7 +204,7 @@ describe('DetailComponent', () => {
     });
   });
 
-  it('Store Number Column configured correctly', () => {
+  it('Store Number Column configured correctly', async () => {
     waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
       const columnDef = component.agGrid.gridOptions.api.getColumnDef('storeNumber');
       expect(columnDef).toBeTruthy();
@@ -224,7 +218,7 @@ describe('DetailComponent', () => {
     });
   });
 
-  it('Assortment Period Column configured correctly', () => {
+  it('Assortment Period Column configured correctly', async () => {
     waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
       const columnDef = component.agGrid.gridOptions.api.getColumnDef('assortmentPeriod');
       expect(columnDef).toBeTruthy();
@@ -239,7 +233,7 @@ describe('DetailComponent', () => {
     });
   });
 
-  it('Store Name Column configured correctly', () => {
+  it('Store Name Column configured correctly', async () => {
     waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
       const columnDef = component.agGrid.gridOptions.api.getColumnDef('storeName');
       expect(columnDef).toBeTruthy();
@@ -254,7 +248,7 @@ describe('DetailComponent', () => {
     });
   });
 
-  it('Ad Market Column configured correctly', () => {
+  it('Ad Market Column configured correctly', async () => {
     waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
       const columnDef = component.agGrid.gridOptions.api.getColumnDef('adMarket');
       expect(columnDef).toBeTruthy();
@@ -269,7 +263,7 @@ describe('DetailComponent', () => {
   });
 
   // ignored for now, querySelectorAll only captures clusterGroupName and clusterLabel for some reason
-  xit('Cluster Label Column edits correctly', () => {
+  xit('Cluster Label Column edits correctly', async () => {
     waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
       const targetCellIndex = 1;
 
@@ -306,7 +300,7 @@ describe('DetailComponent', () => {
   });
 
   // ignored for now, querySelectorAll only captures clusterGroupName and clusterLabel for some reason
-  xit('Notes Column edits correctly', () => {
+  xit('Notes Column edits correctly', async () => {
     waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
       const targetCellIndex = 3;
 
@@ -343,7 +337,7 @@ describe('DetailComponent', () => {
   });
 
   //Shelved due to potential race condition. Will re-visit.
-  xit('Chain Column edits correctly', () => {
+  xit('Chain Column edits correctly', async () => {
     const targetCellIndex = 5;
 
     // Test to make sure the value initializes correctly
@@ -372,7 +366,7 @@ describe('DetailComponent', () => {
   });
 
   //Shelved due to potential race condition. Will re-visit.
-  xit('Teir Column edits correctly', () => {
+  xit('Teir Column edits correctly', async () => {
     const targetCellIndex = 4;
     fixture.detectChanges();
     // Test to make sure the value initializes correctly
@@ -401,12 +395,68 @@ describe('DetailComponent', () => {
     const cellElements = element.querySelectorAll('.ag-cell-value');
     expect(cellElements[targetCellIndex].textContent).toEqual('TIER 999');
   });
+
+  it('Commit button should be disabled when no modificaions', async () => {
+    // TODO: This needs to later interact with state
+    component.actionsDisabled = true;
+    store.refreshState();
+    fixture.detectChanges();
+
+    const btn = query('[data-test="commit-button"]');
+    expect(btn.disabled).toEqual(true);
+  });
+
+  it('Revert button should be disabled when no modificaions', async () => {
+    // TODO: This needs to later interact with state
+    component.actionsDisabled = true;
+    store.refreshState();
+    fixture.detectChanges();
+
+    const btn = query('[data-test="revert-button"]');
+    expect(btn.disabled).toEqual(true);
+  });
+
+  it('Commit button should be enabled when there are modificaions', async () => {
+    store.refreshState();
+    fixture.detectChanges();
+
+    const btn = query('[data-test="commit-button"]');
+    expect(btn.disabled).toEqual(false);
+  });
+
+  it('Revert button should be enabled when there are modificaions', async () => {
+    store.refreshState();
+    fixture.detectChanges();
+
+    const btn = query('[data-test="revert-button"]');
+    expect(btn.disabled).toEqual(false);
+  });
+
+  it('Shown records should be shown correctly', async () => {
+    component.shownRecords = 45;
+    fixture.detectChanges();
+
+    const span = query('[data-test="shown-records"]');
+    expect(span.textContent).toEqual('45');
+  });
+
+  it('Total records should be shown correctly', async () => {
+    component.totalRecords = 87;
+    fixture.detectChanges();
+
+    const span = query('[data-test="total-records"]');
+    expect(span.textContent).toEqual('87');
+  });
+
+  const query = selector => fixture.debugElement.queryAll(By.css(selector))[0].nativeElement;
+  const queryAll = selector => fixture.debugElement.queryAll(By.css(selector)).map(element => element.nativeElement);
 });
 
 // Data Helper methods below
 function getMockState(): IStoreGroupMgmtState {
   return {
     ...initialState,
+    edited: false,
     selectedClusterGroup: {
       clusterGroupAttributes: [],
       createdAt: null,

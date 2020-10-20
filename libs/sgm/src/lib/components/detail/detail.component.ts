@@ -26,10 +26,13 @@ export class DetailComponent implements OnInit {
   public get clusterGroupId(): number {
     return parseInt(this.route.snapshot.paramMap.get('id'), 10);
   }
-
+  public shownRecords: number;
+  public totalRecords: number;
   public defaultColDef: any = {
     resizable: true,
   };
+
+  public actionsDisabled = false;
 
   public tiers: string[] = ['ECOMM', 'Tier 1', 'Tier 2', 'Tier 3', 'Tier 4', 'Tier 5', 'Z'];
   public chains: string[] = ['DSG', 'GG', 'FS'];
@@ -195,7 +198,7 @@ export class DetailComponent implements OnInit {
           suppressRowGroups: true,
           suppressValues: true,
           suppressPivots: true,
-          suppressPivotMode: true,
+          suppressPivotMode: false,
           suppressSideButtons: false,
           suppressColumnFilter: false,
           suppressColumnSelectAll: true,
@@ -223,22 +226,6 @@ export class DetailComponent implements OnInit {
     defaultToolPanel: 'columns',
   };
 
-  public statusBar: any = {
-    statusPanels: [
-      {
-        statusPanel: 'agTotalAndFilteredRowCountComponent',
-        align: 'left',
-      },
-      {
-        statusPanel: 'agTotalRowCountComponent',
-        align: 'center',
-      },
-      { statusPanel: 'agFilteredRowCountComponent' },
-      { statusPanel: 'agSelectedRowCountComponent' },
-      { statusPanel: 'agAggregationComponent' },
-    ],
-  };
-
   constructor(private store: Store<IStoreGroupMgmtState>, private titleService: Title, private route: ActivatedRoute) {}
 
   public ngOnInit() {
@@ -247,11 +234,24 @@ export class DetailComponent implements OnInit {
 
   public onGridReady(params: any) {
     this.gridApi = params.api;
+
     this.store.dispatch(actions.sgmGetDetails({ clusterGroupId: this.clusterGroupId }));
+
     this.store.select(selectors.selectSummaryDetails).subscribe(details => {
+      this.totalRecords = details.length;
       this.gridApi.setRowData(details);
       this.gridApi.refreshCells();
+
+      this.shownRecords = this.gridApi.getDisplayedRowCount();
     });
+
+    this.store.select(selectors.selectDetailsEdited).subscribe(val => {
+      this.actionsDisabled = !val;
+    });
+  }
+
+  public onFilterChanged(params: any) {
+    this.shownRecords = this.gridApi.getDisplayedRowCount();
   }
 
   public getRowNodeId = (row: IDetailRecord) => `${row.clusterGroupId}_${row.chain}_${row.tier}_${row.storeNumber}`;
@@ -263,5 +263,15 @@ export class DetailComponent implements OnInit {
     }
     const data: IDetailRecord = params.data;
     return [data.chain, data.tier].join('_');
+  }
+
+  public onCommitClick() {
+    this.actionsDisabled = true;
+    this.store.dispatch(actions.saveDetails());
+  }
+
+  public onCancelClick() {
+    this.actionsDisabled = true;
+    this.store.dispatch(actions.revertDetails());
   }
 }

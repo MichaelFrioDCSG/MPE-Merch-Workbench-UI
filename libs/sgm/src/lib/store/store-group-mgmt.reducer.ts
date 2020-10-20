@@ -7,6 +7,7 @@ export interface IStoreGroupMgmtState {
   clusterGroups: IClusterGroup[];
   selectedClusterGroup: IClusterGroup;
   loading: boolean;
+  edited: boolean;
   getSummaryErrorMessages: string[];
   getDetailsErrorMessages: string[];
 }
@@ -15,6 +16,7 @@ export const initialState: IStoreGroupMgmtState = {
   clusterGroups: [],
   selectedClusterGroup: null,
   loading: false,
+  edited: false,
   getSummaryErrorMessages: [],
   getDetailsErrorMessages: [],
 };
@@ -63,6 +65,7 @@ const reducer$ = createReducer(
       ...state,
       selectedClusterGroup: action.clusterGroup,
       loading: false,
+      edited: false,
       getDetailsErrorMessages: [],
     })
   ),
@@ -80,6 +83,7 @@ const reducer$ = createReducer(
     (state: IStoreGroupMgmtState, action): IStoreGroupMgmtState => ({
       ...state,
       loading: false,
+      edited: action.values.length > 0,
       selectedClusterGroup: updateSelectedClusterGroupRecords(state, action.values),
     })
   )
@@ -144,7 +148,7 @@ function moveLocation(clusterGroup: IClusterGroup, sourceCluster: ICluster, targ
   if (targetCluster === undefined) {
     targetCluster = {
       ...sourceCluster,
-      id: undefined,
+      id: -1,
       [mod.field]: mod.value,
       clusterLocations: [],
     };
@@ -154,7 +158,6 @@ function moveLocation(clusterGroup: IClusterGroup, sourceCluster: ICluster, targ
   // Create target location
   const targetLocation: IClusterLocation = {
     ...sourceLocation,
-    id: undefined,
     clusterId: targetCluster.id,
   };
 

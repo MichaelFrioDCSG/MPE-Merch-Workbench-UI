@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MaterialModule } from '@mpe/material';
 import { LandingComponent } from './landing.component';
@@ -13,9 +13,8 @@ describe('LandingComponent', () => {
   const initialState = { Loading: false, ApplicationLoadErrors: [] };
   let store: MockStore;
   let httpMock: HttpTestingController;
-  let selectedClusterGroup: any;
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [LandingComponent],
       imports: [MaterialModule, RouterTestingModule, HttpClientTestingModule],
@@ -25,10 +24,7 @@ describe('LandingComponent', () => {
     httpMock = TestBed.inject<HttpTestingController>(HttpTestingController as Type<HttpTestingController>);
 
     store = TestBed.inject(MockStore);
-    selectedClusterGroup = null;
-  }));
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(LandingComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

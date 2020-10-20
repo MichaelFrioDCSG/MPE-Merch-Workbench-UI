@@ -5,6 +5,8 @@ import { map } from 'rxjs/operators';
 
 import { IClusterGroup, IStoreInformation, IStoreInformationListValue } from '@mpe/shared';
 import { environment } from '@mpe/home/src/environments/environment';
+import { IStoreInformationRequest } from './IStoreInformationRequest';
+import { IServerResponse } from './IServerResponse';
 
 @Injectable({
   providedIn: 'root',
@@ -43,9 +45,8 @@ export class ClusterGroupsService {
       .get<IStoreInformationListValue[]>(`${this.endPointUrl}/store-information/tiers?assortmentPeriodId=${assortmentPeriodId}${subClassIdString}`)
       .pipe(map((data: IStoreInformationListValue[]) => data));
   }
-}
 
-interface IStoreInformationRequest {
-  assortmentPeriodId: string;
-  subClassIds: string[];
+  public updateClusterGroups(clusterGroups: IClusterGroup[]): Observable<boolean> {
+    return this.http.put<IServerResponse>(`${this.endPointUrl}`, clusterGroups).pipe(map((data: IServerResponse) => data.isSuccess));
+  }
 }

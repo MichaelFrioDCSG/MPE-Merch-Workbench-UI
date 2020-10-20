@@ -24,7 +24,8 @@
             "assets": ["apps/home/src/favicon.ico", "apps/home/src/assets"],
             "styles": ["apps/home/src/styles.scss"],
             "scripts": [],
-            "preserveSymlinks": true
+            "preserveSymlinks": true,
+            "allowedCommonJsDependencies": ["ag-grid-enterprise", "hammerjs"]
           },
           "configurations": {
             "production": {
@@ -160,6 +161,11 @@
       "sourceRoot": "libs/shared/src",
       "prefix": "mpe",
       "architect": {
+        "build": {
+          "options": {
+            "allowedCommonJsDependencies": ["ag-grid-enterprise", "hammerjs"]
+          }
+        },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {

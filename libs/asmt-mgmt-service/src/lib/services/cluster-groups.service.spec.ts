@@ -6,6 +6,7 @@ import { of } from 'rxjs';
 import { IClusterGroup, IStoreInformation, IStoreInformationListValue } from '@mpe/shared';
 import { ClusterGroupsService } from './cluster-groups.service';
 import { environment } from '@mpe/home/src/environments/environment';
+import { IServerResponse } from './IServerResponse';
 
 describe('ClusterGroupsService', () => {
   let service: ClusterGroupsService;
@@ -109,6 +110,25 @@ describe('ClusterGroupsService', () => {
     expect(httpClient.get).toHaveBeenCalledWith(
       `${environment.mpe_api}/api/v1/ClusterGroups/store-information/tiers?assortmentPeriodId=abc123&subClassIds=123-123-123-123`
     );
+  });
+
+  it('updateClusterGroups should be called with the correct signature', () => {
+    // Spy on and mock the HttpClient
+    const httpResult: IServerResponse = {
+      isSuccess: true,
+      errorMessages: [],
+    };
+    const spy = spyOn(httpClient, 'put').and.returnValue(of(httpResult));
+
+    // Use the service to get a response
+    const mockClusterGroup: IClusterGroup = getFakeClusterGroup();
+    const args: IClusterGroup[] = [mockClusterGroup];
+    service.updateClusterGroups(args).subscribe((result: boolean) => {
+      expect(result).toEqual(true);
+    });
+
+    // Verify that the service returned mock data
+    expect(spy).toHaveBeenCalledWith(`${environment.mpe_api}/api/v1/ClusterGroups`, args);
   });
 });
 
