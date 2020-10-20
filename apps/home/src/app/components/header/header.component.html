@@ -9,7 +9,7 @@
         </a>
       </nav>
       <span class="fill-space"></span>
-      <span class="profile">FirstName, LastName</span>
+      <span class="profile">{{ (userProfile | async)?.name }}</span>
       <mat-icon class="pad-items icon">account_circle</mat-icon>
     </mat-toolbar-row>
   </mat-toolbar>
