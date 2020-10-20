@@ -48,10 +48,6 @@ describe('DetailComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('Title service title should be correct', async () => {
-    expect(document.title).toEqual('Store Group Management');
-  });
-
   it('should have the expected number column headers', async () => {
     expect(component.columnDefs.length).toEqual(26);
   });

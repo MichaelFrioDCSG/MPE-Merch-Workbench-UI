@@ -1,0 +1,12 @@
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="profile-loader col-md-12" *ngIf="userProfile">
+        <h1>You are logged in as</h1>
+        <p>
+          User: <strong data-test="userInfo">{{ (userProfile | async)?.name }} - {{ (userProfile | async)?.username }}</strong>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

@@ -15,6 +15,10 @@ export const environment = {
   // mpe_asmtmgmtservice: 'https://localhost:5001',
   mpe_asmtmgmtservice: 'https://mpe-asmtmgmtservice.apps.vn01.pcf.dcsg.com',
   // uri: 'https://localhost:5001/'
+  // TODO: Change to MPE AD Client ID
+  clientId: '9323662a-5d5c-4795-a651-37f3b9e15164',
+  authority: 'https://login.microsoftonline.com/e04b15c8-7a1e-4390-9b5b-28c7c205a233/',
+  redirectUrl: 'http://localhost:4200',
 };
 
 /*

@@ -1,10 +1,6 @@
 import { createReducer, on, createFeatureSelector, createSelector } from '@ngrx/store';
 import * as actions from './actions';
-
-export interface IAppState {
-  Loading: boolean;
-  ApplicationLoadErrors: string[];
-}
+import { IAppState } from './state';
 
 const initialState: IAppState = {
   Loading: false,

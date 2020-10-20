@@ -21,7 +21,8 @@
       "@mpe/shared": ["libs/shared/src/index.ts"],
       "@mpe/material": ["libs/material/src/index.ts"],
       "@mpe/sgm": ["libs/sgm/src/index.ts"],
-      "@mpe/AsmtMgmtService": ["libs/asmt-mgmt-service/src/index.ts"]
+      "@mpe/AsmtMgmtService": ["libs/asmt-mgmt-service/src/index.ts"],
+      "@mpe/auth": ["libs/auth/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

@@ -43,6 +43,9 @@
     },
     "asmt-mgmt-service": {
       "tags": []
+    },
+    "auth": {
+      "tags": []
     }
   }
 }
