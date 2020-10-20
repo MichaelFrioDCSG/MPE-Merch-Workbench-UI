@@ -10,7 +10,7 @@ describe('ImportStoreGroupDialogComponent', () => {
   let component: ImportStoreGroupDialogComponent;
   let fixture: ComponentFixture<ImportStoreGroupDialogComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [ImportStoreGroupDialogComponent],
       imports: [FormsModule, ReactiveFormsModule, HttpClientModule, MaterialModule],
@@ -19,9 +19,7 @@ describe('ImportStoreGroupDialogComponent', () => {
         { provide: MatDialogRef, useValue: {} },
       ],
     }).compileComponents();
-  }));
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(ImportStoreGroupDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

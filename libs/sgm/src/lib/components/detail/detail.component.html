@@ -5,24 +5,37 @@
         <p><span class="hover" [routerLink]="['/sgm']">Summary</span> | Detail</p>
       </div>
     </div>
-    <div class="row mb-2">
-      <div class="col-12">
-        <button mat-raised-button color="primary" class="button-label-dsg mr-2">
-          <mat-icon>save</mat-icon>
-          Save
-        </button>
-      </div>
-    </div>
 
     <div class="row">
       <div class="col-12">
-        <div id="grid-wrapper" class="grid-wrapper">
-          <ag-grid-angular #agGrid class="ag-theme-alpine" [immutableData]="true"
-            [getRowNodeId]="getRowNodeId" [modules]="modules" [defaultColDef]="defaultColDef" [columnDefs]="columnDefs"
-            [statusBar]="statusBar" [sideBar]="sideBar" [rowGroupPanelShow]="rowGroupPanelShow"
-            [gridOptions]="gridOptions" rowSelection="multiple" (gridReady)="onGridReady($event)">
-          </ag-grid-angular>
-        </div>
+        <h3>Cluster Group Detail</h3>
+      </div>
+    </div>
+
+    <div class="row grid-header">
+      <div class="col-9 grid-header-text">
+        Data Results (<span data-test="shown-records">{{ shownRecords}}</span> of <span
+          data-test="total-records">{{ totalRecords}}</span>)
+      </div>
+      <div class="col-3 actionButons">
+        <button mat-flat-button class="btn-primary" (click)="onCancelClick()" [disabled]="actionsDisabled"
+          data-test="revert-button">Cancel</button>
+        <button mat-flat-button class="btn-secondary" (click)="onCommitClick()" [disabled]="actionsDisabled"
+          data-test="commit-button">
+          <mat-icon>save</mat-icon> Commit
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12">
+      <div id="grid-wrapper" class="grid-wrapper">
+        <ag-grid-angular #agGrid class="ag-theme-alpine" [immutableData]="true" [getRowNodeId]="getRowNodeId"
+          [modules]="modules" [defaultColDef]="defaultColDef" [columnDefs]="columnDefs" [sideBar]="sideBar"
+          [rowGroupPanelShow]="rowGroupPanelShow" [gridOptions]="gridOptions" rowSelection="multiple"
+          (gridReady)="onGridReady($event)" (filterChanged)="onFilterChanged($event)">
+        </ag-grid-angular>
       </div>
     </div>
   </div>

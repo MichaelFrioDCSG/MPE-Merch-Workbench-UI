@@ -5,7 +5,6 @@ import { IDetailRecord } from '../models/IDetailRecord';
 
 export const selectAppState = createFeatureSelector<IStoreGroupMgmtState>(storeGroupMgmtFeatureKey);
 export const selectClusterGroups = createSelector(selectAppState, (state: IStoreGroupMgmtState): IClusterGroup[] => state.clusterGroups);
-// export const selectSummaryDetails = createSelector(selectAppState, (state: IStoreGroupMgmtState): IClusterGroup => state.selectedClusterGroup);
 export const selectSummaryDetails = createSelector(selectAppState, (state: IStoreGroupMgmtState): IDetailRecord[] => {
   let details: IDetailRecord[] = [];
   if (state.selectedClusterGroup && state.selectedClusterGroup.clusters) {
@@ -17,10 +16,13 @@ export const selectSummaryDetails = createSelector(selectAppState, (state: IStor
           clusterLocationId: cl.id,
           clusterGroupName: state.selectedClusterGroup.name,
           clusterName: c.name,
-          clusterLabel: '',
+          notes: cl.notes,
+          clusterLabel: cl.clusterLabel,
           tier: c.tier,
           chain: c.chain,
+          assortmentPeriod: state.selectedClusterGroup.asmtPeriod.asmtPeriodLabel,
           storeNumber: cl.storeNumber,
+          storeName: cl.location.storeName,
           adMarket: cl.location.adMarket,
           city: cl.location.city,
           climate: cl.location.climate,
@@ -44,3 +46,4 @@ export const selectSummaryDetails = createSelector(selectAppState, (state: IStor
   }
   return details;
 });
+export const selectDetailsEdited = createSelector(selectAppState, (state: IStoreGroupMgmtState): boolean => state.edited);

@@ -6,6 +6,7 @@ import { of } from 'rxjs';
 import { IClusterGroup, IStoreInformation, IStoreInformationListValue } from '@mpe/shared';
 import { ClusterGroupsService } from './cluster-groups.service';
 import { environment } from '@mpe/home/src/environments/environment';
+import { IServerResponse } from './IServerResponse';
 
 describe('ClusterGroupsService', () => {
   let service: ClusterGroupsService;
@@ -30,7 +31,7 @@ describe('ClusterGroupsService', () => {
 
     // Use the service to get a cluster group
     const spy = jasmine.createSpy('spy');
-    service.GetClusterGroup(1).subscribe(spy);
+    service.getClusterGroup(1).subscribe(spy);
 
     // Verify that the service returned mock data
     expect(spy).toHaveBeenCalledWith(clusterGroupMock);
@@ -46,7 +47,7 @@ describe('ClusterGroupsService', () => {
 
     // Use the service to get a list of cluster groups
     const spy = jasmine.createSpy('spy');
-    service.GetClusterGroups('600').subscribe(spy);
+    service.getClusterGroups('600').subscribe(spy);
 
     // Verify that the service returned mock data
     expect(spy).toHaveBeenCalledWith(clusterGroupsMock);
@@ -62,7 +63,7 @@ describe('ClusterGroupsService', () => {
 
     // Use the service to get a StoreInformation
     const spy = jasmine.createSpy('spy');
-    service.GetStoreInformationByAssortmentPeriodAndSubclass('abc123', ['123-123-123-123', '321-321-321-321']).subscribe(spy);
+    service.getStoreInformationByAssortmentPeriodAndSubclass('abc123', ['123-123-123-123', '321-321-321-321']).subscribe(spy);
 
     // Verify that the service returned mock data
     expect(spy).toHaveBeenCalledWith(resultMock);
@@ -82,7 +83,7 @@ describe('ClusterGroupsService', () => {
 
     // Use the service to get a StoreInformation
     const spy = jasmine.createSpy('spy');
-    service.GetChains('abc123', ['123-123-123-123']).subscribe(spy);
+    service.getChains('abc123', ['123-123-123-123']).subscribe(spy);
 
     // Verify that the service returned mock data
     expect(spy).toHaveBeenCalledWith(resultMock);
@@ -100,7 +101,7 @@ describe('ClusterGroupsService', () => {
 
     // Use the service to get a StoreInformation
     const spy = jasmine.createSpy('spy');
-    service.GetTiers('abc123', ['123-123-123-123']).subscribe(spy);
+    service.getTiers('abc123', ['123-123-123-123']).subscribe(spy);
 
     // Verify that the service returned mock data
     expect(spy).toHaveBeenCalledWith(resultMock);
@@ -110,20 +111,42 @@ describe('ClusterGroupsService', () => {
       `${environment.mpe_api}/api/v1/ClusterGroups/store-information/tiers?assortmentPeriodId=abc123&subClassIds=123-123-123-123`
     );
   });
+
+  it('updateClusterGroups should be called with the correct signature', () => {
+    // Spy on and mock the HttpClient
+    const httpResult: IServerResponse = {
+      isSuccess: true,
+      errorMessages: [],
+    };
+    const spy = spyOn(httpClient, 'put').and.returnValue(of(httpResult));
+
+    // Use the service to get a response
+    const mockClusterGroup: IClusterGroup = getFakeClusterGroup();
+    const args: IClusterGroup[] = [mockClusterGroup];
+    service.updateClusterGroups(args).subscribe((result: boolean) => {
+      expect(result).toEqual(true);
+    });
+
+    // Verify that the service returned mock data
+    expect(spy).toHaveBeenCalledWith(`${environment.mpe_api}/api/v1/ClusterGroups`, args);
+  });
 });
 
 function getFakeChainResults(assortmentPeriodId: string, subClassId: string): IStoreInformationListValue {
-  return {
+  const result: IStoreInformationListValue = {
     AssortmentPeriodId: assortmentPeriodId,
     SubClassId: subClassId,
     Value: randomStr(20),
   };
+
+  return result;
 }
 
 function getFakeClusterGroup(): IClusterGroup {
-  return {
+  const result: IClusterGroup = {
     id: 1,
     name: randomStr(8),
+    isActive: true,
     description: randomStr(8),
     asmtPeriodId: randomStr(8),
     asmtPeriod: null,
@@ -145,10 +168,12 @@ function getFakeClusterGroup(): IClusterGroup {
       },
     ],
   };
+
+  return result;
 }
 
 function getFakeIStoreInformation(): IStoreInformation {
-  return {
+  const result: IStoreInformation = {
     locationId: randomNumber(999).toString(),
     subClassId: randomStr(8),
     chain: randomStr(8),
@@ -172,6 +197,8 @@ function getFakeIStoreInformation(): IStoreInformation {
     state: randomStr(8),
     openDate: new Date(),
   };
+
+  return result;
 }
 
 function randomStr(len: number, charString: string = '1234567890abcdefghijklmnopqrstuvwxyz') {
@@ -182,6 +209,8 @@ function randomStr(len: number, charString: string = '1234567890abcdefghijklmnop
   return result;
 }
 
-function randomNumber(max: number) {
-  return Math.floor(Math.random() * (max + 1));
+function randomNumber(max: number): number {
+  const result: number = Math.floor(Math.random() * (max + 1));
+
+  return result;
 }

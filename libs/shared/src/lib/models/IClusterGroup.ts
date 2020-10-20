@@ -16,4 +16,5 @@ export interface IClusterGroup {
   createdAt: Date;
   updatedBy: string;
   updatedOn: Date;
+  isActive: boolean;
 }

@@ -47,3 +47,5 @@ const material_modules = [
   ],
 })
 export class MaterialModule {}
+
+export { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
