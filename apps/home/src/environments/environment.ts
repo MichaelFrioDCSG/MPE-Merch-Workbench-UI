@@ -6,19 +6,14 @@ export const environment = {
   production: false,
   qa: false,
   dev: true,
-  // uri: 'https://MPE-dev.apps.vn01.pcf.dcsg.com/'
   uri: 'https://apreportapi-dev.apps.vn01.pcf.dcsg.com/',
   mpe_api: `https://mpe-asmtmgmtservice.apps.vn01.pcf.dcsg.com`,
-  // TODO: Rename API and decide what endpoint it is really going to be
-  // mpe_api: `https://mpe-api.apps.vn01.pcf.dcsg.com`,
-  // mpe_api: `https://localhost:5001`,
-  // mpe_asmtmgmtservice: 'https://localhost:5001',
   mpe_asmtmgmtservice: 'https://mpe-asmtmgmtservice.apps.vn01.pcf.dcsg.com',
-  // uri: 'https://localhost:5001/'
-  // TODO: Change to MPE AD Client ID
   clientId: '9323662a-5d5c-4795-a651-37f3b9e15164',
   authority: 'https://login.microsoftonline.com/e04b15c8-7a1e-4390-9b5b-28c7c205a233/',
-  redirectUrl: 'http://localhost:4200',
+  // TODO: Create dev environment and replace
+  // redirectUrl: 'http://localhost:4200',
+  redirectUrl: 'https://mpe-merch-workbench.apps.vn01.pcf.dcsg.com'
 };
 
 /*
