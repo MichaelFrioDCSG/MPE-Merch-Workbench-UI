@@ -3,7 +3,7 @@ import { IUserProfile } from '../models/IUserProfile';
 import * as actions from './auth.actions';
 import { IAuthState } from './models/IAuthState';
 
-const initialState: IAuthState = {
+export const initialState: IAuthState = {
   UserProfile: {
     name: null,
     roles: [],
