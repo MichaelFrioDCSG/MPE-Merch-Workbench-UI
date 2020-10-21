@@ -22,8 +22,6 @@ import { AuthModule } from '@mpe/auth';
 import { MaterialModule } from '@mpe/material';
 
 import { AuthInterceptor, authProviders } from '@mpe/auth';
-import { CommonModule } from '@angular/common';
-import { MsalModule } from '@azure/msal-angular';
 
 @NgModule({
   declarations: [AppComponent, LandingPageComponent, HeaderComponent],
