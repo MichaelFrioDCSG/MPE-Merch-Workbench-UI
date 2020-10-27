@@ -170,7 +170,7 @@ export class DetailComponent implements OnInit {
       field: 'storeNumber',
       filter: 'agSetColumnFilter',
       filterParams: {
-        comparator: numericComparator,
+        comparator: this.numericComparator,
       },
     },
 
@@ -200,7 +200,7 @@ export class DetailComponent implements OnInit {
       field: 'ttlRunRate',
       filter: 'agSetColumnFilter',
       filterParams: {
-        comparator: numericComparator,
+        comparator: this.numericComparator,
       },
     },
 
@@ -211,7 +211,7 @@ export class DetailComponent implements OnInit {
       field: 'warehouseNumber',
       filter: 'agSetColumnFilter',
       filterParams: {
-        comparator: numericComparator,
+        comparator: this.numericComparator,
       },
     },
   ];
@@ -306,13 +306,16 @@ export class DetailComponent implements OnInit {
     this.actionsDisabled = true;
     this.store.dispatch(actions.revertDetails());
   }
+
+  private numericComparator(a, b) {
+    const valA = parseInt(a, 10);
+    const valB = parseInt(b, 10);
+  
+    if (valA === valB) {
+      return 0;
+    }
+    return valA > valB ? 1 : -1;
+  }
 }
 
-function numericComparator(a, b) {
-  var valA = parseInt(a);
-  var valB = parseInt(b);
 
-  if (valA === valB) return 0;
-
-  return valA > valB ? 1 : -1;
-}
