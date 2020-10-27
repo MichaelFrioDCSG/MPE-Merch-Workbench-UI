@@ -23,6 +23,9 @@ import { MaterialModule } from '@mpe/material';
 
 import { AuthInterceptor, authProviders } from '@mpe/auth';
 
+import { LicenseManager } from 'ag-grid-enterprise';
+LicenseManager.setLicenseKey(environment.agGridLicense);
+
 @NgModule({
   declarations: [AppComponent, LandingPageComponent, HeaderComponent],
   imports: [
