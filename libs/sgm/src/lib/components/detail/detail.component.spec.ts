@@ -209,11 +209,57 @@ describe('DetailComponent', () => {
       expect(columnDef.resizable).toEqual(true);
       expect(columnDef.editable).toBeFalsy();
       expect(columnDef.sortable).toEqual(true);
-      expect(columnDef.filter).toEqual(true);
+      expect(columnDef.filter).toEqual('agSetColumnFilter');
       expect(columnDef.width).toEqual(250);
+      expect(columnDef.filterParams.comparator).toBeTruthy();
     });
   });
 
+  it('TTL Run Rate Column configured correctly', async () => {
+    waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
+      const columnDef = component.agGrid.gridOptions.api.getColumnDef('ttlRunRate');
+      expect(columnDef).toBeTruthy();
+
+      expect(columnDef.headerName).toEqual('TTL RUN RATE');
+      expect(columnDef.resizable).toEqual(true);
+      expect(columnDef.editable).toBeFalsy();
+      expect(columnDef.sortable).toEqual(true);
+      expect(columnDef.hide).toEqual(true);
+      expect(columnDef.filter).toEqual('agSetColumnFilter');
+      expect(columnDef.width).toEqual(250);
+      expect(columnDef.filterParams.comparator).toBeTruthy();
+    });
+  });
+
+  it('Warehouse Number Column configured correctly', async () => {
+    waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
+      const columnDef = component.agGrid.gridOptions.api.getColumnDef('warehouseNumber');
+      expect(columnDef).toBeTruthy();
+
+      expect(columnDef.headerName).toEqual('WAREHOUSE NUMBER');
+      expect(columnDef.resizable).toEqual(true);
+      expect(columnDef.editable).toBeFalsy();
+      expect(columnDef.sortable).toEqual(true);
+      expect(columnDef.filter).toEqual('agSetColumnFilter');
+      expect(columnDef.width).toEqual(250);
+      expect(columnDef.filterParams.comparator).toBeTruthy();
+    });
+  });
+  it('Sqaurefeet Column configured correctly', async () => {
+    waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
+      const columnDef = component.agGrid.gridOptions.api.getColumnDef('squareFeet');
+      expect(columnDef).toBeTruthy();
+
+      expect(columnDef.headerName).toEqual('SQUARE FEET');
+      expect(columnDef.resizable).toEqual(true);
+      expect(columnDef.editable).toBeFalsy();
+      expect(columnDef.sortable).toEqual(true);
+      expect(columnDef.hide).toEqual(true);
+      expect(columnDef.filter).toEqual('agSetColumnFilter');
+      expect(columnDef.width).toEqual(250);
+      expect(columnDef.filterParams.comparator).toBeTruthy();
+    });
+  });
   it('Assortment Period Column configured correctly', async () => {
     waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
       const columnDef = component.agGrid.gridOptions.api.getColumnDef('assortmentPeriod');

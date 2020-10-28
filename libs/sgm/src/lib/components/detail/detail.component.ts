@@ -34,6 +34,15 @@ export class DetailComponent implements OnInit {
 
   public actionsDisabled = false;
 
+  private numericComparator(a, b) {
+    const valA = parseInt(a, 10);
+    const valB = parseInt(b, 10);
+
+    if (valA === valB) return 0;
+
+    return valA > valB ? 1 : -1;
+  }
+
   public tiers: string[] = ['ECOMM', 'Tier 1', 'Tier 2', 'Tier 3', 'Tier 4', 'Tier 5', 'Z'];
   public chains: string[] = ['DSG', 'GG', 'FS'];
 
@@ -162,7 +171,18 @@ export class DetailComponent implements OnInit {
         );
       },
     },
-    { headerName: 'STORE NUMBER', field: 'storeNumber', sortable: true, filter: true, width: 250 },
+
+    {
+      headerName: 'STORE NUMBER',
+      sortable: true,
+      width: 250,
+      field: 'storeNumber',
+      filter: 'agSetColumnFilter',
+      filterParams: {
+        comparator: this.numericComparator,
+      },
+    },
+
     { headerName: 'STORE NAME', field: 'storeName', sortable: true, filter: true, width: 250, hide: true },
     { headerName: 'ASSORTMENT PERIOD', field: 'assortmentPeriod', sortable: true, filter: true, width: 250, hide: true },
     { headerName: 'AD MARKET', field: 'adMarket', sortable: true, filter: true, width: 250, hide: true },
@@ -176,12 +196,45 @@ export class DetailComponent implements OnInit {
     { headerName: 'NUMBER OF FLOORS', field: 'numberOfFloors', sortable: true, filter: true, width: 250, hide: true },
     { headerName: 'OPEN DATE', field: 'openDate', sortable: true, filter: true, width: 250, hide: true },
     { headerName: 'REGION DESCRIPTION', field: 'regionDescription', sortable: true, filter: true, width: 250, hide: true },
-    { headerName: 'SQUARE FEET', field: 'squareFeet', sortable: true, filter: true, width: 250, hide: true },
+
+    {
+      headerName: 'SQUARE FEET',
+      sortable: true,
+      width: 250,
+      hide: true,
+      field: 'squareFeet',
+      filter: 'agSetColumnFilter',
+      filterParams: {
+        comparator: this.numericComparator,
+      },
+    },
+
     { headerName: 'STATE', field: 'state', sortable: true, filter: true, width: 250, hide: true },
     { headerName: 'STORE FORMAT', field: 'storeFormat', sortable: true, filter: true, width: 250, hide: true },
     { headerName: 'STORE STRUCTURE', field: 'storeStructure', sortable: true, filter: true, width: 250, hide: true },
-    { headerName: 'TTL RUN RATE', field: 'ttlRunRate', sortable: true, filter: true, width: 250, hide: true },
-    { headerName: 'WAREHOUSE NUMBER', field: 'warehouseNumber', sortable: true, filter: true, width: 250 },
+
+    {
+      headerName: 'TTL RUN RATE',
+      sortable: true,
+      width: 250,
+      hide: true,
+      field: 'ttlRunRate',
+      filter: 'agSetColumnFilter',
+      filterParams: {
+        comparator: this.numericComparator,
+      },
+    },
+
+    {
+      headerName: 'WAREHOUSE NUMBER',
+      sortable: true,
+      width: 250,
+      field: 'warehouseNumber',
+      filter: 'agSetColumnFilter',
+      filterParams: {
+        comparator: this.numericComparator,
+      },
+    },
   ];
 
   public rowGroupPanelShow = 'always';
