@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -7,7 +7,6 @@ import { IClusterGroup, IStoreInformation, IStoreInformationListValue } from '@m
 import { environment } from '@mpe/home/src/environments/environment';
 import { IStoreInformationRequest } from './IStoreInformationRequest';
 import { IServerResponse } from './IServerResponse';
-
 @Injectable({
   providedIn: 'root',
 })
@@ -53,5 +52,14 @@ export class ClusterGroupsService {
 
   public updateClusterGroups(clusterGroups: IClusterGroup[]): Observable<boolean> {
     return this.http.put<IServerResponse>(`${this.endPointUrl}`, clusterGroups).pipe(map((data: IServerResponse) => data.isSuccess));
+  }
+
+  public deleteClusterGroups(clusterGroupIds: number[]): Observable<IServerResponse> {
+    const clusterGroupIdsString = clusterGroupIds.map(x => `clusterGroupIds=${x}`).join('&');
+    return this.http.delete(`${this.endPointUrl}?${clusterGroupIdsString}`).pipe(
+      map((data: IServerResponse) => {
+        return data;
+      })
+    );
   }
 }

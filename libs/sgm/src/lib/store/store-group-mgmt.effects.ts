@@ -10,6 +10,7 @@ import { ClusterGroupsService } from '@mpe/AsmtMgmtService';
 import { Store } from '@ngrx/store';
 import { IStoreGroupMgmtState } from './store-group-mgmt.reducer';
 import { actions as sharedActions } from '@mpe/shared';
+import { IServerResponse } from 'libs/asmt-mgmt-service/src/lib/services/IServerResponse';
 @Injectable()
 export default class StoreGroupMgmtEffects {
   constructor(private actions$: Actions, private store: Store<IStoreGroupMgmtState>, private clusterGroupsService: ClusterGroupsService) {}
@@ -81,6 +82,31 @@ export default class StoreGroupMgmtEffects {
       ofType(actions.revertDetails),
       concatMap(action => of(action).pipe(withLatestFrom(this.store.select(selectors.selectAppState)))),
       switchMap(([action, state]) => of(actions.sgmGetDetails({ clusterGroupIds: state.selectedClusterGroups.map(clusterGroup => clusterGroup.id) })))
+    )
+  );
+
+  private onDeleteClusterGroup = createEffect(() =>
+    this.actions$.pipe(
+      ofType(actions.deleteClusterGroups),
+      mergeMap(action =>
+        this.clusterGroupsService.deleteClusterGroups(action.clusterGroupIds).pipe(
+          map(
+            (data: IServerResponse) => {
+              if (data.isSuccess) {
+                return actions.deleteClusterGroupsSuccess();
+              }
+              return actions.deleteClusterGroupsFailure({ errors: data.errorMessages });
+            },
+            catchError(error => of(actions.deleteClusterGroupsFailure({ errors: ['An error has occured while saving the cluster group'] })))
+          )
+        )
+      )
+    )
+  );
+  private onDeleteClusterGroupSuccess = createEffect(() =>
+    this.actions$.pipe(
+      ofType(actions.deleteClusterGroupsSuccess),
+      map(action => actions.sgmGetSummaries())
     )
   );
 }

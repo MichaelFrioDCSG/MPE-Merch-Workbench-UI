@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { tap } from 'rxjs/operators';
+import { WarningDialogComponent } from '../components';
 import { MessageDialogComponent } from '../components/message-dialog/message-dialog.component';
 import { ToastMessageComponent } from '../components/toast-message/toast-message.component';
 
@@ -44,6 +45,30 @@ export default class SharedEffects {
           });
 
           dialogRef.afterClosed().subscribe(() => {
+            dialogRef.close();
+          });
+        })
+      ),
+    {
+      dispatch: false,
+    }
+  );
+
+  private onShowWarningDialog = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(actions.showWarningDialog),
+        tap(action => {
+          const dialogRef = this.dialog.open(WarningDialogComponent, {
+            width: action.width || '50%',
+            height: action.height || '',
+            data: { messages: action.messages, title: action.title, action: action.action },
+          });
+
+          dialogRef.afterClosed().subscribe(result => {
+            if (result && action.okAction) {
+              action.okAction();
+            }
             dialogRef.close();
           });
         })

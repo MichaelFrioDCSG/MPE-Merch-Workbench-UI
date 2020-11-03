@@ -2,17 +2,16 @@ import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { AgGridAngular } from 'ag-grid-angular';
 import { MatDialog } from '@angular/material/dialog';
 import { AllCommunityModules, Module, GridOptions, GridApi } from '@ag-grid-community/all-modules';
-
 import { IClusterGroup } from '@mpe/shared';
 import { Store, select } from '@ngrx/store';
 import { selectClusterGroups } from '../../store/store-group-mgmt.selectors';
 import { IStoreGroupMgmtState } from '../../store/store-group-mgmt.reducer';
 import { Observable } from 'rxjs';
 import * as actions from '../../store/store-group-mgmt.actions';
+import { actions as sharedActions } from '@mpe/shared';
 import { ImportStoreGroupDialogComponent } from '../../dialogs/import-store-group-dialog/import-store-group-dialog.component';
 import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
-import { ClusterGroupsService } from '@mpe/AsmtMgmtService';
 
 @Component({
   selector: 'mpe-landing',
@@ -34,6 +33,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
   public defaultColDef: any = {
     resizable: true,
   };
+  public deletingStoreGroups: boolean;
   public columnDefs = [
     {
       colId: 'checkboxColumn',
@@ -91,21 +91,30 @@ export class SummaryComponent implements OnInit, OnDestroy {
     this.selectedData = JSON.stringify(selectedNodes.map(node => node.data));
   }
 
-  public getClusterGroupHeaders() {
-    this.store.pipe(select(selectClusterGroups)).subscribe((clusterGroups: IClusterGroup[]) => {
-      this.clusterGroups = clusterGroups;
-    });
-  }
-
   public openDialog(): void {
     const dialogRef = this.dialog.open(ImportStoreGroupDialogComponent, {
       width: '100rem',
       data: {},
     });
+  }
 
-    dialogRef.afterClosed().subscribe(() => {
-      this.getClusterGroupHeaders();
-    });
+  public openDeleteDialog(): void {
+    const clusterGroups: IClusterGroup[] = this.gridApi.getSelectedRows();
+    const clusterGroupIds: number[] = clusterGroups.map(cg => cg.id);
+    const clusterGroupCount: number = clusterGroupIds.length;
+
+    const messages: string[] = ['Are you sure you want to delete ' + clusterGroupCount + ' cluster(s)?'];
+    this.store.dispatch(
+      sharedActions.showWarningDialog({
+        title: 'Confirm Deletion',
+        width: '600px',
+        messages: messages,
+        action: 'Confirm',
+        okAction: () => {
+          this.store.dispatch(actions.deleteClusterGroups({ clusterGroupIds }));
+        },
+      })
+    );
   }
 
   public goToDetail(): void {
@@ -120,7 +129,9 @@ export class SummaryComponent implements OnInit, OnDestroy {
     this.gridColumnApi = params.columnApi;
     this.store.dispatch(actions.sgmGetSummaries());
 
-    this.getClusterGroupHeaders();
+    this.store.pipe(select(selectClusterGroups)).subscribe((clusterGroups: IClusterGroup[]) => {
+      this.clusterGroups = clusterGroups;
+    });
   }
 
   public onFirstDataRendered(params) {

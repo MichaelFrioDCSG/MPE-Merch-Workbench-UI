@@ -1,0 +1,27 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-1">
+      <div class="row">
+        <div class="col-md-12 text-right">
+          <mat-icon class="dialog-icon">help</mat-icon>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-11">
+      <div class="row">
+        <div class="col-md-12">
+          <h1 mat-dialog-title class="dialog-title">{{ data.title }}</h1>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 dialog-message" *ngFor="let message of data.messages">{{message}}</div>
+      </div>
+      <div class="row"></div>
+      <div class="row"></div>
+        <div class="col-md-12 dialog-actions">
+            <button mat-flat-button class="dialog-cancel" color="secondary" [mat-dialog-close]="false">Cancel</button>
+            <button mat-flat-button color="accent" [mat-dialog-close]="true">{{ data.action }}</button>
+        </div>
+      </div>
+    </div>
+</div>

@@ -17,3 +17,7 @@ export const saveDetailsSuccess = createAction('[StoreGroupMgmt] Save Details Su
 export const saveDetailsFailure = createAction('[StoreGroupMgmt] Save Details Failure', props<{ errors: string[] }>());
 
 export const revertDetails = createAction('[StoreGroupMgmt] Revert Details');
+
+export const deleteClusterGroups = createAction('[StoreGroupMgmt] Delete Cluster Groups', props<{ clusterGroupIds: number[] }>());
+export const deleteClusterGroupsSuccess = createAction('[StoreGroupMgmt] Delete Cluster Groups Success');
+export const deleteClusterGroupsFailure = createAction('[StoreGroupMgmt] Delete Cluster Groups Failure', props<{ errors: string[] }>());

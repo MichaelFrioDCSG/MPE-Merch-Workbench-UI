@@ -22,6 +22,7 @@ import { InputMultiselectDropdownComponent } from 'libs/shared/src/lib/component
 import { DetailComponent } from './components/detail/detail.component';
 import { SummaryComponent } from './components/summary/summary.component';
 
+
 export const sgmRoutes: Route[] = [
   { path: ':id', component: DetailComponent },
   { path: '', component: SummaryComponent },

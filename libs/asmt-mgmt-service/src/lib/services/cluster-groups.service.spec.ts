@@ -112,6 +112,28 @@ describe('ClusterGroupsService', () => {
     );
   });
 
+  it('deleteClusterGroups should be called with the correct signature', () => {
+    // Spy on and mock the HttpClient
+    const httpResult: IServerResponse = {
+      isSuccess: true,
+      errorMessages: [],
+    };
+
+    const spy = spyOn(httpClient, 'delete').and.returnValue(of(httpResult));
+
+    // Use the service to get a response
+    const args: number[] = [53, 54];
+
+    service.deleteClusterGroups(args).subscribe((result: IServerResponse) => {
+      expect(result.isSuccess).toEqual(true);
+      expect(result.errorMessages).toEqual([]);
+    });
+
+    // Verify that the service returned mock data
+    const clusterGroupIdsString = args.map(x => `clusterGroupIds=${x}`).join('&');
+    expect(spy).toHaveBeenCalledWith(`${environment.mpe_api}/api/v1/ClusterGroups?${clusterGroupIdsString}`);
+  });
+
   it('updateClusterGroups should be called with the correct signature', () => {
     // Spy on and mock the HttpClient
     const httpResult: IServerResponse = {

@@ -1,0 +1,59 @@
+.dialog-title {
+  font-style: normal;
+  font-weight: bold;
+  font-size: 24px;
+  line-height: 0px;
+  /* identical to box height, or 0% */
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+  letter-spacing: 0.3px;
+
+  color: #191f1c;
+
+  border-radius: 2px;
+}
+
+.dialog-message {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 18px;
+  line-height: 20px;
+  /* or 111% */
+
+  display: flex;
+  align-items: center;
+  letter-spacing: 0.5px;
+
+  color: #191f1c;
+  padding-top: 4px;
+}
+
+.dialog-icon {
+  font-size: 35px;
+}
+
+.dialog-actions {
+  text-align: center;
+  padding-top: 15px;
+
+  button {
+    margin-right: 15px;
+    width: 140px;
+    height: 44px;
+
+    ::content {
+      text-transform: uppercase;
+      font-weight: bolder;
+    }
+
+    button:hover {
+      cursor: pointer;
+      text-decoration: underline solid;
+    }
+  }
+
+  .dialog-cancel {
+    border: 2px solid #191f1c;
+  }
+}

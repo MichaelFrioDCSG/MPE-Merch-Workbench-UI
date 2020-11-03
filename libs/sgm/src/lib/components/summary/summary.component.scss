@@ -21,6 +21,7 @@
   flex-direction: row;
   display: flex;
   justify-content: flex-start;
+  border-spacing: 1px;
 }
 
 .button-label-dsg {
@@ -49,4 +50,11 @@
   /* Greyscale/DSG Black */
   border: 2px solid #191f1c;
   box-sizing: border-box;
+}
+
+.button-tertiary-dsg {
+  /* Greyscale/DSG Black */
+  border: 2px solid #191f1c;
+  box-sizing: border-box;
+  margin-left: 6px;
 }
