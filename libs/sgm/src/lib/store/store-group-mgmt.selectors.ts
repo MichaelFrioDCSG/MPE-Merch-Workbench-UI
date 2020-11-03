@@ -6,12 +6,12 @@ import { IDetailRecord } from '../models/IDetailRecord';
 export const selectAppState = createFeatureSelector<IStoreGroupMgmtState>(storeGroupMgmtFeatureKey);
 export const selectClusterGroups = createSelector(selectAppState, (state: IStoreGroupMgmtState): IClusterGroup[] => state.clusterGroups);
 export const selectSummaryDetails = createSelector(selectAppState, (state: IStoreGroupMgmtState): IDetailRecord[] => {
-  let details: IDetailRecord[] = [];
+  const details: IDetailRecord[] = [];
 
   if (state.selectedClusterGroups && state.selectedClusterGroups.length > 0) {
-    for (let clusterGroup of state.selectedClusterGroups) {
-      for (let cluster of clusterGroup.clusters) {
-        for (let clusterLocation of cluster.clusterLocations) {
+    for (const clusterGroup of state.selectedClusterGroups) {
+      for (const cluster of clusterGroup.clusters) {
+        for (const clusterLocation of cluster.clusterLocations) {
           const detail: IDetailRecord = {
             clusterGroupId: clusterGroup.id,
             clusterId: cluster.id,
