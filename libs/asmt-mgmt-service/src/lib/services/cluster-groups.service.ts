@@ -16,8 +16,13 @@ export class ClusterGroupsService {
 
   constructor(private http: HttpClient) {}
 
-  public getClusterGroups(dept?: string): Observable<IClusterGroup[]> {
-    return this.http.get<IClusterGroup[]>(`${this.endPointUrl}${dept ? '/' + dept : ''}`).pipe(map((data: IClusterGroup[]) => data));
+  public getClusterGroupsByDept(dept?: string): Observable<IClusterGroup[]> {
+    return this.http.get<IClusterGroup[]>(`${this.endPointUrl}/dept${dept ? '/' + dept : ''}`).pipe(map((data: IClusterGroup[]) => data));
+  }
+
+  public getClusterGroups(clusterGroupIds: number[]): Observable<IClusterGroup[]> {
+    const param = clusterGroupIds.map(cl => `clusterGroupIds=${cl}`).join('&');
+    return this.http.get<IClusterGroup[]>(`${this.endPointUrl}?${param}`).pipe(map((data: IClusterGroup[]) => data));
   }
 
   public getClusterGroup(clusterGroupId: number): Observable<IClusterGroup> {

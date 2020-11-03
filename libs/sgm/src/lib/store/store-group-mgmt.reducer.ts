@@ -5,7 +5,7 @@ import * as actions from './store-group-mgmt.actions';
 
 export interface IStoreGroupMgmtState {
   clusterGroups: IClusterGroup[];
-  selectedClusterGroup: IClusterGroup;
+  selectedClusterGroups: IClusterGroup[];
   loading: boolean;
   edited: boolean;
   getSummaryErrorMessages: string[];
@@ -14,7 +14,7 @@ export interface IStoreGroupMgmtState {
 
 export const initialState: IStoreGroupMgmtState = {
   clusterGroups: [],
-  selectedClusterGroup: null,
+  selectedClusterGroups: [],
   loading: false,
   edited: false,
   getSummaryErrorMessages: [],
@@ -54,7 +54,7 @@ const reducer$ = createReducer(
     actions.sgmGetDetails,
     (state: IStoreGroupMgmtState): IStoreGroupMgmtState => ({
       ...state,
-      selectedClusterGroup: null,
+      selectedClusterGroups: null,
       loading: true,
       getDetailsErrorMessages: [],
     })
@@ -63,7 +63,7 @@ const reducer$ = createReducer(
     actions.sgmGetDetailsSuccess,
     (state: IStoreGroupMgmtState, action): IStoreGroupMgmtState => ({
       ...state,
-      selectedClusterGroup: action.clusterGroup,
+      selectedClusterGroups: action.clusterGroups,
       loading: false,
       edited: false,
       getDetailsErrorMessages: [],
@@ -73,7 +73,7 @@ const reducer$ = createReducer(
     actions.sgmGetDetailsFailure,
     (state: IStoreGroupMgmtState, action): IStoreGroupMgmtState => ({
       ...state,
-      selectedClusterGroup: null,
+      selectedClusterGroups: null,
       loading: false,
       getDetailsErrorMessages: action.errors,
     })
@@ -84,7 +84,7 @@ const reducer$ = createReducer(
       ...state,
       loading: false,
       edited: action.values.length > 0,
-      selectedClusterGroup: updateSelectedClusterGroupRecords(state, action.values),
+      selectedClusterGroups: updateSelectedClusterGroupRecords(state, action.values),
     })
   )
 );
@@ -108,22 +108,25 @@ function cloneClusterGroup(clusterGroup: IClusterGroup): IClusterGroup {
   return cloneValue;
 }
 
-function updateSelectedClusterGroupRecords(state: IStoreGroupMgmtState, modifications: IModifiedDetailRecord[]): IClusterGroup {
-  const clusterGroup: IClusterGroup = cloneClusterGroup(state.selectedClusterGroup);
+function updateSelectedClusterGroupRecords(state: IStoreGroupMgmtState, modifications: IModifiedDetailRecord[]): IClusterGroup[] {
+  const clusterGroups: IClusterGroup[] = state.selectedClusterGroups.map(cg => cloneClusterGroup(cg));
 
   for (const mod of modifications) {
+    // Locate source cluster group
+    const sourceClusterGroup: IClusterGroup = clusterGroups.find(clusterGroup => clusterGroup.id === mod.clusterGroupId);
+
     // Locate source cluster & location record
-    const sourceCluster: ICluster = clusterGroup.clusters.find(cluster => cluster.id === mod.clusterId);
+    const sourceCluster: ICluster = sourceClusterGroup.clusters.find(cluster => cluster.id === mod.clusterId);
 
     // Locate target cluster
     //  Create target cluster if does not exist
     let targetCluster: ICluster;
     if (mod.field === 'tier') {
-      targetCluster = clusterGroup.clusters.find(cluster => cluster.chain === sourceCluster.chain && cluster.tier === mod.value);
-      moveLocation(clusterGroup, sourceCluster, targetCluster, mod);
+      targetCluster = sourceClusterGroup.clusters.find(cluster => cluster.chain === sourceCluster.chain && cluster.tier === mod.value);
+      moveLocation(sourceClusterGroup, sourceCluster, targetCluster, mod);
     } else if (mod.field === 'chain') {
-      targetCluster = clusterGroup.clusters.find(cluster => cluster.chain === mod.value && cluster.tier === sourceCluster.tier);
-      moveLocation(clusterGroup, sourceCluster, targetCluster, mod);
+      targetCluster = sourceClusterGroup.clusters.find(cluster => cluster.chain === mod.value && cluster.tier === sourceCluster.tier);
+      moveLocation(sourceClusterGroup, sourceCluster, targetCluster, mod);
     } else if (mod.field === 'notes') {
       updateLocation(sourceCluster, mod);
     } else if (mod.field === 'clusterLabel') {
@@ -131,7 +134,7 @@ function updateSelectedClusterGroupRecords(state: IStoreGroupMgmtState, modifica
     }
   }
 
-  return clusterGroup;
+  return clusterGroups;
 }
 
 function updateLocation(sourceCluster: ICluster, mod: IModifiedDetailRecord) {

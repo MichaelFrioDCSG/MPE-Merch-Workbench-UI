@@ -20,11 +20,11 @@ import { InputSpinnerComponent } from 'libs/shared/src/lib/components/inputs/inp
 import { InputDropdownFilterComponent } from 'libs/shared/src/lib/components/inputs/input-dropdown-filter/input-dropdown-filter.component';
 import { InputMultiselectDropdownComponent } from 'libs/shared/src/lib/components/inputs/input-multiselect-dropdown/input-multiselect-dropdown.component';
 import { DetailComponent } from './components/detail/detail.component';
-import { LandingComponent } from './components/landing/landing.component';
+import { SummaryComponent } from './components/summary/summary.component';
 
 export const sgmRoutes: Route[] = [
   { path: ':id', component: DetailComponent },
-  { path: '', component: LandingComponent },
+  { path: '', component: SummaryComponent },
 ];
 
 @NgModule({
@@ -41,14 +41,14 @@ export const sgmRoutes: Route[] = [
     EffectsModule.forFeature([StoreGroupMgmtEffects]),
   ],
   declarations: [
-    LandingComponent,
+    SummaryComponent,
     ImportStoreGroupDialogComponent,
     InputSpinnerComponent,
     InputMultiselectDropdownComponent,
     InputDropdownFilterComponent,
     DetailComponent,
   ],
-  exports: [LandingComponent, DetailComponent],
+  exports: [SummaryComponent, DetailComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [{ provide: ClusterGroupsService, useClass: ClusterGroupsService }],
 })

@@ -18,7 +18,7 @@ export default class StoreGroupMgmtEffects {
     this.actions$.pipe(
       ofType(actions.sgmGetSummaries),
       switchMap(() =>
-        this.clusterGroupsService.getClusterGroups().pipe(
+        this.clusterGroupsService.getClusterGroupsByDept().pipe(
           switchMap((clusterGroups: IClusterGroup[]) => {
             clusterGroups.forEach(cg => {
               cg.lastModifiedOn = new Date();
@@ -38,9 +38,9 @@ export default class StoreGroupMgmtEffects {
     this.actions$.pipe(
       ofType(actions.sgmGetDetails),
       switchMap(action =>
-        this.clusterGroupsService.getClusterGroup(action.clusterGroupId).pipe(
+        this.clusterGroupsService.getClusterGroups(action.clusterGroupIds).pipe(
           map(
-            (clusterGroup: IClusterGroup) => actions.sgmGetDetailsSuccess({ clusterGroup }),
+            (clusterGroups: IClusterGroup[]) => actions.sgmGetDetailsSuccess({ clusterGroups }),
             catchError(errors => {
               return of(actions.sgmGetDetailsFailure(errors));
             })
@@ -55,7 +55,7 @@ export default class StoreGroupMgmtEffects {
       ofType(actions.saveDetails),
       concatMap(action => of(action).pipe(withLatestFrom(this.store.select(selectors.selectAppState)))),
       mergeMap(([action, state]) =>
-        this.clusterGroupsService.updateClusterGroups([state.selectedClusterGroup]).pipe(
+        this.clusterGroupsService.updateClusterGroups(state.selectedClusterGroups).pipe(
           map(data => actions.saveDetailsSuccess()),
           catchError(error => of(actions.saveDetailsFailure({ errors: ['An error has occured while saving the cluster group'] })))
         )
@@ -80,7 +80,7 @@ export default class StoreGroupMgmtEffects {
     this.actions$.pipe(
       ofType(actions.revertDetails),
       concatMap(action => of(action).pipe(withLatestFrom(this.store.select(selectors.selectAppState)))),
-      switchMap(([action, state]) => of(actions.sgmGetDetails({ clusterGroupId: state.selectedClusterGroup.id })))
+      switchMap(([action, state]) => of(actions.sgmGetDetails({ clusterGroupIds: state.selectedClusterGroups.map(clusterGroup => clusterGroup.id) })))
     )
   );
 }

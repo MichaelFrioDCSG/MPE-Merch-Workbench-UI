@@ -23,8 +23,9 @@ export class DetailComponent implements OnInit {
   public gridApi: GridApi;
   public details$: Observable<IDetailRecord[]>;
   public modules: Module[] = AllCommunityModules;
-  public get clusterGroupId(): number {
-    return parseInt(this.route.snapshot.paramMap.get('id'), 10);
+  public get clusterGroupIds(): number[] {
+    const queryStringParameter = this.route.snapshot.paramMap.get('id');
+    return queryStringParameter.split(',').map(id => parseInt(id, 10));
   }
   public shownRecords: number;
   public totalRecords: number;
@@ -288,7 +289,7 @@ export class DetailComponent implements OnInit {
   public onGridReady(params: any) {
     this.gridApi = params.api;
 
-    this.store.dispatch(actions.sgmGetDetails({ clusterGroupId: this.clusterGroupId }));
+    this.store.dispatch(actions.sgmGetDetails({ clusterGroupIds: this.clusterGroupIds }));
 
     this.store.select(selectors.selectSummaryDetails).subscribe(details => {
       this.totalRecords = details.length;

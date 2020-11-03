@@ -12,13 +12,14 @@ import * as actions from '../../store/store-group-mgmt.actions';
 import { ImportStoreGroupDialogComponent } from '../../dialogs/import-store-group-dialog/import-store-group-dialog.component';
 import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
+import { ClusterGroupsService } from '@mpe/AsmtMgmtService';
 
 @Component({
   selector: 'mpe-landing',
-  templateUrl: './landing.component.html',
-  styleUrls: ['./landing.component.scss'],
+  templateUrl: './summary.component.html',
+  styleUrls: ['./summary.component.scss'],
 })
-export class LandingComponent implements OnInit, OnDestroy {
+export class SummaryComponent implements OnInit, OnDestroy {
   @ViewChild('agGrid', { static: false }) public agGrid: AgGridAngular;
   public clusterGroupsObs: Observable<IClusterGroup[]> = null;
   public style: any;
@@ -108,8 +109,10 @@ export class LandingComponent implements OnInit, OnDestroy {
   }
 
   public goToDetail(): void {
-    const clusterGroup: IClusterGroup = this.gridApi.getSelectedRows()[0];
-    this.router.navigate([`/sgm/${clusterGroup.id}`]);
+    const clusterGroups: IClusterGroup[] = this.gridApi.getSelectedRows();
+    //get ids out of array
+    const clusterGroupIds = clusterGroups.map(cg => cg.id).join(',');
+    this.router.navigate([`/sgm/${clusterGroupIds}`]);
   }
 
   public onGridReady(params: any) {
