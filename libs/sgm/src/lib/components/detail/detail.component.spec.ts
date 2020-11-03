@@ -329,7 +329,7 @@ describe('DetailComponent', () => {
 
       // Update the state
       const newState = getMockState();
-      newState.selectedClusterGroup.clusters[0].clusterLocations[0].clusterLabel = 'test 123';
+      newState.selectedClusterGroups[0].clusters[0].clusterLocations[0].clusterLabel = 'test 123';
       store.setState(newState);
       store.refreshState();
       fixture.detectChanges();
@@ -366,7 +366,7 @@ describe('DetailComponent', () => {
 
       // Update the state
       const newState = getMockState();
-      newState.selectedClusterGroup.clusters[0].clusterLocations[0].notes = 'test notes 123';
+      newState.selectedClusterGroups[0].clusters[0].clusterLocations[0].notes = 'test notes 123';
       store.setState(newState);
       store.refreshState();
       fixture.detectChanges();
@@ -499,77 +499,79 @@ function getMockState(): IStoreGroupMgmtState {
   return {
     ...initialState,
     edited: false,
-    selectedClusterGroup: {
-      clusterGroupAttributes: [],
-      createdAt: null,
-      createdBy: null,
-      lastModifiedBy: null,
-      lastModifiedOn: null,
-      updatedBy: null,
-      updatedOn: null,
-      id: 33,
-      name: 'Mens Running Footwear',
-      description: 'Running',
-      asmtPeriodId: 'bpdddpm0000073',
-      isActive: true,
-      asmtPeriod: {
+    selectedClusterGroups: [
+      {
+        clusterGroupAttributes: [],
+        createdAt: null,
+        createdBy: null,
+        lastModifiedBy: null,
+        lastModifiedOn: null,
+        updatedBy: null,
+        updatedOn: null,
+        id: 33,
+        name: 'Mens Running Footwear',
+        description: 'Running',
         asmtPeriodId: 'bpdddpm0000073',
-        asmtPeriodLabel: '2021_Wks 10-22',
-        startFiscalWeekId: 202110,
-        startFiscalWeek: {
-          fiscalWeekId: 202110,
-          weekBeginDate: new Date('2021-04-04T00:00:00'),
-          weekEndDate: new Date('2021-04-10T00:00:00'),
+        isActive: true,
+        asmtPeriod: {
+          asmtPeriodId: 'bpdddpm0000073',
+          asmtPeriodLabel: '2021_Wks 10-22',
+          startFiscalWeekId: 202110,
+          startFiscalWeek: {
+            fiscalWeekId: 202110,
+            weekBeginDate: new Date('2021-04-04T00:00:00'),
+            weekEndDate: new Date('2021-04-10T00:00:00'),
+          },
+          endFiscalWeekId: 202122,
+          endFiscalWeek: {
+            fiscalWeekId: 202122,
+            weekBeginDate: new Date('2021-06-27T00:00:00'),
+            weekEndDate: new Date('2021-07-03T00:00:00'),
+          },
+          asmtPeriodBeginDate: new Date('2021-04-04T00:00:00'),
+          asmtPeriodEndDate: new Date('2021-07-03T00:00:00'),
         },
-        endFiscalWeekId: 202122,
-        endFiscalWeek: {
-          fiscalWeekId: 202122,
-          weekBeginDate: new Date('2021-06-27T00:00:00'),
-          weekEndDate: new Date('2021-07-03T00:00:00'),
-        },
-        asmtPeriodBeginDate: new Date('2021-04-04T00:00:00'),
-        asmtPeriodEndDate: new Date('2021-07-03T00:00:00'),
-      },
-      clusters: [
-        {
-          id: 11391,
-          name: 'DSG_Tier 1 / PFSFW',
-          tier: 'Tier 1',
-          chain: 'DSG',
-          clusterGroupId: 33,
-          clusterLocations: [
-            {
-              id: 182815,
-              clusterId: 11391,
-              storeNumber: 1506,
-              location: {
+        clusters: [
+          {
+            id: 11391,
+            name: 'DSG_Tier 1 / PFSFW',
+            tier: 'Tier 1',
+            chain: 'DSG',
+            clusterGroupId: 33,
+            clusterLocations: [
+              {
+                id: 182815,
+                clusterId: 11391,
                 storeNumber: 1506,
-                storeName: 'ANNAPOLIS-MD',
-                adMarket: 'BALTIMORE',
-                regionDescription: 'Pre-Open Stores',
-                districtDescription: 'Pre-Open Stores',
-                state: 'MD',
-                openDate: new Date('2020-10-13T00:00:00'),
-                closeDate: null,
-                squareFeet: 69000,
-                warehouseNumber: '51',
-                medianIncome: null,
-                storeFormat: null,
-                ttlRunRate: null,
-                demographics: null,
-                storeStructure: null,
-                climate: 'MODERATE',
-                numberOfFloors: '2 FLOORS',
-                numberOfEntrances: '1 ENTRANCE',
-                city: 'ANNAPOLIS',
+                location: {
+                  storeNumber: 1506,
+                  storeName: 'ANNAPOLIS-MD',
+                  adMarket: 'BALTIMORE',
+                  regionDescription: 'Pre-Open Stores',
+                  districtDescription: 'Pre-Open Stores',
+                  state: 'MD',
+                  openDate: new Date('2020-10-13T00:00:00'),
+                  closeDate: null,
+                  squareFeet: 69000,
+                  warehouseNumber: '51',
+                  medianIncome: null,
+                  storeFormat: null,
+                  ttlRunRate: null,
+                  demographics: null,
+                  storeStructure: null,
+                  climate: 'MODERATE',
+                  numberOfFloors: '2 FLOORS',
+                  numberOfEntrances: '1 ENTRANCE',
+                  city: 'ANNAPOLIS',
+                },
+                notes: 'Test Note',
+                clusterLabel: 'Green Tier',
               },
-              notes: 'Test Note',
-              clusterLabel: 'Green Tier',
-            },
-          ],
-        },
-      ],
-    },
+            ],
+          },
+        ],
+      },
+    ],
   };
 }
 

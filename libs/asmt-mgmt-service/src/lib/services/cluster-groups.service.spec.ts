@@ -47,13 +47,13 @@ describe('ClusterGroupsService', () => {
 
     // Use the service to get a list of cluster groups
     const spy = jasmine.createSpy('spy');
-    service.getClusterGroups('600').subscribe(spy);
+    service.getClusterGroups([600]).subscribe(spy);
 
     // Verify that the service returned mock data
     expect(spy).toHaveBeenCalledWith(clusterGroupsMock);
 
     // Verify that the service called the proper URL
-    expect(httpClient.get).toHaveBeenCalledWith(`${environment.mpe_api}/api/v1/ClusterGroups/600`);
+    expect(httpClient.get).toHaveBeenCalledWith(`${environment.mpe_api}/api/v1/ClusterGroups?clusterGroupIds=600`);
   });
 
   it('GetStoreInformationByAssortmentPeriodAndSubclass should return a list of cluster groups', () => {
