@@ -11,6 +11,8 @@ import { ActivatedRoute } from '@angular/router';
 import * as selectors from '../../store/store-group-mgmt.selectors';
 import * as actions from '../../store/store-group-mgmt.actions';
 import { IDetailRecord } from '../../models/IDetailRecord';
+import { IModifiedDetailRecord } from '../../models/IUpdateDetailArgument';
+import { BulkFillRenderer } from '@mpe/shared';
 
 @Component({
   selector: 'mpe-detail',
@@ -47,6 +49,46 @@ export class DetailComponent implements OnInit {
   public tiers: string[] = ['ECOMM', 'Tier 1', 'Tier 2', 'Tier 3', 'Tier 4', 'Tier 5', 'Z'];
   public chains: string[] = ['DSG', 'GG', 'FS'];
 
+  private edit(params) {
+    params.api.showLoadingOverlay();
+
+    const colId: string = params.column.colId;
+    const newValue: string = params.newValue;
+    const node = params.node;
+    const values = this.getModifiedDetailRecords(node, colId, newValue);
+
+    this.store.dispatch(
+      actions.setDetailValues({
+        values,
+      })
+    );
+
+    params.api.hideOverlay();
+    return true;
+  }
+
+  private getModifiedDetailRecords(node: any, colId: string, newValue: string): IModifiedDetailRecord[] {
+    let results = [];
+    if (node.group) {
+      for (const child of node.childrenAfterFilter) {
+        //Recursive call for child nodes
+        const childResults = this.getModifiedDetailRecords(child, colId, newValue);
+        results = [].concat(results, childResults);
+      }
+    } else {
+      const record: IDetailRecord = node.data;
+      results.push({
+        clusterGroupId: record.clusterGroupId,
+        clusterId: record.clusterId,
+        clusterLocationId: record.clusterLocationId,
+        field: colId,
+        value: newValue,
+      });
+    }
+
+    return results;
+  }
+
   public columnDefs = [
     {
       headerName: 'CLUSTER GROUP',
@@ -64,22 +106,7 @@ export class DetailComponent implements OnInit {
       filter: true,
       enableRowGroup: true,
       width: 200,
-      valueSetter: params => {
-        const record: IDetailRecord = params.data;
-        this.store.dispatch(
-          actions.setDetailValues({
-            values: [
-              {
-                clusterGroupId: record.clusterGroupId,
-                clusterId: record.clusterId,
-                clusterLocationId: record.clusterLocationId,
-                field: params.column.colId,
-                value: params.newValue,
-              },
-            ],
-          })
-        );
-      },
+      valueSetter: params => this.edit(params),
     },
     {
       headerName: 'CLUSTER',
@@ -97,22 +124,8 @@ export class DetailComponent implements OnInit {
       editable: true,
       filter: true,
       width: 200,
-      valueSetter: params => {
-        const record: IDetailRecord = params.data;
-        this.store.dispatch(
-          actions.setDetailValues({
-            values: [
-              {
-                clusterGroupId: record.clusterGroupId,
-                clusterId: record.clusterId,
-                clusterLocationId: record.clusterLocationId,
-                field: params.column.colId,
-                value: params.newValue,
-              },
-            ],
-          })
-        );
-      },
+      cellRenderer: BulkFillRenderer,
+      valueSetter: params => this.edit(params),
     },
     {
       headerName: 'TIER',
@@ -126,22 +139,8 @@ export class DetailComponent implements OnInit {
       cellEditorParams: {
         values: this.tiers,
       },
-      valueSetter: params => {
-        const record: IDetailRecord = params.data;
-        this.store.dispatch(
-          actions.setDetailValues({
-            values: [
-              {
-                clusterGroupId: record.clusterGroupId,
-                clusterId: record.clusterId,
-                clusterLocationId: record.clusterLocationId,
-                field: params.column.colId,
-                value: params.newValue,
-              },
-            ],
-          })
-        );
-      },
+      cellRenderer: BulkFillRenderer,
+      valueSetter: params => this.edit(params),
     },
     {
       headerName: 'CHAIN',
@@ -155,22 +154,8 @@ export class DetailComponent implements OnInit {
       cellEditorParams: {
         values: this.chains,
       },
-      valueSetter: params => {
-        const record: IDetailRecord = params.data;
-        this.store.dispatch(
-          actions.setDetailValues({
-            values: [
-              {
-                clusterGroupId: record.clusterGroupId,
-                clusterId: record.clusterId,
-                clusterLocationId: record.clusterLocationId,
-                field: params.column.colId,
-                value: params.newValue,
-              },
-            ],
-          })
-        );
-      },
+      cellRenderer: BulkFillRenderer,
+      valueSetter: params => this.edit(params),
     },
 
     {
