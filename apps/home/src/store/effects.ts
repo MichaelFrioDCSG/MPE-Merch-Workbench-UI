@@ -4,6 +4,7 @@ import { createEffect } from '@ngrx/effects';
 import { switchMap } from 'rxjs/operators';
 
 import * as actions from './actions';
+import { login } from '@mpe/auth';
 
 @Injectable()
 export default class AppEffects {
@@ -13,6 +14,13 @@ export default class AppEffects {
     this.actions$.pipe(
       ofType(actions.applicationLoading),
       switchMap(() => [actions.applicationLoadingCompleted()])
+    )
+  );
+
+  private onApplicationLoadingCompleted = createEffect(() =>
+    this.actions$.pipe(
+      ofType(actions.applicationLoadingCompleted),
+      switchMap(() => [login()])
     )
   );
 }
