@@ -17,10 +17,10 @@ export default class AppEffects {
     )
   );
 
-  private onApplicationLoadingCompleted = createEffect(() =>
-    this.actions$.pipe(
-      ofType(actions.applicationLoadingCompleted),
-      switchMap(() => [login()])
-    )
-  );
+  // private onApplicationLoadingCompleted = createEffect(() =>
+  //   this.actions$.pipe(
+  //     ofType(actions.applicationLoadingCompleted),
+  //     switchMap(() => [login()])
+  //   )
+  // );
 }
