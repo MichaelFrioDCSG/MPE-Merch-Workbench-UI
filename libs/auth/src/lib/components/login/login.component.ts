@@ -24,7 +24,7 @@ export class LoginComponent implements OnInit {
       auth: {
         clientId: environment.clientId,
         authority: environment.authority,
-        redirectUri: environment.redirectUrl,
+        redirectUri: 'https://localhost:4200/code',
       },
     };
 
