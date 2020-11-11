@@ -29,7 +29,7 @@ export class ImportStoreGroupDialogComponent implements OnInit {
   public linkedSubclassesInterface: ILinkSubclass[] = [];
   public productDepartmentsData: string[] = [];
   public productLinkSubclassesData: any[] = [];
-  public productSubDepartmentsData: any[] = [];
+  public productSubDepartmentsData: string[] = [];
   public productClassesData: any[] = [];
   public productSubClassesData: any[] = [];
 
