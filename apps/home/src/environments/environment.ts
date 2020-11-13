@@ -12,8 +12,8 @@ export const environment = {
   clientId: '9323662a-5d5c-4795-a651-37f3b9e15164',
   authority: 'https://login.microsoftonline.com/e04b15c8-7a1e-4390-9b5b-28c7c205a233/',
   // TODO: Create dev environment and replace
-  // redirectUrl: 'http://localhost:4200',
-  redirectUrl: 'https://mpe-merch-workbench.apps.vn01.pcf.dcsg.com',
+  redirectUrl: 'http://localhost:4200/login',
+  //redirectUrl: 'https://mpe-merch-workbench.apps.vn01.pcf.dcsg.com',
   agGridLicense:
     'CompanyName=DCSG,LicensedApplication=Merchandise Workbench,LicenseType=SingleApplication,LicensedConcurrentDeveloperCount=7,LicensedProductionInstancesCount=0,AssetReference=AG-011333,ExpiryDate=21_October_2021_[v2]_MTYzNDc3MDgwMDAwMA==09f1bbb6a68890636bc50bb7eefdbc30',
 };

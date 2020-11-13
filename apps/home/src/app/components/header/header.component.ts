@@ -23,6 +23,13 @@ export class HeaderComponent implements OnInit {
   public ngOnInit(): void {
     this.userProfile = this.store.pipe(select(AuthSections.selectUserProfile));
     this.routes = routes;
+    //if route data has render then filter out, else include
+    // this.routes = routes.filter(rout => {
+    //   rout.data.render
+
+    //find routes marked to not render in header - return those that should render
+    //return true/false - determine which for filter
+    //});
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         this.activeRoute = this.router.url.substring(1);
