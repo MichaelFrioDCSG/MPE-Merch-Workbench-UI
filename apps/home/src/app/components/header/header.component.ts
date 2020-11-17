@@ -1,11 +1,10 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Routes, Router, NavigationEnd } from '@angular/router';
 import { routes } from '../../app-routing.module';
-import { Title } from '@angular/platform-browser';
 import { IUserProfile } from 'libs/auth/src/lib/models/IUserProfile';
 import { Observable } from 'rxjs';
 import { select, Store } from '@ngrx/store';
-import * as AuthSections from '@mpe/auth';
+import { selectUserProfile } from '@mpe/auth';
 import { IAuthState } from 'libs/auth/src/lib/store/models/IAuthState';
 
 @Component({
@@ -18,18 +17,17 @@ export class HeaderComponent implements OnInit {
   public routes: Routes;
   public activeRoute: any;
   public userProfile: Observable<IUserProfile>;
-  constructor(private titleService: Title, public router: Router, private store: Store<IAuthState>) {}
+  constructor(public router: Router, private store: Store<IAuthState>) {}
 
   public ngOnInit(): void {
-    this.userProfile = this.store.pipe(select(AuthSections.selectUserProfile));
-    this.routes = routes;
-    //if route data has render then filter out, else include
-    // this.routes = routes.filter(rout => {
-    //   rout.data.render
+    this.userProfile = this.store.pipe(select(selectUserProfile));
+    this.routes = [];
+    for (const route of routes) {
+      if (route.data.display === undefined || route.data.display === true) {
+        this.routes.push(route);
+      }
+    }
 
-    //find routes marked to not render in header - return those that should render
-    //return true/false - determine which for filter
-    //});
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         this.activeRoute = this.router.url.substring(1);

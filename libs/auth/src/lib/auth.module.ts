@@ -4,10 +4,6 @@ import { LoginComponent } from './components/login/login.component';
 import { StoreModule } from '@ngrx/store';
 import * as AuthReducer from './store/auth.reducers';
 import { BrowserModule } from '@angular/platform-browser';
-import { EffectsModule } from '@ngrx/effects';
-
-import AuthEffects from './store/auth.effects';
-
 @NgModule({
   imports: [
     CommonModule,

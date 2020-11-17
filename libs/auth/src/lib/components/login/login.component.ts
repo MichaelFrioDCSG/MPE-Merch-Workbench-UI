@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { select, Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { reduceState, select, Store } from '@ngrx/store';
+import { observable, Observable } from 'rxjs';
 import { IUserProfile } from '../../models/IUserProfile';
 import { IAuthState } from '../../store/models/IAuthState';
 import * as AuthSections from '../../store/auth.state';
@@ -9,6 +9,7 @@ import * as actions from '../../store/auth.actions';
 import * as msal from '@azure/msal-browser';
 import { environment } from '@mpe/home/src/environments/environment';
 import { ActivatedRoute, Router } from '@angular/router';
+import { selectAuthState, selectUserProfile } from '../../store/auth.state';
 
 @Component({
   selector: 'mpe-login',
@@ -38,7 +39,7 @@ export class LoginComponent implements OnInit {
         // If the tokenResponse !== null, then you are coming back from a successful authentication redirect.
 
         if (tokenResponse !== null) {
-          //auth success - call login action?
+          //auth success - call login action
           const currentAccounts: msal.AccountInfo[] = this.msalInstance.getAllAccounts();
           if (currentAccounts === null) {
             //      this.store.dispatch(actions.setUserProfile({ UserProfile: null }));
@@ -52,17 +53,21 @@ export class LoginComponent implements OnInit {
               username: currentAccounts[0].username,
               roles: [],
             };
+            //async call to set user profile in store
             this.store.dispatch(actions.setUserProfile({ UserProfile: userProfile }));
 
-            // const retUrl = this.route.snapshot.queryParams.retUrl;
-            // if (retUrl) {
-            //   this.router.navigate(['/' + retUrl]);
-            //   return;
-            // }
+            const retUrl = this.route.snapshot.queryParams.retUrl;
+
+            //listen for the update to userProfile and redirect to the original url once it's set in state
+            this.store.select(selectUserProfile).subscribe((profile: IUserProfile) => {
+              if (profile.username !== null) {
+                this.router.navigate(['/' + retUrl]);
+              }
+            });
           }
         }
         // If the tokenResponse === null, you are not coming back from an auth redirect.
-        if (tokenResponse == null) {
+        else {
           const loginRequest = {
             scopes: ['user.read'], // optional Array<string>
           };
