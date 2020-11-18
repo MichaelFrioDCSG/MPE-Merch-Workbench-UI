@@ -3,23 +3,20 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { HeaderComponent } from './header.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
-import { authProviders, IAuthState, initialState } from '@mpe/auth';
+import { IAuthState, initialState } from '@mpe/auth';
 import { By } from '@angular/platform-browser';
-import { MsalModule, MsalService } from '@azure/msal-angular';
 import { MaterialModule } from '@mpe/material';
-
 
 describe('HeaderComponent', () => {
   let component: HeaderComponent;
   let fixture: ComponentFixture<HeaderComponent>;
   let store: MockStore;
 
-
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [HeaderComponent],
-      imports: [RouterTestingModule, MsalModule, MaterialModule],
-      providers: [provideMockStore({ initialState }), ...authProviders]
+      imports: [RouterTestingModule, MaterialModule],
+      providers: [provideMockStore({ initialState })],
     }).compileComponents();
   }));
 
@@ -50,15 +47,15 @@ describe('HeaderComponent', () => {
     const state = getMockState();
     const elementProfile = fixture.debugElement.query(By.css('.profile'));
     expect(elementProfile.nativeElement.textContent.trim()).toEqual(state.UserProfile.name);
-  })
+  });
 
   function getMockState(): IAuthState {
     return {
       UserProfile: {
         name: 'test',
         roles: ['Tester'],
-        username: 'test.dcsg.com'
-      }
-    }
+        username: 'test.dcsg.com',
+      },
+    };
   }
 });
