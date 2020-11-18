@@ -8,7 +8,7 @@ import { selectUserProfile } from '../store/auth.state';
 import { IUserProfile } from '../models/IUserProfile';
 
 @Injectable({ providedIn: 'root' })
-export class AuthGaurdService implements CanActivate {
+export class AuthGuardService implements CanActivate {
   private userProfile: IUserProfile;
   private get isLoggedIn() {
     return this.userProfile && this.userProfile.username;
