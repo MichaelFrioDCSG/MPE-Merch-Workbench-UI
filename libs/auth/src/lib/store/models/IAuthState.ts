@@ -1,4 +1,4 @@
-import { IUserProfile } from '@mpe/auth';
+import { IUserProfile } from './IUserProfile';
 
 export interface IAuthState {
   UserProfile: IUserProfile;
