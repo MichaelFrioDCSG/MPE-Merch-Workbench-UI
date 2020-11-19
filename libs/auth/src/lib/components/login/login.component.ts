@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { reduceState, select, Store } from '@ngrx/store';
-import { observable, Observable } from 'rxjs';
-import { IUserProfile } from '../../models/IUserProfile';
+import { select, Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { IUserProfile } from '../../store/models/IUserProfile';
 import { IAuthState } from '../../store/models/IAuthState';
 import * as AuthSections from '../../store/auth.state';
 import * as actions from '../../store/auth.actions';
@@ -9,7 +9,7 @@ import * as actions from '../../store/auth.actions';
 import * as msal from '@azure/msal-browser';
 import { environment } from '@mpe/home/src/environments/environment';
 import { ActivatedRoute, Router } from '@angular/router';
-import { selectAuthState, selectUserProfile } from '../../store/auth.state';
+import { selectUserProfile } from '../../store/auth.state';
 
 @Component({
   selector: 'mpe-login',
@@ -35,17 +35,13 @@ export class LoginComponent implements OnInit {
     this.msalInstance
       .handleRedirectPromise()
       .then(tokenResponse => {
-        // Check if the tokenResponse is null
         // If the tokenResponse !== null, then you are coming back from a successful authentication redirect.
-
         if (tokenResponse !== null) {
           //auth success - call login action
           const currentAccounts: msal.AccountInfo[] = this.msalInstance.getAllAccounts();
           if (currentAccounts === null) {
-            //      this.store.dispatch(actions.setUserProfile({ UserProfile: null }));
             return;
           } else if (currentAccounts.length > 1) {
-            // Add choose account code here
             console.warn('Multiple accounts detected.');
           } else if (currentAccounts.length === 1) {
             const userProfile: IUserProfile = {
@@ -55,7 +51,6 @@ export class LoginComponent implements OnInit {
             };
             //async call to set user profile in store
             this.store.dispatch(actions.setUserProfile({ UserProfile: userProfile }));
-
             const retUrl = this.route.snapshot.queryParams.retUrl;
 
             //listen for the update to userProfile and redirect to the original url once it's set in state
@@ -66,22 +61,20 @@ export class LoginComponent implements OnInit {
             });
           }
         }
-        // If the tokenResponse === null, you are not coming back from an auth redirect.
+        // If the tokenResponse === null, re-direct to auth login page
         else {
           const loginRequest = {
-            scopes: ['user.read'], // optional Array<string>
+            scopes: ['user.read'],
           };
           try {
             this.msalInstance.loginRedirect(loginRequest);
           } catch (err) {
-            // handle error
             const breakHere = '';
           }
         }
       })
       .catch(error => {
         const breakHere = '';
-        // handle error, either in the library or coming back from the server
       });
   }
 }

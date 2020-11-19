@@ -1,5 +1,4 @@
 import { createAction, props } from '@ngrx/store';
-import { IUserProfile } from '../models/IUserProfile';
+import { IUserProfile } from '@mpe/auth';
 
-export const login = createAction('[App] Login');
 export const setUserProfile = createAction('[App] Set User Data', props<{ UserProfile: IUserProfile }>());

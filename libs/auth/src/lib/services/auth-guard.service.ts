@@ -2,10 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router, ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from '@angular/router';
 import { Store } from '@ngrx/store';
 
-import { IAuthState } from '../store/models/IAuthState';
-
-import { selectUserProfile } from '../store/auth.state';
-import { IUserProfile } from '../models/IUserProfile';
+import { IUserProfile, IAuthState, selectUserProfile } from '@mpe/auth';
 
 @Injectable({ providedIn: 'root' })
 export class AuthGuardService implements CanActivate {

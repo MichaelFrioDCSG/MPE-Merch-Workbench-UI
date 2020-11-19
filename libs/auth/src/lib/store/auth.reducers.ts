@@ -1,5 +1,4 @@
 import { createReducer, on, createFeatureSelector, createSelector } from '@ngrx/store';
-import { IUserProfile } from '../models/IUserProfile';
 import * as actions from './auth.actions';
 import { IAuthState } from './models/IAuthState';
 

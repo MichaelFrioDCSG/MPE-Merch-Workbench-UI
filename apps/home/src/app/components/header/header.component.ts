@@ -1,11 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Routes, Router, NavigationEnd } from '@angular/router';
 import { routes } from '../../app-routing.module';
-import { IUserProfile } from 'libs/auth/src/lib/models/IUserProfile';
 import { Observable } from 'rxjs';
 import { select, Store } from '@ngrx/store';
-import { selectUserProfile } from '@mpe/auth';
-import { IAuthState } from 'libs/auth/src/lib/store/models/IAuthState';
+import { selectUserProfile, IAuthState, IUserProfile } from '@mpe/auth';
 
 @Component({
   selector: 'app-header',
