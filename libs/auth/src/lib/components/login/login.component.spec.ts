@@ -1,12 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { BroadcastService, MsalService, MSAL_CONFIG, MSAL_CONFIG_ANGULAR } from '@azure/msal-angular';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 
 import { LoginComponent } from './login.component';
-import { MSALConfigFactory, MSALAngularConfigFactory } from '@mpe/auth';
 import { RouterTestingModule } from '@angular/router/testing';
-
-import * as AuthSections from '../../store/auth.state';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -29,16 +25,6 @@ describe('LoginComponent', () => {
             },
           },
         }),
-        {
-          provide: MSAL_CONFIG,
-          useFactory: MSALConfigFactory,
-        },
-        {
-          provide: MSAL_CONFIG_ANGULAR,
-          useFactory: MSALAngularConfigFactory,
-        },
-        MsalService,
-        BroadcastService,
       ],
     }).compileComponents();
     store = TestBed.inject(MockStore);

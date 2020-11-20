@@ -45,7 +45,7 @@ jobs:
                 npm install --unsafe-perm --quiet
                 npx nx run-many --all --target=lint
 
-  - name: Unit-Test-Home
+  - name: Unit-Test
     public: true
     plan:
       - get: MerchWorkBenchMaster
@@ -70,152 +70,15 @@ jobs:
                 echo "NG_CLI_ANALYTICS="$NG_CLI_ANALYTICS
                 cd MerchWorkBenchMaster
                 npm install --unsafe-perm --quiet
-                npx nx test home --karma-config=karma-ci.conf.js --no-progress
+                npx nx run-many --projects=home,shared,sgm,assortment-management,auth,asmt-mgmt-service --target=test --karma-config=karma-ci.conf.js --no-progress
 
-  - name: Unit-Test-Shared
-    public: true
-    plan:
-      - get: MerchWorkBenchMaster
-        trigger: true
-      - task: ng-test
-        config:
-          platform: linux
-          image_resource:
-            type: docker-image
-            source:
-              repository: weboaks/node-karma-protractor-chrome
-              tag: latest
-          inputs:
-            - name: MerchWorkBenchMaster
-          run:
-            path: sh
-            args:
-              - -exc
-              - |
-                set -xe
-                export NG_CLI_ANALYTICS="false"
-                echo "NG_CLI_ANALYTICS="$NG_CLI_ANALYTICS
-                cd MerchWorkBenchMaster
-                npm install --unsafe-perm --quiet
-                npx nx test shared --karma-config=karma-ci.conf.js --no-progress
-
-  - name: Unit-Test-Assortment-Management
-    public: true
-    plan:
-      - get: MerchWorkBenchMaster
-        trigger: true
-      - task: ng-test
-        config:
-          platform: linux
-          image_resource:
-            type: docker-image
-            source:
-              repository: weboaks/node-karma-protractor-chrome
-              tag: latest
-          inputs:
-            - name: MerchWorkBenchMaster
-          run:
-            path: sh
-            args:
-              - -exc
-              - |
-                set -xe
-                export NG_CLI_ANALYTICS="false"
-                echo "NG_CLI_ANALYTICS="$NG_CLI_ANALYTICS
-                cd MerchWorkBenchMaster
-                npm install --unsafe-perm --quiet
-                npx nx test assortment-management --karma-config=karma-ci.conf.js --no-progress
-
-  - name: Unit-Test-Assortment-Management-Service
-    public: true
-    plan:
-      - get: MerchWorkBenchMaster
-        trigger: true
-      - task: ng-test
-        config:
-          platform: linux
-          image_resource:
-            type: docker-image
-            source:
-              repository: weboaks/node-karma-protractor-chrome
-              tag: latest
-          inputs:
-            - name: MerchWorkBenchMaster
-          run:
-            path: sh
-            args:
-              - -exc
-              - |
-                set -xe
-                export NG_CLI_ANALYTICS="false"
-                echo "NG_CLI_ANALYTICS="$NG_CLI_ANALYTICS
-                cd MerchWorkBenchMaster
-                npm install --unsafe-perm --quiet
-                npx nx test asmt-mgmt-service --karma-config=karma-ci.conf.js --no-progress
-
-  - name: Unit-Test-Store-Group-Management
-    public: true
-    plan:
-      - get: MerchWorkBenchMaster
-        trigger: true
-      - task: ng-test
-        config:
-          platform: linux
-          image_resource:
-            type: docker-image
-            source:
-              repository: weboaks/node-karma-protractor-chrome
-              tag: latest
-          inputs:
-            - name: MerchWorkBenchMaster
-          run:
-            path: sh
-            args:
-              - -exc
-              - |
-                set -xe
-                export NG_CLI_ANALYTICS="false"
-                echo "NG_CLI_ANALYTICS="$NG_CLI_ANALYTICS
-                cd MerchWorkBenchMaster
-                npm install --unsafe-perm --quiet
-                npx nx test sgm --karma-config=karma-ci.conf.js --no-progress
-  - name: Unit-Test-Auth
-      public: true
-      plan:
-        - get: MerchWorkBenchMaster
-          trigger: true
-        - task: ng-test
-          config:
-            platform: linux
-            image_resource:
-              type: docker-image
-              source:
-                repository: weboaks/node-karma-protractor-chrome
-                tag: latest
-            inputs:
-              - name: MerchWorkBenchMaster
-            run:
-              path: sh
-              args:
-                - -exc
-                - |
-                  set -xe
-                  export NG_CLI_ANALYTICS="false"
-                  echo "NG_CLI_ANALYTICS="$NG_CLI_ANALYTICS
-                  cd MerchWorkBenchMaster
-                  npm install --unsafe-perm --quiet
-                  npx nx test auth --karma-config=karma-ci.conf.js --no-progress
   - name: Publish-and-Deploy
     plan:
       - get: MerchWorkBenchMaster
         trigger: true
         passed:
           - Lint
-          - Unit-Test-Home
-          - Unit-Test-Shared
-          - Unit-Test-Assortment-Management
-          - Unit-Test-Store-Group-Management
-          - Unit-Test-Assortment-Management-Service
+          - Unit-Test
       - task: ng-publish
         config:
           platform: linux

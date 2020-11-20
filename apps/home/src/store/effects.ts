@@ -4,7 +4,6 @@ import { createEffect } from '@ngrx/effects';
 import { switchMap } from 'rxjs/operators';
 
 import * as actions from './actions';
-import { login } from '@mpe/auth';
 
 @Injectable()
 export default class AppEffects {
