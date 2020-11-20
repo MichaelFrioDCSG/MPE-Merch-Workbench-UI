@@ -142,7 +142,7 @@ export class ImportStoreGroupDialogComponent implements OnInit {
   public formatLinkSubclasses() {
     this.linkSubclassesData = this.linkedSubclassesInterface
       .map((linksubclass: ILinkSubclass) => {
-        return linksubclass.subClassDisplay;
+        return linksubclass.subClassId;
       })
       .sort();
     this.linkSubclassesData = [...new Set(this.linkSubclassesData)];
@@ -160,7 +160,7 @@ export class ImportStoreGroupDialogComponent implements OnInit {
     if (this.productSubClasses.value) {
       this.linkSubclassesData = this.linkedSubclassesInterface
         .filter(linksubclass => !this.productSubClasses.value.length || this.productSubClasses.value.includes(linksubclass.subClassDisplay))
-        .map(linksubclass => linksubclass.subClassId);
+        .map(linksubclass => linksubclass.subClassDisplay);
     }
   }
 
@@ -191,37 +191,35 @@ export class ImportStoreGroupDialogComponent implements OnInit {
         this.productSubDepartmentsData = [...new Set(this.productSubDepartmentsData)];
         this.addProductHierarchies();
       },
+    );
 
-      linkedSubclasses => {
-        this.productLinkSubclassesData = this.linkedSubclassesInterface
-          .filter(linkSubclass => linkedSubclasses.includes(linkSubclass.subClassDisplay))
-          .map(linkSubclass => linkSubclass.subClassDisplay)
-          .sort();
-
-
-      });
     // Get Classes
-    this.productSubDepartments.valueChanges.subscribe(subDepartment => {
-      this.productSubDepartments.value.length ? this.productClasses.enable({ emitEvent: false }) : this.productClasses.disable({ emitEvent: true });
-      this.productClassesData = this.productHierarchiesInterface
-        //add filter to pull link subclasses out of producthierarchy data
-        .filter(product => subDepartment.includes(product.subDepartmentDisplay))
-        .map(product => product.classDisplay)
-        .sort();
-      this.productClassesData = [...new Set(this.productClassesData)];
-      this.addProductHierarchies();
-    });
+    this.productSubDepartments.valueChanges.subscribe(
+      subDepartment => {
+        this.productSubDepartments.value.length ? this.productClasses.enable({ emitEvent: false }) : this.productClasses.disable({ emitEvent: true });
+        this.productClassesData = this.productHierarchiesInterface
+          .filter(product => subDepartment.includes(product.subDepartmentDisplay))
+          .map(product => product.classDisplay)
+          .sort();
+        this.productClassesData = [...new Set(this.productClassesData)];
+        this.addProductHierarchies();
+      },
+
+    );
+
     // Get SubClasses
     this.productClasses.valueChanges.subscribe(classes => {
       this.productClasses.value.length ? this.productSubClasses.enable({ emitEvent: false }) : this.productSubClasses.disable({ emitEvent: true });
-      this.productSubClassesData = this.linkedSubclassesInterface
-        //add filter to pull link subclasses out of producthierarchy data
-        .filter(linkedSubclass => linkedSubclass.subClassDisplay !== this.leadSubclass.value)
-        .map(linkedSubclass => linkedSubclass.subClassDisplay)
+      this.productSubClassesData = this.productHierarchiesInterface
+        .filter(product => classes.includes(product.classDisplay))
+        .filter(product => product.subClassDisplay !== this.leadSubclass.value)
+        .filter(product => !(this.linkSubclassesData).includes(product.subClassId))
+        .map(product => product.subClassDisplay)
         .sort();
       this.productSubClassesData = [...new Set(this.productSubClassesData)];
       this.addProductHierarchies();
     });
+
     this.productSubClasses.valueChanges.subscribe(() => {
       this.addProductHierarchies();
     });

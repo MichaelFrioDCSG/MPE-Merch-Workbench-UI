@@ -10,6 +10,7 @@ import { ProductHierarchyService } from '../../services/product-hierarchy.servic
 import { AssortmentPeriodService } from '../../services/assortment-period.service';
 import { of } from 'rxjs';
 import { IProductHierarchy } from '@mpe/shared';
+import { _ } from 'ag-grid-community';
 
 const mockProductHierarchyData: IProductHierarchy[] = [
   {
@@ -99,14 +100,23 @@ describe('ImportStoreGroupDialogComponent', () => {
     component.onAssortmentPeriodChanged(assortmentPeriodId);
     component.onLeadSubclassChanged("500_001_001_001 - Really Cool Snowboard Boots with Socks");
     component.productDepartments.setValue("500 - Snowboards");
+    component.productSubDepartments.setValue("500_001 - Snowboard Boots");
+    component.productClasses.setValue("500_001_002 - Snowboard Boots without Socks");
+    component.productSubClasses.setValue("500_001_002_001 - Really Cool Snowboard Boots without Socks");
 
 
     expect(component.productSubDepartmentsData.every(subdepartment => subdepartment.startsWith("500"))).toBe(true);
+    expect(component.productSubDepartmentsData.every(subdepartment => subdepartment.startsWith("400"))).toBe(false);
+    expect(component.productClassesData.every(classes => classes.startsWith("500_001"))).toBe(true);
+    expect(component.productClassesData.every(classes => classes.startsWith("400_001"))).toBe(false);
+    expect(component.productSubClassesData.every(subclasses => subclasses.startsWith("500_001_002"))).toBe(true);
+    expect(component.productSubClassesData.every(subclasses => subclasses.startsWith("400_001_002"))).toBe(false);
     expect(component.productSubDepartmentsData.length).toBe(1);
+    expect(component.productClassesData.length).toBe(2);
+    expect(component.productSubClassesData.includes(leadsubclassId)).toBe(false);
   })
 
-  // This is ignored for now to get tests to pass.  Will need to revisit this test and build out more.
-  xit('should create', async () => {
+  it('should create', async () => {
     expect(component).toBeTruthy();
   })
 });
