@@ -13,6 +13,7 @@ import * as actions from '../../store/store-group-mgmt.actions';
 import { IDetailRecord } from '../../models/IDetailRecord';
 import { IModifiedDetailRecord } from '../../models/IUpdateDetailArgument';
 import { BulkFillRenderer } from '@mpe/shared';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'mpe-detail',
@@ -34,6 +35,7 @@ export class DetailComponent implements OnInit {
   public defaultColDef: any = {
     resizable: true,
   };
+  private datePipe: DatePipe = new DatePipe('en-US');
 
   public actionsDisabled = false;
 
@@ -174,13 +176,29 @@ export class DetailComponent implements OnInit {
     { headerName: 'AD MARKET', field: 'adMarket', sortable: true, filter: true, width: 250, hide: true },
     { headerName: 'CITY', field: 'city', sortable: true, filter: true, width: 250 },
     { headerName: 'CLIMATE', field: 'climate', sortable: true, filter: true, width: 250, hide: true },
-    { headerName: 'CLOSE DATE', field: 'closeDate', sortable: true, filter: true, width: 250, hide: true },
+    {
+      headerName: 'CLOSE DATE',
+      field: 'closeDate',
+      sortable: true,
+      filter: true,
+      width: 250,
+      hide: true,
+      valueGetter: params => this.datePipe.transform(params.data.closeDate, 'MM/dd/yyyy'),
+    },
     { headerName: 'DEMOGRAPHICS', field: 'demographics', sortable: true, filter: true, width: 250, hide: true },
     { headerName: 'DISTRICT DESCRIPTION', field: 'districtDescription', sortable: true, filter: true, width: 250, hide: true },
     { headerName: 'MEDIAN INCOME', field: 'medianIncome', sortable: true, filter: true, width: 250, hide: true },
     { headerName: 'NUMBER OF ENTRANCES', field: 'numberOfEntrances', sortable: true, filter: true, width: 250 },
     { headerName: 'NUMBER OF FLOORS', field: 'numberOfFloors', sortable: true, filter: true, width: 250, hide: true },
-    { headerName: 'OPEN DATE', field: 'openDate', sortable: true, filter: true, width: 250, hide: true },
+    {
+      headerName: 'OPEN DATE',
+      field: 'openDate',
+      sortable: true,
+      filter: true,
+      width: 250,
+      hide: true,
+      valueGetter: params => this.datePipe.transform(params.data.openDate, 'MM/dd/yyyy'),
+    },
     { headerName: 'REGION DESCRIPTION', field: 'regionDescription', sortable: true, filter: true, width: 250, hide: true },
 
     {
