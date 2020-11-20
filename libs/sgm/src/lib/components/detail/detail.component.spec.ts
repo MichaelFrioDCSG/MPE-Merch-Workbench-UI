@@ -230,6 +230,36 @@ describe('DetailComponent', () => {
       expect(columnDef.filterParams.comparator).toBeTruthy();
     });
   });
+  it('Open Date Column configured correctly', async () => {
+    waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
+      const columnDef = component.agGrid.gridOptions.api.getColumnDef('openDate');
+      expect(columnDef).toBeTruthy();
+
+      expect(columnDef.headerName).toEqual('OPEN DATE');
+      expect(columnDef.resizable).toEqual(true);
+      expect(columnDef.editable).toBeFalsy();
+      expect(columnDef.sortable).toEqual(true);
+      expect(columnDef.filter).toEqual(true);
+      expect(columnDef.hide).toEqual(true);
+      expect(columnDef.width).toEqual(250);
+      expect(columnDef.valueGetter).toBeTruthy();
+    });
+  });
+  it('Close Date Column configured correctly', async () => {
+    waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
+      const columnDef = component.agGrid.gridOptions.api.getColumnDef('closeDate');
+      expect(columnDef).toBeTruthy();
+
+      expect(columnDef.headerName).toEqual('CLOSE DATE');
+      expect(columnDef.resizable).toEqual(true);
+      expect(columnDef.editable).toBeFalsy();
+      expect(columnDef.sortable).toEqual(true);
+      expect(columnDef.filter).toEqual(true);
+      expect(columnDef.hide).toEqual(true);
+      expect(columnDef.width).toEqual(250);
+      expect(columnDef.valueGetter).toBeTruthy();
+    });
+  });
 
   it('Warehouse Number Column configured correctly', async () => {
     waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
@@ -274,7 +304,6 @@ describe('DetailComponent', () => {
       expect(columnDef.width).toEqual(250);
     });
   });
-
   it('Store Name Column configured correctly', async () => {
     waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
       const columnDef = component.agGrid.gridOptions.api.getColumnDef('storeName');

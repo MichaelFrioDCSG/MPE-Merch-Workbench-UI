@@ -4,6 +4,7 @@ import { LoginComponent } from './components/login/login.component';
 import { StoreModule } from '@ngrx/store';
 import * as AuthReducer from '@mpe/auth';
 import { BrowserModule } from '@angular/platform-browser';
+
 @NgModule({
   imports: [CommonModule, BrowserModule, StoreModule.forFeature(AuthReducer.authReducerKey, AuthReducer.reducer)],
   declarations: [LoginComponent],

@@ -16,6 +16,7 @@ import { selectUserProfile } from '../../store/auth.state';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
+
 export class LoginComponent implements OnInit {
   public userProfile: Observable<IUserProfile> = this.store.pipe(select(AuthSections.selectUserProfile));
   private msalInstance: msal.PublicClientApplication;
