@@ -73,8 +73,8 @@ const mockLinkSubclassData: ILinkSubclass[] = [
 describe('ImportStoreGroupDialogComponent', () => {
   let component: ImportStoreGroupDialogComponent;
   let fixture: ComponentFixture<ImportStoreGroupDialogComponent>;
-  let mockAssortmentPeriodService: any = { getAssortmentPeriods: (a, b) => of([]) };
-  let mockProductHierarchyService: any = { GetLinkSubclasses: (assortmentPeriodId, copyfromsubclassId) => of(mockLinkSubclassData), getAssortmentPeriodProductHierarchy: (assortmentPeriodId, mustHaveBuyPlan, mustHaveCluster) => of(mockProductHierarchyData) };
+  const mockAssortmentPeriodService: any = { getAssortmentPeriods: (a, b) => of([]) };
+  const mockProductHierarchyService: any = { GetLinkSubclasses: (assortmentPeriodId, copyfromsubclassId) => of(mockLinkSubclassData), getAssortmentPeriodProductHierarchy: (assortmentPeriodId, mustHaveBuyPlan, mustHaveCluster) => of(mockProductHierarchyData) };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
