@@ -84,6 +84,7 @@ export class ImportStoreGroupDialogComponent implements OnInit {
     this.leadSubclass.reset();
     this.resetLinkValues();
     this.getProductHierarchies();
+    this.productSubClasses.disable({ emitEvent: true });
   }
 
   public onLeadSubclassChanged(value) {
@@ -107,6 +108,9 @@ export class ImportStoreGroupDialogComponent implements OnInit {
 
   public onProductClassChanged(value) {
     this.productClasses.setValue(value);
+    if (!this.leadSubclass.value) {
+      this.productSubClasses.disable({ emitEvent: true });
+    }
   }
 
   public onProductSubClassChanged(value) {
@@ -203,8 +207,8 @@ export class ImportStoreGroupDialogComponent implements OnInit {
         this.productClassesData = [...new Set(this.productClassesData)];
         this.addProductHierarchies();
       },
-
     );
+
 
     // Get SubClasses
     this.productClasses.valueChanges.subscribe(classes => {
