@@ -84,13 +84,13 @@ export class ImportStoreGroupDialogComponent implements OnInit {
     this.leadSubclass.reset();
     this.resetLinkValues();
     this.getProductHierarchies();
-    this.productSubClasses.disable({ emitEvent: true });
   }
 
   public onLeadSubclassChanged(value) {
     this.leadSubclass.setValue(value);
     this.resetLinkValues();
     const leadSubclassId = this.productHierarchiesInterface.find(hierarchy => hierarchy.subClassDisplay === this.leadSubclass.value).subClassId;
+    !this.leadSubclass.value ? this.productDepartments.disable({ emitEvent: true }) : this.productDepartments.enable({ emitEvent: false });
     this.productHierarchyService.GetLinkSubclasses(this.assortmentPeriod.value.assortmentPeriodId, leadSubclassId)
       .subscribe((linkedSubclasses: ILinkSubclass[]) => {
         this.linkedSubclassesInterface = linkedSubclasses;
@@ -108,9 +108,6 @@ export class ImportStoreGroupDialogComponent implements OnInit {
 
   public onProductClassChanged(value) {
     this.productClasses.setValue(value);
-    if (!this.leadSubclass.value) {
-      this.productSubClasses.disable({ emitEvent: true });
-    }
   }
 
   public onProductSubClassChanged(value) {
@@ -127,7 +124,6 @@ export class ImportStoreGroupDialogComponent implements OnInit {
         this.formatProductHierarchies();
         this.loadingProductHierarchy = false;
         this.leadSubclass.enable({ emitEvent: false });
-        this.productDepartments.enable({ emitEvent: false });
       });
   }
 
