@@ -8,6 +8,7 @@ export const routes: Routes = [
   { path: 'login', pathMatch: 'prefix', data: { name: 'Login', display: false }, component: LoginComponent },
   { path: 'sgm', data: { name: 'Store Group Management' }, children: sgmRoutes, canActivate: [AuthGuardService] },
   { path: 'am', data: { name: 'Assortment Management' }, children: amRoutes, canActivate: [AuthGuardService] },
+  { path: '', pathMatch: 'full', data: { display: false }, redirectTo: '/sgm' },
 ];
 @NgModule({
   imports: [RouterModule.forRoot(routes, { initialNavigation: 'enabled' })],

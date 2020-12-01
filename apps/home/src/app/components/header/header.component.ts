@@ -21,7 +21,7 @@ export class HeaderComponent implements OnInit {
     this.userProfile = this.store.pipe(select(selectUserProfile));
     this.routes = [];
     for (const route of routes) {
-      if (route.data.display === undefined || route.data.display === true) {
+      if (route?.data?.display === undefined || route?.data?.display === true) {
         this.routes.push(route);
       }
     }

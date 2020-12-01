@@ -1,4 +1,4 @@
-import { createReducer, on, createFeatureSelector, createSelector } from '@ngrx/store';
+import { createReducer, on, createFeatureSelector } from '@ngrx/store';
 import * as actions from './auth.actions';
 import { IAuthState } from './models/IAuthState';
 
@@ -22,5 +22,3 @@ export function reducer(state: IAuthState, action) {
   return reducer$(state, action);
 }
 export const authReducerKey = 'auth';
-
-export const selectAppState = createFeatureSelector<IAuthState>('auth');

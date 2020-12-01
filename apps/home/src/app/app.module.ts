@@ -9,7 +9,6 @@ import { AgGridModule } from 'ag-grid-angular';
 import { environment } from '../environments/environment';
 import { AssortmentManagementModule } from '@mpe/assortment-management';
 import appReducer, { appReducerKey } from '../store/reducer';
-import appEffects from '../store/effects';
 
 import { AppComponent } from './app.component';
 import { CommonModule } from '@angular/common';
@@ -45,7 +44,7 @@ LicenseManager.setLicenseKey(environment.agGridLicense);
         },
       }
     ),
-    EffectsModule.forRoot([appEffects]),
+    EffectsModule.forRoot([]),
     SgmModule,
     AuthModule,
     !environment.production ? StoreDevtoolsModule.instrument() : [],
