@@ -30,9 +30,8 @@
         <div class="row">
           <div class="col-md-4">
             <app-input-dropdown-filter [placeholder]="'Lead Subclass'" [title]="'Choose a Lead Subclass'"
-              [arrayValues]="productLeadSubclasses" [inputFormControl]="leadSubclass"
-              [loading]="loadingProductHierarchy" [disable]="leadSubclass.disabled" [required]="true"
-              (onValueChanged)="onLeadSubclassChanged($event)">
+              [arrayValues]="productLeadSubclasses" [inputFormControl]="leadSubclass" [loading]="loadingLeadSubClasses"
+              [disable]="leadSubclass.disabled" [required]="true" (onValueChanged)="onLeadSubclassChanged($event)">
             </app-input-dropdown-filter>
           </div>
         </div>

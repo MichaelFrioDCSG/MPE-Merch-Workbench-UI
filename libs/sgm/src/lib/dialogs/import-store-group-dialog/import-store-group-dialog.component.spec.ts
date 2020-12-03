@@ -62,11 +62,21 @@ const mockProductHierarchyData: IProductHierarchy[] = [
 
 const mockLinkSubclassData: ILinkSubclass[] = [
   {
+    departmentId: "400",
+    departmentDesc: "Winter Gear",
+    departmentDisplay: "400 - Winter Gear",
+    subDepartmentId: "400_001",
+    subDepartmentDesc: "Snowboards",
+    subDepartmentDisplay: "400_001 - Snowboard Boots",
+    classId: "400_001_002",
+    classDesc: "Really Cool Snowboard Boots",
+    classDisplay: "400_001_002 - Really Cool Snowboard Boots",
     subClassId: "400_001_002_001",
+    subClassDesc: "Really Cool Snowboard Boots without Socks",
     subClassDisplay: "400_001_002_001 - Really Cool Snowboard Boots without Socks",
     copyFromSubclassId: "500_001_001_001",
     copyFromSubclassDisplay: "500_001_001_001 - Really Cool Snowboard Boots with Socks",
-    assortmentPeriodId: "bpdddpm0000063"
+    assortmentPeriodId: "bpdddpm0000063",
   }
 ]
 
@@ -112,7 +122,7 @@ describe('ImportStoreGroupDialogComponent', () => {
     expect(component.productSubClassesData.every(subclasses => subclasses.startsWith("500_001_002"))).toBe(true);
     expect(component.productSubClassesData.every(subclasses => subclasses.startsWith("400_001_002"))).toBe(false);
     expect(component.productSubDepartmentsData.length).toBe(1);
-    expect(component.productClassesData.length).toBe(2);
+    expect(component.productClassesData.length).toBe(1);
     expect(component.productSubClassesData.includes(leadsubclassId)).toBe(false);
   })
 

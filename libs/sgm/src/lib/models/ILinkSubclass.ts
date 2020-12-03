@@ -1,7 +1,17 @@
 export interface ILinkSubclass {
-    subClassId: string;
-    subClassDisplay: string;
+    assortmentPeriodId: string;
     copyFromSubclassId: string;
     copyFromSubclassDisplay: string;
-    assortmentPeriodId: string;
+    departmentId: string;
+    departmentDesc: string;
+    departmentDisplay: string;
+    subDepartmentId: string;
+    subDepartmentDesc: string;
+    subDepartmentDisplay: string;
+    classId: string;
+    classDesc: string;
+    classDisplay: string;
+    subClassId: string;
+    subClassDesc: string;
+    subClassDisplay: string;
 }
