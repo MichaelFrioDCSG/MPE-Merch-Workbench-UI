@@ -113,14 +113,26 @@ export class ImportStoreGroupDialogComponent implements OnInit {
 
   public onProductDepartmentChanged(value) {
     this.productDepartments.setValue(value);
+    if (this.productDepartments.value.length === 0) {
+      this.productSubDepartments.reset([]);
+      this.productClasses.reset([]);
+      this.productSubClasses.reset([]);
+    }
   }
 
   public onProductSubDepartmentChanged(value) {
     this.productSubDepartments.setValue(value);
+    if (this.productSubDepartments.value.length === 0) {
+      this.productClasses.reset([]);
+      this.productSubClasses.reset([]);
+    }
   }
 
   public onProductClassChanged(value) {
     this.productClasses.setValue(value);
+    if (this.productClasses.value.length === 0) {
+      this.productSubClasses.reset([]);
+    }
   }
 
   public onProductSubClassChanged(value) {
