@@ -27,20 +27,20 @@ export class ImportStoreGroupDialogComponent implements OnInit {
 
   public productHierarchiesInterface: IProductHierarchy[] = [];
   public linkedSubclassesInterface: ILinkSubclass[] = [];
-  public productDepartmentsData: string[] = [];
-  public productLinkSubclassesData: any[] = [];
-  public productSubDepartmentsData: string[] = [];
-  public productClassesData: any[] = [];
-  public productSubClassesData: any[] = [];
+  public productDepartmentsDropdownItems: string[] = [];
+  public productLinkSubclassesDropdownItems: any[] = [];
+  public productSubDepartmentsDropdownItems: string[] = [];
+  public productClassesDropdownItems: any[] = [];
+  public productSubClassesDropdownItems: any[] = [];
 
   public storeGroupName = new FormControl('', [Validators.required]);
   public storeGroupDescription = new FormControl('');
   public assortmentPeriod = new FormControl('', [Validators.required]);
   public leadSubclass = new FormControl({ value: '', disabled: true }, [Validators.required]);
-  public productDepartments = new FormControl({ value: [], disabled: true });
-  public productSubDepartments = new FormControl({ value: [], disabled: true });
-  public productClasses = new FormControl({ value: [], disabled: true });
-  public productSubClasses = new FormControl({ value: [], disabled: true });
+  public formControlProductDepartments = new FormControl({ value: [], disabled: true });
+  public formControlSubDepartments = new FormControl({ value: [], disabled: true });
+  public formControlClasses = new FormControl({ value: [], disabled: true });
+  public formControlSubClasses = new FormControl({ value: [], disabled: true });
 
   public selectedLinkSubclasses: string[] = [];
   public populatedLinkSubclasses: string[] = [];
@@ -97,7 +97,7 @@ export class ImportStoreGroupDialogComponent implements OnInit {
     this.resetLinkValues();
     this.loadingProductHierarchy = true;
     const leadSubclassId = this.productHierarchiesInterface.find(hierarchy => hierarchy.subClassDisplay === this.leadSubclass.value).subClassId;
-    !this.leadSubclass.value ? this.productDepartments.disable({ emitEvent: true }) : this.productDepartments.enable({ emitEvent: false });
+    !this.leadSubclass.value ? this.formControlProductDepartments.disable({ emitEvent: true }) : this.formControlProductDepartments.enable({ emitEvent: false });
     this.productHierarchyService.GetLinkSubclasses(this.assortmentPeriod.value.assortmentPeriodId, leadSubclassId)
       .subscribe((linkedSubclasses: ILinkSubclass[]) => {
         this.linkedSubclassesInterface = linkedSubclasses;
@@ -112,31 +112,31 @@ export class ImportStoreGroupDialogComponent implements OnInit {
   }
 
   public onProductDepartmentChanged(value) {
-    this.productDepartments.setValue(value);
-    if (this.productDepartments.value.length === 0) {
-      this.productSubDepartments.reset([]);
-      this.productClasses.reset([]);
-      this.productSubClasses.reset([]);
+    this.formControlProductDepartments.setValue(value);
+    if (this.formControlProductDepartments.value.length === 0) {
+      this.formControlSubDepartments.reset([]);
+      this.formControlClasses.reset([]);
+      this.formControlSubClasses.reset([]);
     }
   }
 
   public onProductSubDepartmentChanged(value) {
-    this.productSubDepartments.setValue(value);
-    if (this.productSubDepartments.value.length === 0) {
-      this.productClasses.reset([]);
-      this.productSubClasses.reset([]);
+    this.formControlSubDepartments.setValue(value);
+    if (this.formControlSubDepartments.value.length === 0) {
+      this.formControlClasses.reset([]);
+      this.formControlSubClasses.reset([]);
     }
   }
 
   public onProductClassChanged(value) {
-    this.productClasses.setValue(value);
-    if (this.productClasses.value.length === 0) {
-      this.productSubClasses.reset([]);
+    this.formControlClasses.setValue(value);
+    if (this.formControlClasses.value.length === 0) {
+      this.formControlSubClasses.reset([]);
     }
   }
 
   public onProductSubClassChanged(value) {
-    this.productSubClasses.setValue(value);
+    this.formControlSubClasses.setValue(value);
   }
 
   public getProductHierarchies() {
@@ -153,12 +153,12 @@ export class ImportStoreGroupDialogComponent implements OnInit {
   }
 
   public formatProductHierarchies() {
-    this.productDepartmentsData = this.filteredLinkSubclasses
+    this.productDepartmentsDropdownItems = this.filteredLinkSubclasses
       .map((product: IProductHierarchy) => {
         return product.departmentDisplay;
       })
       .sort();
-    this.productDepartmentsData = [...new Set(this.productDepartmentsData)];
+    this.productDepartmentsDropdownItems = [...new Set(this.productDepartmentsDropdownItems)];
     this.loadingProductHierarchy = false;
     this.loadingLeadSubClasses = false;
 
@@ -188,12 +188,12 @@ export class ImportStoreGroupDialogComponent implements OnInit {
   }
 
   public addProductHierarchies() {
-    if (this.productDepartments.value) {
+    if (this.formControlProductDepartments.value) {
       this.selectedLinkSubclasses = this.productHierarchiesInterface
-        .filter(product => !this.productDepartments.value.length || this.productDepartments.value.includes(product.departmentDisplay))
-        .filter(product => !this.productSubDepartments.value.length || this.productSubDepartments.value.includes(product.subDepartmentDisplay))
-        .filter(product => !this.productClasses.value.length || this.productClasses.value.includes(product.classDisplay))
-        .filter(product => !this.productSubClasses.value.length || this.productSubClasses.value.includes(product.subClassDisplay))
+        .filter(product => !this.formControlProductDepartments.value.length || this.formControlProductDepartments.value.includes(product.departmentDisplay))
+        .filter(product => !this.formControlSubDepartments.value.length || this.formControlSubDepartments.value.includes(product.subDepartmentDisplay))
+        .filter(product => !this.formControlClasses.value.length || this.formControlClasses.value.includes(product.classDisplay))
+        .filter(product => !this.formControlSubClasses.value.length || this.formControlSubClasses.value.includes(product.subClassDisplay))
         .map(product => product.subClassId);
     }
   }
@@ -212,49 +212,70 @@ export class ImportStoreGroupDialogComponent implements OnInit {
 
   private productHierarchyChanges() {
     // Get SubDepartments
-    this.productDepartments.valueChanges.subscribe(
+    this.formControlProductDepartments.valueChanges.subscribe(
       department => {
+        console.log("DEPARTMENT", department);
+        console.log("DEPARTMENT (SPLITTED)", department.toString().split(" ", 1));
         // Without sending emitEvent valueChanges gets triggered
-        this.productDepartments.value.length
-          ? this.productSubDepartments.enable({ emitEvent: false })
-          : this.productSubDepartments.disable({ emitEvent: true });
+        this.formControlProductDepartments.value.length
+          ? this.formControlSubDepartments.enable({ emitEvent: false })
+          : this.formControlSubDepartments.disable({ emitEvent: true });
 
-        this.productSubDepartmentsData = this.filteredLinkSubclasses
+        this.productSubDepartmentsDropdownItems = this.filteredLinkSubclasses
           .filter(product => department.includes(product.departmentDisplay))
           .map(product => product.subDepartmentDisplay)
           .sort();
-        this.productSubDepartmentsData = [...new Set(this.productSubDepartmentsData)];
+        this.productSubDepartmentsDropdownItems = [...new Set(this.productSubDepartmentsDropdownItems)];
+
+        console.log("FILTERED LINK SUBCLASSES", this.filteredLinkSubclasses);
+        this.productSubClassesDropdownItems = this.filteredLinkSubclasses
+          .filter(product => product.subClassDisplay.includes(department.toString().split(" ", 1)))
+          .map(product => product.subClassDisplay)
+          .sort();
+        this.productSubClassesDropdownItems = [...new Set(this.productSubClassesDropdownItems)];
+        console.log("SUBCLASSESS", this.productSubClassesDropdownItems);
+
         this.addProductHierarchies();
       },
     );
 
     // Get Classes
-    this.productSubDepartments.valueChanges.subscribe(
+    this.formControlSubDepartments.valueChanges.subscribe(
       subDepartment => {
-        this.productSubDepartments.value.length ? this.productClasses.enable({ emitEvent: false }) : this.productClasses.disable({ emitEvent: true });
-        this.productClassesData = this.filteredLinkSubclasses
+        console.log("SUBDEPARTMENT", subDepartment);
+        console.log("SUBDEPARTMENT (SPLITTED)", subDepartment.toString().split(" -", 1));
+        this.formControlSubDepartments.value.length ? this.formControlClasses.enable({ emitEvent: false }) : this.formControlClasses.disable({ emitEvent: true });
+        this.productClassesDropdownItems = this.filteredLinkSubclasses
           .filter(product => subDepartment.includes(product.subDepartmentDisplay))
           .map(product => product.classDisplay)
           .sort();
-        this.productClassesData = [...new Set(this.productClassesData)];
+        this.productClassesDropdownItems = [...new Set(this.productClassesDropdownItems)];
+
+        this.productSubClassesDropdownItems = this.filteredLinkSubclasses
+          .filter(product => product.subClassDisplay.includes(subDepartment.toString().split(" -", 1)))
+          .map(product => product.subClassDisplay)
+          .sort();
+        this.productSubClassesDropdownItems = [...new Set(this.productSubClassesDropdownItems)];
+        console.log("SUBCLASSES", this.productSubClassesDropdownItems);
+
         this.addProductHierarchies();
       },
     );
 
     // Get SubClasses
-    this.productClasses.valueChanges.subscribe(classes => {
-      this.productClasses.value.length ? this.productSubClasses.enable({ emitEvent: false }) : this.productSubClasses.disable({ emitEvent: true });
-      this.productSubClassesData = this.filteredLinkSubclasses
+    this.formControlClasses.valueChanges.subscribe(classes => {
+      this.formControlClasses.value.length ? this.formControlSubClasses.enable({ emitEvent: false }) : this.formControlSubClasses.disable({ emitEvent: true });
+      this.productSubClassesDropdownItems = this.filteredLinkSubclasses
         .filter(product => classes.includes(product.classDisplay))
         .filter(product => product.subClassDisplay !== this.leadSubclass.value)
         .filter(product => !(this.populatedLinkSubclasses).includes(product.subClassId))
         .map(product => product.subClassDisplay)
         .sort();
-      this.productSubClassesData = [...new Set(this.productSubClassesData)];
+      this.productSubClassesDropdownItems = [...new Set(this.productSubClassesDropdownItems)];
       this.addProductHierarchies();
     });
 
-    this.productSubClasses.valueChanges.subscribe(() => {
+    this.formControlSubClasses.valueChanges.subscribe(() => {
       this.addProductHierarchies();
     });
   }
@@ -309,10 +330,10 @@ export class ImportStoreGroupDialogComponent implements OnInit {
   }
 
   private resetLinkValues() {
-    this.productDepartments.reset([]);
-    this.productSubDepartments.reset([]);
-    this.productClasses.reset([]);
-    this.productSubClasses.reset([]);
+    this.formControlProductDepartments.reset([]);
+    this.formControlSubDepartments.reset([]);
+    this.formControlClasses.reset([]);
+    this.formControlSubClasses.reset([]);
   }
 
   private resetFormAndValues() {
@@ -323,11 +344,11 @@ export class ImportStoreGroupDialogComponent implements OnInit {
     this.leadSubclass.reset('', { emitEvent: false });
     this.leadSubclass.disable();
 
-    this.productDepartments.reset([]);
-    this.productDepartments.disable();
-    this.productSubDepartments.reset([]);
-    this.productClasses.reset([]);
-    this.productSubClasses.reset([]);
+    this.formControlProductDepartments.reset([]);
+    this.formControlProductDepartments.disable();
+    this.formControlSubDepartments.reset([]);
+    this.formControlClasses.reset([]);
+    this.formControlSubClasses.reset([]);
 
     this.productHierarchiesInterface = [];
     this.formatProductHierarchies();

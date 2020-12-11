@@ -43,26 +43,26 @@
         <div class="row row-centered">
           <div class="col-md-3">
             <app-input-multiselect-dropdown [placeholder]="'Department'" [title]="'Choose a department'"
-              [loading]="loadingProductHierarchy" [arrayValues]="productDepartmentsData"
-              [inputFormControl]="productDepartments" (onValueChanged)="onProductDepartmentChanged($event)">
+              [loading]="loadingProductHierarchy" [arrayValues]="productDepartmentsDropdownItems"
+              [inputFormControl]="formControlProductDepartments" (onValueChanged)="onProductDepartmentChanged($event)">
             </app-input-multiselect-dropdown>
           </div>
           <div class="col-md-3">
             <app-input-multiselect-dropdown [placeholder]="'Sub Department'" [title]="'Choose a sub department'"
-              [arrayValues]="productSubDepartmentsData" [inputFormControl]="productSubDepartments"
+              [arrayValues]="productSubDepartmentsDropdownItems" [inputFormControl]="formControlSubDepartments"
               (onValueChanged)="onProductSubDepartmentChanged($event)">
             </app-input-multiselect-dropdown>
           </div>
           <div class="col-md-3">
             <app-input-multiselect-dropdown [placeholder]="'Class'" [title]="'Choose a class'"
-              [arrayValues]="productClassesData" [inputFormControl]="productClasses"
+              [arrayValues]="productClassesDropdownItems" [inputFormControl]="formControlClasses"
               (onValueChanged)="onProductClassChanged($event)">
             </app-input-multiselect-dropdown>
           </div>
           <div class="col-md-3">
             <app-input-multiselect-dropdown [placeholder]="'Sub Class'" [title]="'Choose a sub class'"
-              [arrayValues]="productSubClassesData" [inputFormControl]="productSubClasses"
-              [selected]="productSubClassesData" (onValueChanged)="onProductSubClassChanged($event)">
+              [arrayValues]="productSubClassesDropdownItems" [inputFormControl]="formControlSubClasses"
+              [selected]="productSubClassesDropdownItems" (onValueChanged)="onProductSubClassChanged($event)">
             </app-input-multiselect-dropdown>
           </div>
         </div>
