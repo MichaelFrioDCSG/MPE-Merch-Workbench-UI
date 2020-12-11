@@ -2,15 +2,14 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { amRoutes } from '@mpe/assortment-management';
 import { sgmRoutes } from '@mpe/sgm';
-import { MsalGuard } from '@azure/msal-angular';
-import { LoginComponent } from '@mpe/auth';
+import { LoginComponent, AuthGuardService } from '@mpe/auth';
 
 export const routes: Routes = [
-  { path: '', data: { name: 'Home' }, component: LoginComponent, canActivate: [MsalGuard] },
-  { path: 'sgm', data: { name: 'Store Group Management' }, children: sgmRoutes, canActivate: [MsalGuard] },
-  { path: 'am', data: { name: 'Assortment Management' }, children: amRoutes, canActivate: [MsalGuard] },
+  { path: 'login', pathMatch: 'prefix', data: { name: 'Login', display: false }, component: LoginComponent },
+  { path: 'sgm', data: { name: 'Store Group Management' }, children: sgmRoutes, canActivate: [AuthGuardService] },
+  { path: 'am', data: { name: 'Assortment Management' }, children: amRoutes, canActivate: [AuthGuardService] },
+  { path: '', pathMatch: 'full', data: { display: false }, redirectTo: '/sgm' },
 ];
-
 @NgModule({
   imports: [RouterModule.forRoot(routes, { initialNavigation: 'enabled' })],
   exports: [RouterModule],

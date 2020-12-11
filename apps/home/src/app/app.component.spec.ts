@@ -3,7 +3,6 @@ import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { AppComponent } from './app.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HeaderComponent } from './components/header/header.component';
-import { authProviders } from '@mpe/auth';
 
 describe('AppComponent', () => {
   let store: MockStore;
@@ -13,7 +12,7 @@ describe('AppComponent', () => {
     TestBed.configureTestingModule({
       declarations: [AppComponent, HeaderComponent],
       imports: [RouterTestingModule],
-      providers: [provideMockStore({ initialState }), ...authProviders],
+      providers: [provideMockStore({ initialState })],
     }).compileComponents();
 
     store = TestBed.inject(MockStore);

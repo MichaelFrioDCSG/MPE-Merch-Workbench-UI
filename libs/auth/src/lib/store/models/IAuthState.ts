@@ -1,4 +1,4 @@
-import { IUserProfile } from '../../models/IUserProfile';
+import { IUserProfile } from './IUserProfile';
 
 export interface IAuthState {
   UserProfile: IUserProfile;
