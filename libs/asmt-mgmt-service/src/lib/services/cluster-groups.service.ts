@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -7,6 +7,7 @@ import { IClusterGroup, IStoreInformation, IStoreInformationListValue } from '@m
 import { environment } from '@mpe/home/src/environments/environment';
 import { IStoreInformationRequest } from './IStoreInformationRequest';
 import { IServerResponse } from './IServerResponse';
+import { IClusterGroupResponseDto } from './IClusterGroupResponseDto';
 @Injectable({
   providedIn: 'root',
 })
@@ -19,9 +20,9 @@ export class ClusterGroupsService {
     return this.http.get<IClusterGroup[]>(`${this.endPointUrl}/dept${dept ? '/' + dept : ''}`).pipe(map((data: IClusterGroup[]) => data));
   }
 
-  public getClusterGroups(clusterGroupIds: number[]): Observable<IClusterGroup[]> {
+  public getClusterGroups(clusterGroupIds: number[]): Observable<IClusterGroupResponseDto> {
     const param = clusterGroupIds.map(cl => `clusterGroupIds=${cl}`).join('&');
-    return this.http.get<IClusterGroup[]>(`${this.endPointUrl}?${param}`).pipe(map((data: IClusterGroup[]) => data));
+    return this.http.get<IClusterGroupResponseDto>(`${this.endPointUrl}?${param}`).pipe(map((data: IClusterGroupResponseDto) => data));
   }
 
   public getClusterGroup(clusterGroupId: number): Observable<IClusterGroup> {
