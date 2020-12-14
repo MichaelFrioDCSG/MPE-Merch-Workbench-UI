@@ -10,7 +10,7 @@
     "build": "ng build",
     "test": "ng test",
     "test-ci": "nx test --karma-config=karma-ci.conf.js --no-progress",
-    "test:all": "nx run-many --all --target=test",
+    "test:all": "nx run-many --projects=home,shared,sgm,assortment-management,auth,asmt-mgmt-service --target=test --karma-config=karma-ci.conf.js --no-progress",
     "test:failed": "nx run-many --all --target=test --only-failed",
     "lint": "nx workspace-lint && ng lint",
     "lint:all": "nx run-many --all --target=lint",

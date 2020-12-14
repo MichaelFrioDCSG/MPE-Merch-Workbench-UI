@@ -595,6 +595,7 @@ function getMockState(): IStoreGroupMgmtState {
                 },
                 notes: 'Test Note',
                 clusterLabel: 'Green Tier',
+                productLocationAttributes: [],
               },
             ],
           },
