@@ -11,7 +11,7 @@ export class ImportAssortmentService {
 
   public putAssortments(assortmentPeriodId: string, subClassIds: string[], overrideAssortment: boolean) {
     return this.http
-      .post(`${environment.mpe_asmtmgmtservice}/api/buyplans`, {
+      .post(`${environment.mpe_api}/api/buyplans`, {
         oracleAsmtPeriodId: assortmentPeriodId,
         subclassIds: subClassIds,
         overrideExisting: overrideAssortment,

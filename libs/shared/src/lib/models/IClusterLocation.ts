@@ -1,3 +1,4 @@
+import { IClusterLocationProductLocationAttributeValue } from './IClusterLocationProductLocationAttributeValue';
 import { ILocation } from './ILocation';
 
 export interface IClusterLocation {
@@ -7,4 +8,5 @@ export interface IClusterLocation {
   notes: string;
   clusterLabel: string;
   location: ILocation;
+  productLocationAttributes: IClusterLocationProductLocationAttributeValue[];
 }
