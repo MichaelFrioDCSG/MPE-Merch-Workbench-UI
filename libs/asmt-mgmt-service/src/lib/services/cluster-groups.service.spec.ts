@@ -7,6 +7,7 @@ import { IClusterGroup, IStoreInformation, IStoreInformationListValue } from '@m
 import { ClusterGroupsService } from './cluster-groups.service';
 import { environment } from '@mpe/home/src/environments/environment';
 import { IServerResponse } from './IServerResponse';
+import { IClusterGroupResponseDto } from './IClusterGroupResponseDto';
 
 describe('ClusterGroupsService', () => {
   let service: ClusterGroupsService;
@@ -42,7 +43,10 @@ describe('ClusterGroupsService', () => {
 
   it('GetClusterGroups should return a list of cluster groups', () => {
     // Spy on and mock the HttpClient
-    const clusterGroupsMock = [getFakeClusterGroup(), getFakeClusterGroup(), getFakeClusterGroup()];
+    const clusterGroupsMock: IClusterGroupResponseDto = {
+      clusterGroups: [getFakeClusterGroup(), getFakeClusterGroup(), getFakeClusterGroup()],
+      productLocationAttributes: [],
+    };
     spyOn(httpClient, 'get').and.returnValue(of(clusterGroupsMock));
 
     // Use the service to get a list of cluster groups
