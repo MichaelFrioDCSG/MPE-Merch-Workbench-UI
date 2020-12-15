@@ -1,0 +1,12 @@
+project_resource_branch: master
+
+tasks_resource_branch: prod
+
+cf_resource_api: https://api.sys.vp01.pcf.dcsg.com
+cf_resource_username: ((cf_user_prod))
+cf_resource_password: ((cf_password_prod))
+cf_resource_name: PCF-VP01-Prod
+cf_resource_space: prod
+cf_resource_push: cf-push-prod
+
+aspnetcore_environment: Production
