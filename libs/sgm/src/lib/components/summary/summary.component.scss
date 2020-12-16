@@ -23,6 +23,32 @@
   justify-content: flex-start;
   border-spacing: 1px;
 }
+.import-button {
+  position: absolute;
+  width: 127px;
+  height: 39px;
+  left: 1300px;
+  top: -30px;
+
+  /* Label/Large 16px */
+
+  font-family: Archivo;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 16px;
+  /* or 100% */
+
+  display: flex;
+  align-items: center;
+  text-align: center;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+
+  /* Greyscale/DSG White */
+
+  background: #bb5811;
+}
 
 .button-label-dsg {
   /* Label/Large 16px */
@@ -42,8 +68,107 @@
 .grid-wrapper {
   min-width: 95vw;
   max-width: 98vw;
+  min-height: 75vw;
+  max-height: 78vw;
   display: flex;
   justify-content: left;
+}
+
+.action-button {
+  position: absolute;
+  width: 127px;
+  height: 39px;
+  left: 1300px;
+  top: 10px;
+
+  /* Label/Small 12px */
+
+  font-family: Archivo;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 12px;
+  line-height: 12px;
+  /* or 100% */
+
+  display: flex;
+  align-items: center;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+
+  color: #ffffff;
+}
+
+.view-edit-button {
+  position: absolute;
+  width: 127px;
+  height: 12px;
+  left: 18px;
+  top: 6px;
+
+  /* Label/Small 12px */
+
+  font-family: Archivo;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 12px;
+  line-height: 12px;
+  /* identical to box height, or 100% */
+
+  display: flex;
+  align-items: center;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+
+  color: #000000;
+}
+.expand_less {
+  position: absolute;
+  left: 60%;
+  right: -15%;
+  top: 10px;
+  bottom: 20.92%;
+
+  /* Gray/White - 50 */
+
+  transform: rotate(180deg);
+}
+.action-menu {
+  width: 150px;
+  height: 24px;
+}
+.delete-button {
+  position: absolute;
+  width: 127px;
+  height: 12px;
+  left: 18px;
+  top: 50px;
+
+  /* Label/Small 12px */
+
+  font-family: Archivo;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 12px;
+  line-height: 12px;
+  /* identical to box height, or 100% */
+
+  display: flex;
+  align-items: center;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+
+  color: #000000;
+}
+.grid-header {
+  /* Gray/Gray - 400 */
+
+  background: #c8c8c8;
+  min-width: 65vw;
+  max-width: 68vw;
+  display: flex;
+  justify-content: left;
+  min-height: 3vw;
+  max-height: 5vw;
 }
 
 .button-secondary-dsg {
@@ -57,4 +182,22 @@
   border: 2px solid #191f1c;
   box-sizing: border-box;
   margin-left: 6px;
+}
+.line1 {
+  position: absolute;
+  width: 127px;
+  height: 0px;
+  left: 4px;
+  top: 30px;
+
+  /* Gray/Black - 800 */
+
+  border: 1px solid #2e2e2e;
+}
+.line2 {
+  position: absolute;
+  width: 127px;
+  height: 0px;
+  left: 4px;
+  top: 30px;
 }

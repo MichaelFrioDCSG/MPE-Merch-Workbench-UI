@@ -25,9 +25,11 @@ export class SummaryComponent implements OnInit, OnDestroy {
   public gridOptions: GridOptions;
   public gridColumnApi: any;
   public gridApi: GridApi;
+  public actionsDisabled: boolean;
 
   public modules: Module[] = AllCommunityModules;
   public selectedData: any;
+  public rowCount: number;
   public title = 'MPE-SGM';
   public clusterGroups: IClusterGroup[] = [];
   public defaultColDef: any = {
@@ -88,7 +90,9 @@ export class SummaryComponent implements OnInit, OnDestroy {
 
   public getSelectedRows() {
     const selectedNodes = this.agGrid.api.getSelectedNodes();
+    //this.actionsDisabled = false;
     this.selectedData = JSON.stringify(selectedNodes.map(node => node.data));
+    //this.actionsDisabled = false;
   }
 
   public openDialog(): void {
@@ -125,12 +129,19 @@ export class SummaryComponent implements OnInit, OnDestroy {
   }
 
   public onGridReady(params: any) {
+    this.actionsDisabled = true;
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
     this.store.dispatch(actions.sgmGetSummaries());
 
     this.store.pipe(select(selectClusterGroups)).subscribe((clusterGroups: IClusterGroup[]) => {
       this.clusterGroups = clusterGroups;
+
+      if (this.gridApi.getSelectedRows.length > 0) {
+        this.actionsDisabled = false;
+      } else {
+        this.actionsDisabled = true;
+      }
     });
   }
 
@@ -165,5 +176,20 @@ export class SummaryComponent implements OnInit, OnDestroy {
     this.style = {
       width: widthInPixels + 'px',
     };
+  }
+  public onRowSelected($event): void {
+    if ($event.node.selected) {
+      this.actionsDisabled = false;
+    } else {
+      this.actionsDisabled = true;
+    }
+  }
+  public onSelectionChanged($event): void {
+    this.rowCount = $event.api.getSelectedNodes().length;
+    if (this.rowCount > 0) {
+      this.actionsDisabled = false;
+    } else {
+      this.actionsDisabled = true;
+    }
   }
 }

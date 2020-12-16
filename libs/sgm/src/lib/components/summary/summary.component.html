@@ -5,22 +5,50 @@
         Summary
       </div>
     </div>
+    <!--<div class="grid-header">-->
     <div class="row mb-2">
       <div class="col-12 button-row-container">
-        <button mat-raised-button color="primary" class="button-label-dsg mr-2" (click)="openDialog()" style="height: 39px;">
+        <mat-menu
+          mat-mini-fab
+          color="primary"
+          matTooltipPosition="right"
+          matTooltip="Import"
+          matTooltipClass="tool-tip-style"
+          mat-button
+          (click)="openDialog()"
+        >
+          <i class="material-icons">add</i>
+        </mat-menu>
+        <button mat-raised-button color="primary" class="import-button" (click)="openDialog()">
           <mat-icon>arrow_upward</mat-icon>
           Import
         </button>
-        <button mat-raised-button color="secondary" class="button-label-dsg button-secondary-dsg" (click)="goToDetail()" style="height: 39px;">
-          <mat-icon>edit</mat-icon>
-          View/Edit
-        </button>
-        <button mat-raised-button color="secondary" class="button-label-dsg button-tertiary-dsg" (click)="openDeleteDialog()" style="height: 39px;">
-          <mat-icon>delete</mat-icon>
-          Delete
-        </button>
+        <div class="grid-header">
+          <div class="Monochromatic">
+            <button [disabled]="actionsDisabled" mat-raised-button color="primary" class="action-button" [matMenuTriggerFor]="menu">
+              <mat-icon>expand_more</mat-icon>
+              Actions
+            </button>
+            <mat-menu #menu="matMenu">
+              <div class="action-menu">
+                <!--<button mat-menu-item></button-->
+                <a *ngIf="!actionsDisabled" color="primary" class="view-edit-button" (click)="goToDetail()">
+                  View/Edit
+                </a>
+                <div class="line1"></div>
+
+                <a color="secondary" class="delete-button" (click)="openDeleteDialog()">
+                  Delete
+                </a>
+
+                <!--<button mat-menu-item></button-->
+              </div>
+            </mat-menu>
+          </div>
+        </div>
       </div>
     </div>
+
     <div class="row">
       <div class="col-12">
         <div id="grid-wrapper" class="grid-wrapper">
@@ -34,8 +62,11 @@
               [columnDefs]="columnDefs"
               [statusBar]="statusBar"
               [gridOptions]="gridOptions"
+              [enableRangeSelection]="true"
               rowSelection="multiple"
               (gridReady)="onGridReady($event)"
+              (rowSelected)="onRowSelected($event)"
+              (selectionChanged)="onSelectionChanged($event)"
               (firstDataRendered)="onFirstDataRendered($event)"
             >
             </ag-grid-angular>
