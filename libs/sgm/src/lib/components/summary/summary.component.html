@@ -1,12 +1,11 @@
 <div class="main-content">
   <div class="container-fluid">
     <div class="row">
-      <div class="col-12 breadcrumb-dsg mt-2 mb-2">
-        Summary
+      <div class="col-12 breadcrumb-dsg mt-2 mb-3">
+        Cluster Group Summary
       </div>
     </div>
-    <!--<div class="grid-header">-->
-    <div class="row mb-2">
+    <div class="row mb-3">
       <div class="col-12 button-row-container">
         <mat-menu
           mat-mini-fab
@@ -23,33 +22,36 @@
           <mat-icon>arrow_upward</mat-icon>
           Import
         </button>
-        <div class="grid-header">
-          <div class="Monochromatic">
-            <button [disabled]="actionsDisabled" mat-raised-button color="primary" class="action-button" [matMenuTriggerFor]="menu">
-              <mat-icon>expand_more</mat-icon>
-              Actions
-            </button>
-            <mat-menu #menu="matMenu">
-              <div class="action-menu">
-                <!--<button mat-menu-item></button-->
-                <a *ngIf="!actionsDisabled" color="primary" class="view-edit-button" (click)="goToDetail()">
-                  View/Edit
-                </a>
-                <div class="line1"></div>
-
-                <a color="secondary" class="delete-button" (click)="openDeleteDialog()">
-                  Delete
-                </a>
-
-                <!--<button mat-menu-item></button-->
-              </div>
-            </mat-menu>
-          </div>
-        </div>
       </div>
     </div>
 
-    <div class="row">
+    <div class="example-spacer"></div>
+
+    <div class="grid-header">
+      <div class="Monochromatic grid-header">
+        <button [disabled]="actionsDisabled" mat-raised-button color="primary" class="action-button" [matMenuTriggerFor]="menu">
+          <div class="expand_icon">
+            <i class="material-icons">{{ actionsDisabled ? 'expand_less' : 'expand_more' }}</i>
+          </div>
+          Actions
+        </button>
+        <mat-menu #menu="matMenu">
+          <div class="action-menu">
+            <button *ngIf="!actionsDisabled" color="primary" class="view-edit-button" (click)="goToDetail()">
+              View/Edit
+            </button>
+            <div class="line1"></div>
+            <button color="secondary" class="delete-button" (click)="openDeleteDialog()">
+              Delete
+            </button>
+          </div>
+        </mat-menu>
+      </div>
+    </div>
+
+    <div class="example-spacer"></div>
+
+    <div class="row mb-">
       <div class="col-12">
         <div id="grid-wrapper" class="grid-wrapper">
           <div [ngStyle]="style">

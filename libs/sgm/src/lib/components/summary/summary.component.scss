@@ -21,14 +21,15 @@
   flex-direction: row;
   display: flex;
   justify-content: flex-start;
-  border-spacing: 1px;
+  border-spacing: 3px;
 }
 .import-button {
   position: absolute;
   width: 127px;
   height: 39px;
-  left: 1300px;
+  left: 1200px;
   top: -30px;
+  bottom: 5px;
 
   /* Label/Large 16px */
 
@@ -75,11 +76,10 @@
 }
 
 .action-button {
-  position: absolute;
   width: 127px;
-  height: 39px;
-  left: 1300px;
-  top: 10px;
+  height: 40px;
+  left: 1184px;
+  top: 1px;
 
   /* Label/Small 12px */
 
@@ -94,6 +94,7 @@
   align-items: center;
   letter-spacing: 1.5px;
   text-transform: uppercase;
+  z-index: 1;
 
   color: #ffffff;
 }
@@ -101,7 +102,7 @@
 .view-edit-button {
   position: absolute;
   width: 127px;
-  height: 12px;
+  height: auto;
   left: 18px;
   top: 6px;
 
@@ -114,34 +115,40 @@
   line-height: 12px;
   /* identical to box height, or 100% */
 
-  display: flex;
+  display: block;
   align-items: center;
+  padding: auto;
+  text-align: left;
   letter-spacing: 1.5px;
   text-transform: uppercase;
+  border: 1px solid black;
 
   color: #000000;
 }
-.expand_less {
+.expand_icon {
   position: absolute;
-  left: 60%;
+  left: 30%;
   right: -15%;
   top: 10px;
   bottom: 20.92%;
 
   /* Gray/White - 50 */
 
-  transform: rotate(180deg);
+  transform: rotate(-180deg);
 }
 .action-menu {
   width: 150px;
   height: 24px;
+  left: 1350px;
+
+  box-sizing: border-box;
 }
 .delete-button {
   position: absolute;
   width: 127px;
-  height: 12px;
+  height: auto;
   left: 18px;
-  top: 50px;
+  top: 40px;
 
   /* Label/Small 12px */
 
@@ -152,23 +159,24 @@
   line-height: 12px;
   /* identical to box height, or 100% */
 
-  display: flex;
+  display: block;
+  padding: auto;
+  text-align: left;
   align-items: center;
   letter-spacing: 1.5px;
   text-transform: uppercase;
-
+  border: 1px solid black;
   color: #000000;
 }
 .grid-header {
   /* Gray/Gray - 400 */
-
   background: #c8c8c8;
-  min-width: 65vw;
-  max-width: 68vw;
+  min-width: 78vw;
+  max-width: 78.1vw;
   display: flex;
-  justify-content: left;
-  min-height: 3vw;
-  max-height: 5vw;
+  justify-content: right;
+  min-height: 2.5vw;
+  max-height: 2.5vw;
 }
 
 .button-secondary-dsg {
@@ -185,7 +193,7 @@
 }
 .line1 {
   position: absolute;
-  width: 127px;
+  width: 140px;
   height: 0px;
   left: 4px;
   top: 30px;
