@@ -7,8 +7,7 @@
           <div class="col-md-4">
             <mat-form-field class="example-full-width">
               <input matInput [formControl]="storeGroupName" placeholder="Cluster Group Name" [required]="true" />
-              <mat-error *ngIf="storeGroupName.hasError('required')"> Cluster Group Name is <strong>required</strong>
-              </mat-error>
+              <mat-error *ngIf="storeGroupName.hasError('required')"> Cluster Group Name is <strong>required</strong> </mat-error>
             </mat-form-field>
           </div>
           <div class="col-md-4">
@@ -19,20 +18,32 @@
         </div>
         <div class="row">
           <div class="col-md-4">
-            <app-input-dropdown-filter [placeholder]="'Assortment Period'" [title]="'Choose an Assortment Period'"
-              [arrayValues]="assortmentPeriods" [displayWithValue]="'assortmentPeriodLabel'"
-              [filterValue]="'assortmentPeriodLabel'" [inputFormControl]="assortmentPeriod"
-              [loading]="loadingAssortmentPeriods" [disable]="assortmentPeriod.disabled" [required]="true"
-              (onValueChanged)="onAssortmentPeriodChanged($event)">
-            </app-input-dropdown-filter>
+            <app-input-dropdown-filter
+              [placeholder]="'Assortment Period'"
+              [title]="'Choose an Assortment Period'"
+              [arrayValues]="assortmentPeriods"
+              [displayWithValue]="'assortmentPeriodLabel'"
+              [filterValue]="'assortmentPeriodLabel'"
+              [inputFormControl]="assortmentPeriod"
+              [loading]="loadingAssortmentPeriods"
+              [disable]="assortmentPeriod.disabled"
+              [required]="true"
+              (onValueChanged)="onAssortmentPeriodChanged($event)"
+            ></app-input-dropdown-filter>
           </div>
         </div>
         <div class="row">
           <div class="col-md-4">
-            <app-input-dropdown-filter [placeholder]="'Lead Subclass'" [title]="'Choose a Lead Subclass'"
-              [arrayValues]="productLeadSubclasses" [inputFormControl]="leadSubclass" [loading]="loadingLeadSubClasses"
-              [disable]="leadSubclass.disabled" [required]="true" (onValueChanged)="onLeadSubclassChanged($event)">
-            </app-input-dropdown-filter>
+            <app-input-dropdown-filter
+              [placeholder]="'Lead Subclass'"
+              [title]="'Choose a Lead Subclass'"
+              [arrayValues]="productLeadSubclasses"
+              [inputFormControl]="leadSubclass"
+              [loading]="loadingProductHierarchy"
+              [disable]="leadSubclass.disabled"
+              [required]="true"
+              (onValueChanged)="onLeadSubclassChanged($event)"
+            ></app-input-dropdown-filter>
           </div>
         </div>
         <div class="row add-space-above">
@@ -42,28 +53,41 @@
         </div>
         <div class="row row-centered">
           <div class="col-md-3">
-            <app-input-multiselect-dropdown [placeholder]="'Department'" [title]="'Choose a department'"
-              [loading]="loadingProductHierarchy" [arrayValues]="productDepartmentsDropdownItems"
-              [inputFormControl]="formControlProductDepartments" (onValueChanged)="onProductDepartmentChanged($event)">
-            </app-input-multiselect-dropdown>
+            <app-input-multiselect-dropdown
+              [placeholder]="'Department'"
+              [title]="'Choose a department'"
+              [loading]="loadingProductHierarchy"
+              [arrayValues]="productDepartmentsData"
+              [inputFormControl]="productDepartments"
+              (onValueChanged)="onProductDepartmentChanged($event)"
+            ></app-input-multiselect-dropdown>
           </div>
           <div class="col-md-3">
-            <app-input-multiselect-dropdown [placeholder]="'Sub Department'" [title]="'Choose a sub department'"
-              [arrayValues]="productSubDepartmentsDropdownItems" [inputFormControl]="formControlSubDepartments"
-              (onValueChanged)="onProductSubDepartmentChanged($event)">
-            </app-input-multiselect-dropdown>
+            <app-input-multiselect-dropdown
+              [placeholder]="'Sub Department'"
+              [title]="'Choose a sub department'"
+              [arrayValues]="productSubDepartmentsData"
+              [inputFormControl]="productSubDepartments"
+              (onValueChanged)="onProductSubDepartmentChanged($event)"
+            ></app-input-multiselect-dropdown>
           </div>
           <div class="col-md-3">
-            <app-input-multiselect-dropdown [placeholder]="'Class'" [title]="'Choose a class'"
-              [arrayValues]="productClassesDropdownItems" [inputFormControl]="formControlClasses"
-              (onValueChanged)="onProductClassChanged($event)">
-            </app-input-multiselect-dropdown>
+            <app-input-multiselect-dropdown
+              [placeholder]="'Class'"
+              [title]="'Choose a class'"
+              [arrayValues]="productClassesData"
+              [inputFormControl]="productClasses"
+              (onValueChanged)="onProductClassChanged($event)"
+            ></app-input-multiselect-dropdown>
           </div>
           <div class="col-md-3">
-            <app-input-multiselect-dropdown [placeholder]="'Sub Class'" [title]="'Choose a sub class'"
-              [arrayValues]="productSubClassesDropdownItems" [inputFormControl]="formControlSubClasses"
-              [selected]="productSubClassesDropdownItems" (onValueChanged)="onProductSubClassChanged($event)">
-            </app-input-multiselect-dropdown>
+            <app-input-multiselect-dropdown
+              [placeholder]="'Sub Class'"
+              [title]="'Choose a sub class'"
+              [arrayValues]="productSubClassesData"
+              [inputFormControl]="productSubClasses"
+              (onValueChanged)="onProductSubClassChanged($event)"
+            ></app-input-multiselect-dropdown>
           </div>
         </div>
       </div>
@@ -74,8 +98,7 @@
 <div class="row row-centered">
   <div class="col-md-12">
     <div mat-dialog-actions class="show-on-right">
-      <button mat-raised-button color="primary" [disabled]="!validForm() || creatingStoreGroups == true"
-        (click)="createStoreGroups()">
+      <button mat-raised-button color="primary" [disabled]="!validForm() || creatingStoreGroups == true" (click)="createStoreGroups()">
         {{ creatingStoreGroups == false ? 'Import Cluster Group' : 'Importing Cluster Group...' }}
       </button>
       <button mat-raised-button color="warn" mat-dialog-close cdkFocusInitial>Close</button>

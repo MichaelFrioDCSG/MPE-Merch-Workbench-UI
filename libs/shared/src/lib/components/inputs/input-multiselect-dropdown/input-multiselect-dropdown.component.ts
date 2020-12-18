@@ -19,9 +19,9 @@ export class InputMultiselectDropdownComponent implements OnInit, OnChanges, OnD
 
   @Output() public onValueChanged = new EventEmitter<any>();
 
-  public formControl: FormControl = new FormControl([]);
+  public formControl: FormControl = new FormControl('');
 
-  constructor() { }
+  constructor() {}
 
   public ngOnInit() {
     if (this.inputFormControl) {
@@ -29,9 +29,9 @@ export class InputMultiselectDropdownComponent implements OnInit, OnChanges, OnD
     }
   }
 
-  public ngOnChanges(changes) { }
+  public ngOnChanges(changes) {}
 
-  public ngOnDestroy() { }
+  public ngOnDestroy() {}
 
   public selectionChanged(evt: MatSelectChange) {
     this.onValueChanged.emit(evt.value);
