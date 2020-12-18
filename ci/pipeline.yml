@@ -18,103 +18,101 @@ resources:
       skip_cert_check: true
 
 jobs:
-- name: Lint
-  public: true
-  plan:
-    - get: MerchWorkBenchMaster
-      trigger: true
-    - task: ng-lint
-      config:
-        platform: linux
-        image_resource:
-          type: docker-image
-          source:
-            repository: node
-            tag: latest
-        inputs:
-          - name: MerchWorkBenchMaster
-        run:
-          path: sh
-          args:
-            - -exc
-            - |
-              set -xe
-              export NG_CLI_ANALYTICS="false"
-              echo "NG_CLI_ANALYTICS="$NG_CLI_ANALYTICS
-              cd MerchWorkBenchMaster
-              npm install --unsafe-perm --quiet
-              npx nx run-many --all --target=lint
+  - name: Lint
+    public: true
+    plan:
+      - get: MerchWorkBenchMaster
+        trigger: true
+      - task: ng-lint
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: node
+              tag: latest
+          inputs:
+            - name: MerchWorkBenchMaster
+          run:
+            path: sh
+            args:
+              - -exc
+              - |
+                set -xe
+                export NG_CLI_ANALYTICS="false"
+                echo "NG_CLI_ANALYTICS="$NG_CLI_ANALYTICS
+                cd MerchWorkBenchMaster
+                npm install --unsafe-perm --quiet
+                npx nx run-many --all --target=lint
 
-- name: Unit-Test
-  public: true
-  plan:
-    - get: MerchWorkBenchMaster
-      trigger: true
-    - task: ng-test
-      config:
-        platform: linux
-        image_resource:
-          type: docker-image
-          source:
-            repository: weboaks/node-karma-protractor-chrome
-            tag: latest
-        inputs:
-          - name: MerchWorkBenchMaster
-        run:
-          path: sh
-          args:
-            - -exc
-            - |
-              set -xe
-              export NG_CLI_ANALYTICS="false"
-              echo "NG_CLI_ANALYTICS="$NG_CLI_ANALYTICS
-              cd MerchWorkBenchMaster
-              npm install --unsafe-perm --quiet
-              npx nx run-many --projects=home,shared,sgm,assortment-management,auth,asmt-mgmt-service --target=test --karma-config=karma-ci.conf.js --no-progress
+  - name: Unit-Test
+    public: true
+    plan:
+      - get: MerchWorkBenchMaster
+        trigger: true
+      - task: ng-test
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: weboaks/node-karma-protractor-chrome
+              tag: latest
+          inputs:
+            - name: MerchWorkBenchMaster
+          run:
+            path: sh
+            args:
+              - -exc
+              - |
+                set -xe
+                export NG_CLI_ANALYTICS="false"
+                echo "NG_CLI_ANALYTICS="$NG_CLI_ANALYTICS
+                cd MerchWorkBenchMaster
+                npm install --unsafe-perm --quiet
+                npx nx run-many --projects=home,shared,sgm,assortment-management,auth,asmt-mgmt-service --target=test --karma-config=karma-ci.conf.js --no-progress
 
-- name: Publish-and-Deploy
-  plan:
-    - get: MerchWorkBenchMaster
-      trigger: true
-      passed:
-        - Lint
-        - Unit-Test
-    - task: ng-publish
-      config:
-        platform: linux
-        image_resource:
-          type: docker-image
-          source:
-            repository: node
-            tag: latest
-        inputs:
-          - name: MerchWorkBenchMaster
-        outputs:
-          - name: build-output
-        run:
-          path: sh
-          args:
-            - -exc
-            - |
-              set -xe
-              # There is still an issue/bug with this. Should
-              # be able to use ci as value - https://github.com/angular/angular-cli/blob/master/docs/design/analytics.md4
-              export NG_CLI_ANALYTICS="false"
-              echo "NG_CLI_ANALYTICS="$NG_CLI_ANALYTICS
-              cd MerchWorkBenchMaster
-              npm install --unsafe-perm --quiet
-              #./node_modules/@angular/cli/bin/ng build --output-hashing=bundles --index=${INDEX_ARGUMENT}
-              npx nx build
-              cp -r dist/apps/home/* ../build-output
-              cp ci/Staticfile ../build-output
-              cp ci/manifest.yml ../build-output
+  - name: Publish-and-Deploy
+    plan:
+      - get: MerchWorkBenchMaster
+        trigger: true
+        passed:
+          - Lint
+          - Unit-Test
+      - task: ng-publish
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: node
+              tag: latest
+          inputs:
+            - name: MerchWorkBenchMaster
+          outputs:
+            - name: build-output
+          run:
+            path: sh
+            args:
+              - -exc
+              - |
+                set -xe
+                # There is still an issue/bug with this. Should
+                # be able to use ci as value - https://github.com/angular/angular-cli/blob/master/docs/design/analytics.md4
+                export NG_CLI_ANALYTICS="false"
+                echo "NG_CLI_ANALYTICS="$NG_CLI_ANALYTICS
+                cd MerchWorkBenchMaster
+                npm install --unsafe-perm --quiet
+                #./node_modules/@angular/cli/bin/ng build --output-hashing=bundles --index=${INDEX_ARGUMENT}
+                npx nx build
+                cp -r dist/apps/home/* ../build-output
+                cp ci/Staticfile ../build-output
+                cp ci/manifest.yml ../build-output
 
-    - put: cf-push-prod
-      resource: PCF-VP01-Prod
-      params:
-        command: push
-        path: build-output
-        manifest: build-output/manifest.yml
-        current_app_name: mpe-merch-workbench
-
-    
+      - put: cf-push-prod
+        resource: PCF-VP01-Prod
+        params:
+          command: push
+          path: build-output
+          manifest: build-output/manifest.yml
+          current_app_name: mpe-merch-workbench
