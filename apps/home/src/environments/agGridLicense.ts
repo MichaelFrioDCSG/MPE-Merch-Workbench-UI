@@ -1,0 +1,1 @@
+export default 'CompanyName=DCSG,LicensedApplication=Merchandise Workbench,LicenseType=SingleApplication,LicensedConcurrentDeveloperCount=7,LicensedProductionInstancesCount=0,AssetReference=AG-011333,ExpiryDate=21_October_2021_[v2]_MTYzNDc3MDgwMDAwMA==09f1bbb6a68890636bc50bb7eefdbc30';
