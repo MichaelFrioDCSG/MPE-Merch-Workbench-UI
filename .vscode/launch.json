@@ -2,7 +2,6 @@
   // Use IntelliSense to learn about possible attributes.
   // Hover to view descriptions of existing attributes.
   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-
   "version": "0.2.0",
   "configurations": [
     {
@@ -10,7 +9,8 @@
       "type": "chrome",
       "request": "launch",
       "url": "http://localhost:4200",
-      "webRoot": "${workspaceFolder}"
+      "webRoot": "${workspaceFolder}/src",
+      "trace": true
     },
     {
       "name": "Launch Edge against localhost",
