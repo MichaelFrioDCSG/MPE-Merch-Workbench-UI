@@ -58,6 +58,7 @@ export class DetailComponent implements OnInit {
   public chains: string[] = ['DSG', 'GG', 'FS'];
 
   private pl_attributes: IProductLocationAttribute[] = [];
+  private pl_attributes_with_values: IProductLocationAttribute[] = [];
 
   private edit(params) {
     params.api.showLoadingOverlay();
@@ -126,6 +127,11 @@ export class DetailComponent implements OnInit {
     if (updateColumns) {
       this.gridApi.setColumnDefs(this.columnDefs);
     }
+  }
+
+  // Clear the pl attribute list to use when displaying opClusterMember
+  private configureOpClusterMember(attributes: IProductLocationAttribute[], records: IDetailRecord[]) {
+    this.pl_attributes_with_values = attributes.filter(attribute => records.filter(record => record[attribute.oracleName]).length > 0);
   }
 
   public columnDefs: (ColDef | ColGroupDef)[] = [
@@ -270,7 +276,7 @@ export class DetailComponent implements OnInit {
     defaultToolPanel: 'columns',
   };
 
-  constructor(private store: Store<IStoreGroupMgmtState>, private titleService: Title, private route: ActivatedRoute) {}
+  constructor(private store: Store<IStoreGroupMgmtState>, private titleService: Title, private route: ActivatedRoute) { }
 
   public ngOnInit() {
     this.titleService.setTitle('Store Group Management');
@@ -282,7 +288,9 @@ export class DetailComponent implements OnInit {
 
     this.store.select(selectors.selectSummaryDetails).subscribe(data => {
       const details: IDetailRecord[] = data.gridData;
+
       this.configureGridColumns(data.productLocationAttributes, details);
+      this.configureOpClusterMember(data.productLocationAttributes, details);
 
       this.totalRecords = details.length;
       this.gridApi.setRowData(details);
@@ -313,10 +321,8 @@ export class DetailComponent implements OnInit {
     }
     const data: IDetailRecord = params.data;
     const chain_tier = [data.chain, data.tier].join('_');
-    const attrs = this.pl_attributes.filter(
-      val => data[val.oracleName] !== undefined && data[val.oracleName] !== null && data[val.oracleName] !== ''
-    );
-    return [chain_tier, ...attrs.map(x => data[x.oracleName])].join(' / ');
+
+    return [chain_tier, ...this.pl_attributes_with_values.map(x => data[x.oracleName] ?? '-')].join(' / ');
   }
 
   public onCommitClick() {

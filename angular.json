@@ -21,11 +21,19 @@
             "polyfills": "apps/home/src/polyfills.ts",
             "tsConfig": "apps/home/tsconfig.app.json",
             "aot": true,
-            "assets": ["apps/home/src/favicon.ico", "apps/home/src/assets"],
-            "styles": ["apps/home/src/styles.scss"],
+            "assets": [
+              "apps/home/src/favicon.ico",
+              "apps/home/src/assets"
+            ],
+            "styles": [
+              "apps/home/src/styles.scss"
+            ],
             "scripts": [],
             "preserveSymlinks": true,
-            "allowedCommonJsDependencies": ["ag-grid-enterprise", "hammerjs"]
+            "allowedCommonJsDependencies": [
+              "ag-grid-enterprise",
+              "hammerjs"
+            ]
           },
           "configurations": {
             "production": {
@@ -63,7 +71,7 @@
                   "with": "apps/home/src/environments/environment.local.ts"
                 }
               ],
-              "optimization": false,
+              "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
               "extractCss": true,
@@ -135,8 +143,14 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": ["apps/home/tsconfig.app.json", "apps/home/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!apps/home/**/*"]
+            "tsConfig": [
+              "apps/home/tsconfig.app.json",
+              "apps/home/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**",
+              "!apps/home/**/*"
+            ]
           }
         },
         "test": {
@@ -147,8 +161,13 @@
             "polyfills": "apps/home/src/polyfills.ts",
             "tsConfig": "apps/home/tsconfig.spec.json",
             "scripts": [],
-            "styles": ["apps/home/src/assets/scss/material-dashboard.scss"],
-            "assets": ["apps/home/src/assets", "apps/home/src/favicon.ico"]
+            "styles": [
+              "apps/home/src/assets/scss/material-dashboard.scss"
+            ],
+            "assets": [
+              "apps/home/src/assets",
+              "apps/home/src/favicon.ico"
+            ]
           }
         }
       }
@@ -174,8 +193,13 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": ["apps/home-e2e/tsconfig.e2e.json"],
-            "exclude": ["**/node_modules/**", "!apps/home-e2e/**/*"]
+            "tsConfig": [
+              "apps/home-e2e/tsconfig.e2e.json"
+            ],
+            "exclude": [
+              "**/node_modules/**",
+              "!apps/home-e2e/**/*"
+            ]
           }
         }
       }
@@ -189,8 +213,14 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": ["libs/assortment-management/tsconfig.lib.json", "libs/assortment-management/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/assortment-management/**/*"]
+            "tsConfig": [
+              "libs/assortment-management/tsconfig.lib.json",
+              "libs/assortment-management/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**",
+              "!libs/assortment-management/**/*"
+            ]
           }
         },
         "test": {
@@ -220,14 +250,23 @@
       "architect": {
         "build": {
           "options": {
-            "allowedCommonJsDependencies": ["ag-grid-enterprise", "hammerjs"]
+            "allowedCommonJsDependencies": [
+              "ag-grid-enterprise",
+              "hammerjs"
+            ]
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": ["libs/shared/tsconfig.lib.json", "libs/shared/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/shared/**/*"]
+            "tsConfig": [
+              "libs/shared/tsconfig.lib.json",
+              "libs/shared/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**",
+              "!libs/shared/**/*"
+            ]
           }
         },
         "test": {
@@ -258,8 +297,14 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": ["libs/material/tsconfig.lib.json", "libs/material/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/material/**/*"]
+            "tsConfig": [
+              "libs/material/tsconfig.lib.json",
+              "libs/material/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**",
+              "!libs/material/**/*"
+            ]
           }
         },
         "test": {
@@ -290,8 +335,14 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": ["libs/sgm/tsconfig.lib.json", "libs/sgm/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/sgm/**/*"]
+            "tsConfig": [
+              "libs/sgm/tsconfig.lib.json",
+              "libs/sgm/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**",
+              "!libs/sgm/**/*"
+            ]
           }
         },
         "test": {
@@ -322,8 +373,14 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": ["libs/asmt-mgmt-service/tsconfig.lib.json", "libs/asmt-mgmt-service/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/asmt-mgmt-service/**/*"]
+            "tsConfig": [
+              "libs/asmt-mgmt-service/tsconfig.lib.json",
+              "libs/asmt-mgmt-service/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**",
+              "!libs/asmt-mgmt-service/**/*"
+            ]
           }
         },
         "test": {
@@ -354,8 +411,14 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": ["libs/auth/tsconfig.lib.json", "libs/auth/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**", "!libs/auth/**/*"]
+            "tsConfig": [
+              "libs/auth/tsconfig.lib.json",
+              "libs/auth/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**",
+              "!libs/auth/**/*"
+            ]
           }
         },
         "test": {
