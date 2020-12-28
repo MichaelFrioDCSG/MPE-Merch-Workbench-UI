@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { IClusterGroup } from '@mpe/shared';
+import { IClusterGroup, IProductLocationAttribute } from '@mpe/shared';
 import { IModifiedDetailRecord } from '../models/IUpdateDetailArgument';
 
 export const sgmGetSummaries = createAction('[StoreGroupMgmt] Getting Summaries');
@@ -7,7 +7,10 @@ export const sgmGetSummariesSuccess = createAction('[StoreGroupMgmt] Getting Sum
 export const sgmGetSummariesFailure = createAction('[StoreGroupMgmt] Getting Summaries Failure', props<{ errors: string[] }>());
 
 export const sgmGetDetails = createAction('[StoreGroupMgmt] Getting Details', props<{ clusterGroupIds: number[] }>());
-export const sgmGetDetailsSuccess = createAction('[StoreGroupMgmt] Getting Details Success', props<{ clusterGroups: IClusterGroup[] }>());
+export const sgmGetDetailsSuccess = createAction(
+  '[StoreGroupMgmt] Getting Details Success',
+  props<{ clusterGroups: IClusterGroup[]; plAttributes: IProductLocationAttribute[] }>()
+);
 export const sgmGetDetailsFailure = createAction('[StoreGroupMgmt] Getting Details Failure', props<{ errors: string[] }>());
 
 export const setDetailValues = createAction('[StoreGroupMgmt] Set Detail Values', props<{ values: IModifiedDetailRecord[] }>());

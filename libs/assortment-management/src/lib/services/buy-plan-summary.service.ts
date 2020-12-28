@@ -11,7 +11,7 @@ export class BuyPlanSummaryService {
   constructor(public http: HttpClient) {}
 
   public getBuyPlanSummary() {
-    return this.http.get(`${environment.mpe_asmtmgmtservice}/api/assortmentperiod`).pipe(
+    return this.http.get(`${environment.mpe_api}/api/assortmentperiod`).pipe(
       map((data: IAssortment[]) => {
         return data;
       })

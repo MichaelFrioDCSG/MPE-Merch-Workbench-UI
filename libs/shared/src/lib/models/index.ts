@@ -11,3 +11,6 @@ export { IStoreInformation } from './IStoreInformation';
 export { IStoreInformationListValue } from './IStoreInformationListValue';
 export { ICreateStoreGroupRequest } from './dto/ICreateStoreGroupRequest';
 export { ICreateStoreGroupResponse } from './dto/ICreateStoreGroupResponse';
+export { IProductLocationAttribute } from './IProductLocationAttribute';
+export { IProductLocationAttributeValue } from './IProductLocationAttributeValue';
+export { IClusterLocationProductLocationAttributeValue } from './IClusterLocationProductLocationAttributeValue';
