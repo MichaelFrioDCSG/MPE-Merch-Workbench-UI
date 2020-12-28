@@ -135,7 +135,7 @@ jobs:
                 cd MerchWorkBenchProd
                 npm install --unsafe-perm --quiet
                 #./node_modules/@angular/cli/bin/ng build --output-hashing=bundles --index=${INDEX_ARGUMENT}
-                npx nx build
+                npx nx build --c=production
                 cp -r dist/apps/home/* ../build-output
                 cp ci/Staticfile ../build-output
                 cp ci/manifest.yml ../build-output
@@ -231,7 +231,7 @@ jobs:
                 cd MerchWorkBenchStaging
                 npm install --unsafe-perm --quiet
                 #./node_modules/@angular/cli/bin/ng build --output-hashing=bundles --index=${INDEX_ARGUMENT}
-                npx nx build
+                npx nx build --c=qa
                 cp -r dist/apps/home/* ../build-output
                 cp ci/Staticfile ../build-output
                 cp ci/manifest.yml ../build-output
@@ -241,7 +241,7 @@ jobs:
           command: push
           path: build-output
           manifest: build-output/manifest.yml
-          current_app_name: mpe-merch-workbench
+          current_app_name: mpe-merch-workbench-stage
   #############################################Dev
   - name: Lint-Dev
     public: true
@@ -327,7 +327,7 @@ jobs:
                 cd MerchWorkBenchDevelop
                 npm install --unsafe-perm --quiet
                 #./node_modules/@angular/cli/bin/ng build --output-hashing=bundles --index=${INDEX_ARGUMENT}
-                npx nx build
+                npx nx build --c=dev
                 cp -r dist/apps/home/* ../build-output
                 cp ci/Staticfile ../build-output
                 cp ci/manifest.yml ../build-output
@@ -337,4 +337,4 @@ jobs:
           command: push
           path: build-output
           manifest: build-output/manifest.yml
-          current_app_name: mpe-merch-workbench
+          current_app_name: mpe-merch-workbench-dev
