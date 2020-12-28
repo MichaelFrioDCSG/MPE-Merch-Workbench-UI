@@ -4,17 +4,17 @@ resources:
     type: git
     source:
       uri: git@github.com:dsg-tech/MPE-Merch-Workbench-UI.git
-      branch: master
+      branch: { { project_resource_branch } }
       private_key: ((MPE-Merch-Workbench-UI-deploykey.private))
 
-  - name: PCF-VN01-Dev
+  - name: { { mpe-pcf-env } }
     type: cf
     source:
-      api: https://api.sys.vn01.pcf.dcsg.com
-      username: ((cf_user_nonprod))
-      password: ((cf_password_nonprod))
+      api: { { cf_resource_api } }
+      username: { { cf_resource_username } }
+      password: { { cf_resource_password } }
       organization: merchandise-planning-and-execution
-      space: dev
+      space: { { cf_resource_space } }
       skip_cert_check: true
 
 jobs:
@@ -109,8 +109,8 @@ jobs:
                 cp ci/Staticfile ../build-output
                 cp ci/manifest.yml ../build-output
 
-      - put: cf-push-dev
-        resource: PCF-VN01-Dev
+      - put: cf-push-prod
+        resource: PCF-VP01-Prod
         params:
           command: push
           path: build-output
