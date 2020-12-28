@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { AgGridAngular } from 'ag-grid-angular';
 import { Observable } from 'rxjs';
-import { AllCommunityModules, Module, GridOptions, GridApi } from '@ag-grid-community/all-modules';
+import { AllCommunityModules, Module, GridOptions, GridApi, ColDef, ColGroupDef } from '@ag-grid-community/all-modules';
 
 import { Store } from '@ngrx/store';
 import { IStoreGroupMgmtState } from '../../store/store-group-mgmt.reducer';
@@ -12,7 +12,7 @@ import * as selectors from '../../store/store-group-mgmt.selectors';
 import * as actions from '../../store/store-group-mgmt.actions';
 import { IDetailRecord } from '../../models/IDetailRecord';
 import { IModifiedDetailRecord } from '../../models/IUpdateDetailArgument';
-import { BulkFillRenderer } from '@mpe/shared';
+import { BulkFillRenderer, IProductLocationAttribute } from '@mpe/shared';
 import { DatePipe } from '@angular/common';
 
 @Component({
@@ -34,6 +34,12 @@ export class DetailComponent implements OnInit {
   public totalRecords: number;
   public defaultColDef: any = {
     resizable: true,
+    sortable: true,
+    filter: true,
+    width: 250,
+    hide: true,
+    enableRowGroup: true,
+    editable: false,
   };
   private datePipe: DatePipe = new DatePipe('en-US');
 
@@ -50,6 +56,9 @@ export class DetailComponent implements OnInit {
 
   public tiers: string[] = ['ECOMM', 'Tier 1', 'Tier 2', 'Tier 3', 'Tier 4', 'Tier 5', 'Z'];
   public chains: string[] = ['DSG', 'GG', 'FS'];
+
+  private pl_attributes: IProductLocationAttribute[] = [];
+  private pl_attributes_with_values: IProductLocationAttribute[] = [];
 
   private edit(params) {
     params.api.showLoadingOverlay();
@@ -70,7 +79,7 @@ export class DetailComponent implements OnInit {
   }
 
   private getModifiedDetailRecords(node: any, colId: string, newValue: string): IModifiedDetailRecord[] {
-    let results = [];
+    let results: IModifiedDetailRecord[] = [];
     if (node.group) {
       for (const child of node.childrenAfterFilter) {
         //Recursive call for child nodes
@@ -91,153 +100,137 @@ export class DetailComponent implements OnInit {
     return results;
   }
 
-  public columnDefs = [
+  private configureGridColumns(attributes: IProductLocationAttribute[], records: IDetailRecord[]) {
+    let updateColumns = false;
+    for (const attr of attributes) {
+      const headerName = attr.name.toUpperCase();
+      const colDef = this.columnDefs.find(x => x.headerName === headerName);
+      if (!colDef) {
+        const hideColumn = records.filter(x => x[attr.oracleName]).length === 0;
+        const newColDef: ColDef = {
+          headerName: headerName,
+          field: attr.oracleName,
+          hide: hideColumn,
+          editable: true,
+          cellEditor: 'agRichSelectCellEditor',
+          cellEditorParams: {
+            values: [].concat([''], attr.values.map(x => x.value).sort()),
+          },
+          cellRendererFramework: BulkFillRenderer,
+          valueSetter: params => this.edit(params),
+        };
+        this.columnDefs.push(newColDef);
+        updateColumns = true;
+      }
+    }
+
+    if (updateColumns) {
+      this.gridApi.setColumnDefs(this.columnDefs);
+    }
+  }
+
+  // Clear the pl attribute list to use when displaying opClusterMember
+  private configureOpClusterMember(attributes: IProductLocationAttribute[], records: IDetailRecord[]) {
+    this.pl_attributes_with_values = attributes.filter(attribute => records.filter(record => record[attribute.oracleName]).length > 0);
+  }
+
+  public columnDefs: (ColDef | ColGroupDef)[] = [
     {
       headerName: 'CLUSTER GROUP',
       field: 'clusterGroupName',
-      sortable: true,
-      filter: true,
-      enableRowGroup: true,
       width: 200,
+      hide: false,
     },
     {
       headerName: 'CLUSTER LABEL',
       field: 'clusterLabel',
-      sortable: true,
       editable: true,
-      filter: true,
-      enableRowGroup: true,
       width: 200,
+      hide: false,
       valueSetter: params => this.edit(params),
     },
     {
       headerName: 'CLUSTER',
       field: 'clusterName',
-      sortable: true,
-      filter: true,
-      enableRowGroup: true,
       width: 200,
-      valueGetter: this.opClusterMemberDisplay,
+      hide: false,
+      valueGetter: params => this.opClusterMemberDisplay(params),
     },
     {
       headerName: 'NOTES',
       field: 'notes',
-      sortable: true,
       editable: true,
-      filter: true,
       width: 200,
-      cellRenderer: BulkFillRenderer,
+      hide: false,
+      cellRendererFramework: BulkFillRenderer,
       valueSetter: params => this.edit(params),
     },
     {
       headerName: 'TIER',
       field: 'tier',
-      sortable: true,
       editable: true,
-      filter: true,
-      enableRowGroup: true,
       width: 150,
+      hide: false,
       cellEditor: 'agRichSelectCellEditor',
       cellEditorParams: {
         values: this.tiers,
       },
-      cellRenderer: BulkFillRenderer,
+      cellRendererFramework: BulkFillRenderer,
       valueSetter: params => this.edit(params),
     },
     {
       headerName: 'CHAIN',
       field: 'chain',
-      sortable: true,
       editable: true,
-      filter: true,
-      enableRowGroup: true,
       width: 100,
+      hide: false,
       cellEditor: 'agRichSelectCellEditor',
       cellEditorParams: {
         values: this.chains,
       },
-      cellRenderer: BulkFillRenderer,
+      cellRendererFramework: BulkFillRenderer,
       valueSetter: params => this.edit(params),
     },
-
-    {
-      headerName: 'STORE NUMBER',
-      sortable: true,
-      width: 250,
-      field: 'storeNumber',
-      filter: 'agSetColumnFilter',
-      filterParams: {
-        comparator: this.numericComparator,
-      },
-    },
-
-    { headerName: 'STORE NAME', field: 'storeName', sortable: true, filter: true, width: 250, hide: true },
-    { headerName: 'ASSORTMENT PERIOD', field: 'assortmentPeriod', sortable: true, filter: true, width: 250, hide: true },
-    { headerName: 'AD MARKET', field: 'adMarket', sortable: true, filter: true, width: 250, hide: true },
-    { headerName: 'CITY', field: 'city', sortable: true, filter: true, width: 250 },
-    { headerName: 'CLIMATE', field: 'climate', sortable: true, filter: true, width: 250, hide: true },
-    {
-      headerName: 'CLOSE DATE',
-      field: 'closeDate',
-      sortable: true,
-      filter: true,
-      width: 250,
-      hide: true,
-      valueGetter: params => this.datePipe.transform(params.data.closeDate, 'MM/dd/yyyy'),
-    },
-    { headerName: 'DEMOGRAPHICS', field: 'demographics', sortable: true, filter: true, width: 250, hide: true },
-    { headerName: 'DISTRICT DESCRIPTION', field: 'districtDescription', sortable: true, filter: true, width: 250, hide: true },
-    { headerName: 'MEDIAN INCOME', field: 'medianIncome', sortable: true, filter: true, width: 250, hide: true },
-    { headerName: 'NUMBER OF ENTRANCES', field: 'numberOfEntrances', sortable: true, filter: true, width: 250 },
-    { headerName: 'NUMBER OF FLOORS', field: 'numberOfFloors', sortable: true, filter: true, width: 250, hide: true },
-    {
-      headerName: 'OPEN DATE',
-      field: 'openDate',
-      sortable: true,
-      filter: true,
-      width: 250,
-      hide: true,
-      valueGetter: params => this.datePipe.transform(params.data.openDate, 'MM/dd/yyyy'),
-    },
-    { headerName: 'REGION DESCRIPTION', field: 'regionDescription', sortable: true, filter: true, width: 250, hide: true },
-
-    {
-      headerName: 'SQUARE FEET',
-      sortable: true,
-      width: 250,
-      hide: true,
-      field: 'squareFeet',
-      filter: 'agSetColumnFilter',
-      filterParams: {
-        comparator: this.numericComparator,
-      },
-    },
-
-    { headerName: 'STATE', field: 'state', sortable: true, filter: true, width: 250, hide: true },
-    { headerName: 'STORE FORMAT', field: 'storeFormat', sortable: true, filter: true, width: 250, hide: true },
-    { headerName: 'STORE STRUCTURE', field: 'storeStructure', sortable: true, filter: true, width: 250, hide: true },
-
-    {
-      headerName: 'TTL RUN RATE',
-      sortable: true,
-      width: 250,
-      hide: true,
-      field: 'ttlRunRate',
-      filter: 'agSetColumnFilter',
-      filterParams: {
-        comparator: this.numericComparator,
-      },
-    },
-
+    { headerName: 'CITY', field: 'city', hide: false },
+    { headerName: 'NUMBER OF ENTRANCES', field: 'numberOfEntrances', hide: false },
     {
       headerName: 'WAREHOUSE NUMBER',
-      sortable: true,
-      width: 250,
+      hide: false,
       field: 'warehouseNumber',
       filter: 'agSetColumnFilter',
-      filterParams: {
-        comparator: this.numericComparator,
-      },
+      filterParams: { comparator: this.numericComparator },
+    },
+    {
+      headerName: 'STORE NUMBER',
+      field: 'storeNumber',
+      filter: 'agSetColumnFilter',
+      filterParams: { comparator: this.numericComparator },
+    },
+    { headerName: 'STORE NAME', field: 'storeName' },
+    { headerName: 'ASSORTMENT PERIOD', field: 'assortmentPeriod' },
+    { headerName: 'AD MARKET', field: 'adMarket' },
+    { headerName: 'COMPANY CLIMATE', field: 'climate' },
+    { headerName: 'CLOSE DATE', field: 'closeDate', valueGetter: params => this.datePipe.transform(params.data.closeDate, 'MM/dd/yyyy') },
+    { headerName: 'DEMOGRAPHICS', field: 'demographics' },
+    { headerName: 'DISTRICT DESCRIPTION', field: 'districtDescription' },
+    { headerName: 'MEDIAN INCOME', field: 'medianIncome' },
+    { headerName: 'NUMBER OF FLOORS', field: 'numberOfFloors' },
+    { headerName: 'OPEN DATE', field: 'openDate', valueGetter: params => this.datePipe.transform(params.data.openDate, 'MM/dd/yyyy') },
+    { headerName: 'REGION DESCRIPTION', field: 'regionDescription' },
+    {
+      headerName: 'SQUARE FEET',
+      field: 'squareFeet',
+      filter: 'agSetColumnFilter',
+      filterParams: { comparator: this.numericComparator },
+    },
+    { headerName: 'STATE', field: 'state' },
+    { headerName: 'STORE FORMAT', field: 'storeFormat' },
+    { headerName: 'STORE STRUCTURE', field: 'storeStructure' },
+    {
+      headerName: 'TTL RUN RATE',
+      field: 'ttlRunRate',
+      filter: 'agSetColumnFilter',
+      filterParams: { comparator: this.numericComparator },
     },
   ];
 
@@ -291,10 +284,14 @@ export class DetailComponent implements OnInit {
 
   public onGridReady(params: any) {
     this.gridApi = params.api;
-
     this.store.dispatch(actions.sgmGetDetails({ clusterGroupIds: this.clusterGroupIds }));
 
-    this.store.select(selectors.selectSummaryDetails).subscribe(details => {
+    this.store.select(selectors.selectSummaryDetails).subscribe(data => {
+      const details: IDetailRecord[] = data.gridData;
+
+      this.configureGridColumns(data.productLocationAttributes, details);
+      this.configureOpClusterMember(data.productLocationAttributes, details);
+
       this.totalRecords = details.length;
       this.gridApi.setRowData(details);
       this.gridApi.refreshCells();
@@ -302,8 +299,12 @@ export class DetailComponent implements OnInit {
       this.shownRecords = this.gridApi.getDisplayedRowCount();
     });
 
-    this.store.select(selectors.selectDetailsEdited).subscribe(val => {
-      this.actionsDisabled = !val;
+    this.store.select(selectors.selectDetailsEdited).subscribe(edited => {
+      this.actionsDisabled = !edited;
+    });
+
+    this.store.select(selectors.selectProductLocationAttributes).subscribe(values => {
+      this.pl_attributes = values;
     });
   }
 
@@ -319,7 +320,9 @@ export class DetailComponent implements OnInit {
       return '';
     }
     const data: IDetailRecord = params.data;
-    return [data.chain, data.tier].join('_');
+    const chain_tier = [data.chain, data.tier].join('_');
+
+    return [chain_tier, ...this.pl_attributes_with_values.map(x => data[x.oracleName] ?? '-')].join(' / ');
   }
 
   public onCommitClick() {

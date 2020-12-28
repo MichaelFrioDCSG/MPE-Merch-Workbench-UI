@@ -11,6 +11,7 @@ import { Store } from '@ngrx/store';
 import { IStoreGroupMgmtState } from './store-group-mgmt.reducer';
 import { actions as sharedActions } from '@mpe/shared';
 import { IServerResponse } from 'libs/asmt-mgmt-service/src/lib/services/IServerResponse';
+import { IClusterGroupResponseDto } from 'libs/asmt-mgmt-service/src/lib/services/IClusterGroupResponseDto';
 @Injectable()
 export default class StoreGroupMgmtEffects {
   constructor(private actions$: Actions, private store: Store<IStoreGroupMgmtState>, private clusterGroupsService: ClusterGroupsService) {}
@@ -41,7 +42,12 @@ export default class StoreGroupMgmtEffects {
       switchMap(action =>
         this.clusterGroupsService.getClusterGroups(action.clusterGroupIds).pipe(
           map(
-            (clusterGroups: IClusterGroup[]) => actions.sgmGetDetailsSuccess({ clusterGroups }),
+            (res: IClusterGroupResponseDto) => {
+              return actions.sgmGetDetailsSuccess({
+                clusterGroups: res.clusterGroups,
+                plAttributes: res.productLocationAttributes.sort((a, b) => a.displaySequence - b.displaySequence),
+              });
+            },
             catchError(errors => {
               return of(actions.sgmGetDetailsFailure(errors));
             })
