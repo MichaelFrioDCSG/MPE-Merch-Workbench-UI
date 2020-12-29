@@ -311,10 +311,6 @@ body,
   height: 100%; /* needed for proper layout */
 }
 
-body {
-  overflow: hidden;
-}
-
 p {
   margin-bottom: 1em;
 }
@@ -403,11 +399,6 @@ section {
   flex: 0 0 auto;
   background-color: #dcdcdc;
   font-size: small;
-}
-
-ag-grid-angular {
-  height: 48rem;
-  width: 100%;
 }
 
 .ag-theme-alpine {

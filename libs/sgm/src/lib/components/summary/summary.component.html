@@ -1,82 +1,38 @@
 <div class="main-content">
   <div class="container-fluid">
-    <div class="row">
-      <div class="col-12 breadcrumb-dsg mt-2 mb-3">
-        Cluster Group Summary
-      </div>
-    </div>
-    <div class="row mb-3">
-      <div class="col-12 button-row-container">
-        <mat-menu
-          mat-mini-fab
-          color="primary"
-          matTooltipPosition="right"
-          matTooltip="Import"
-          matTooltipClass="tool-tip-style"
-          mat-button
-          (click)="openDialog()"
-        >
-          <i class="material-icons">add</i>
-        </mat-menu>
+    <div id="grid-wrapper" class="grid-wrapper">
+      <div class="button-row-container">
+        <div class="breadcrumb-dsg">
+          Cluster Group Summary
+        </div>
         <button mat-raised-button color="primary" class="import-button" (click)="openDialog()">
           <mat-icon>arrow_upward</mat-icon>
           Import
         </button>
       </div>
-    </div>
 
-    <div class="example-spacer"></div>
-
-    <div class="grid-header">
       <div class="Monochromatic grid-header">
-        <button [disabled]="actionsDisabled" mat-raised-button color="primary" class="action-button" [matMenuTriggerFor]="menu">
-          <div class="expand_icon">
+        <button [disabled]="actionsDisabled" mat-raised-button color="primary" class="action-button"
+          [matMenuTriggerFor]="menu">
             <i class="material-icons">{{ actionsDisabled ? 'expand_less' : 'expand_more' }}</i>
-          </div>
-          Actions
+            Actions
         </button>
-        <mat-menu #menu="matMenu">
-          <div class="action-menu">
-            <button *ngIf="!actionsDisabled" color="primary" class="view-edit-button" (click)="goToDetail()">
-              View/Edit
-            </button>
-            <div class="line1"></div>
-            <button color="secondary" class="delete-button" (click)="openDeleteDialog()">
-              Delete
-            </button>
+
+        <mat-menu class="actionMenu" #menu="matMenu">
+          <div mat-menu-item class="actionMenuItem" (click)="goToDetail()">
+            View/Edit
+          </div>
+          <div mat-menu-item class="actionMenuItem" (click)="openDeleteDialog()">
+            Delete
           </div>
         </mat-menu>
       </div>
+
+      <ag-grid-angular #agGrid class="ag-theme-alpine" [rowData]="clusterGroups" [modules]="modules"
+        [defaultColDef]="defaultColDef" [columnDefs]="columnDefs" [statusBar]="statusBar" [gridOptions]="gridOptions"
+        [enableRangeSelection]="true" rowSelection="multiple" (gridReady)="onGridReady($event)"
+        (rowSelected)="onRowSelected($event)" (selectionChanged)="onSelectionChanged($event)">
+      </ag-grid-angular>
     </div>
-
-    <div class="example-spacer"></div>
-
-    <div class="row mb-">
-      <div class="col-12">
-        <div id="grid-wrapper" class="grid-wrapper">
-          <div [ngStyle]="style">
-            <ag-grid-angular
-              #agGrid
-              class="ag-theme-alpine"
-              [rowData]="clusterGroups"
-              [modules]="modules"
-              [defaultColDef]="defaultColDef"
-              [columnDefs]="columnDefs"
-              [statusBar]="statusBar"
-              [gridOptions]="gridOptions"
-              [enableRangeSelection]="true"
-              rowSelection="multiple"
-              (gridReady)="onGridReady($event)"
-              (rowSelected)="onRowSelected($event)"
-              (selectionChanged)="onSelectionChanged($event)"
-              (firstDataRendered)="onFirstDataRendered($event)"
-            >
-            </ag-grid-angular>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <p style="margin-top: 2rem;">{{ selectedData }}</p>
   </div>
 </div>
