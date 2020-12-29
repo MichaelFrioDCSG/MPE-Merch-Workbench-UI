@@ -145,7 +145,7 @@ jobs:
           command: push
           path: build-output
           manifest: build-output/manifest.yml
-          current_app_name: mpe-merch-workbench
+          current_app_name: merch-workbench-ui
   #############################################Stage
   - name: Lint-Stage
     public: true
@@ -241,7 +241,7 @@ jobs:
           command: push
           path: build-output
           manifest: build-output/manifest.yml
-          current_app_name: mpe-merch-workbench-stage
+          current_app_name: merch-workbench-ui-stage
   #############################################Dev
   - name: Lint-Dev
     public: true
@@ -337,4 +337,4 @@ jobs:
           command: push
           path: build-output
           manifest: build-output/manifest.yml
-          current_app_name: mpe-merch-workbench-dev
+          current_app_name: merch-workbench-ui-dev
