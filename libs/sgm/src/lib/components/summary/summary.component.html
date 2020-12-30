@@ -1,49 +1,43 @@
 <div class="main-content">
   <div class="container-fluid">
-    <div class="row">
-      <div class="col-12 breadcrumb-dsg mt-2 mb-2">
-        Summary
-      </div>
-    </div>
-    <div class="row mb-2">
-      <div class="col-12 button-row-container">
-        <button mat-raised-button color="primary" class="button-label-dsg mr-2" (click)="openDialog()" style="height: 39px;">
+    <div id="grid-wrapper" class="grid-wrapper">
+      <div class="button-row-container">
+        <div class="breadcrumb-dsg">
+          Cluster Group Summary
+        </div>
+        <button mat-raised-button color="primary" class="sgm-button import-button" (click)="openDialog()">
           <mat-icon>arrow_upward</mat-icon>
           Import
         </button>
-        <button mat-raised-button color="secondary" class="button-label-dsg button-secondary-dsg" (click)="goToDetail()" style="height: 39px;">
-          <mat-icon>edit</mat-icon>
-          View/Edit
-        </button>
-        <button mat-raised-button color="secondary" class="button-label-dsg button-tertiary-dsg" (click)="openDeleteDialog()" style="height: 39px;">
-          <mat-icon>delete</mat-icon>
-          Delete
-        </button>
       </div>
-    </div>
-    <div class="row">
-      <div class="col-12">
-        <div id="grid-wrapper" class="grid-wrapper">
-          <div [ngStyle]="style">
-            <ag-grid-angular
-              #agGrid
-              class="ag-theme-alpine"
-              [rowData]="clusterGroups"
-              [modules]="modules"
-              [defaultColDef]="defaultColDef"
-              [columnDefs]="columnDefs"
-              [statusBar]="statusBar"
-              [gridOptions]="gridOptions"
-              rowSelection="multiple"
-              (gridReady)="onGridReady($event)"
-              (firstDataRendered)="onFirstDataRendered($event)"
-            >
-            </ag-grid-angular>
-          </div>
-        </div>
-      </div>
-    </div>
 
-    <p style="margin-top: 2rem;">{{ selectedData }}</p>
+      <div class="Monochromatic grid-header">
+        <div class="grid-header-totals">
+          Data Results ({{totalResults}})
+        </div>
+
+
+        <button [disabled]="actionsDisabled" mat-raised-button color="primary" class="sgm-button action-menu-button"
+          [matMenuTriggerFor]="menu" (click)="actionMenuOpen = true">
+            Actions
+            <i class="material-icons">{{ actionMenuOpen ? 'expand_less' : 'expand_more' }}</i>
+        </button>
+
+        <mat-menu class="action-menu" #menu="matMenu" (closed)="onActionMenuClosed($event)">
+          <div mat-menu-item class="action-menu-item" (click)="goToDetail()">
+            View/Edit
+          </div>
+          <div mat-menu-item class="action-menu-item" (click)="openDeleteDialog()">
+            Delete
+          </div>
+        </mat-menu>
+      </div>
+
+      <ag-grid-angular #agGrid class="ag-theme-alpine" [rowData]="clusterGroups" [modules]="modules"
+        [defaultColDef]="defaultColDef" [columnDefs]="columnDefs" [statusBar]="statusBar" [gridOptions]="gridOptions"
+        [enableRangeSelection]="true" rowSelection="multiple" (gridReady)="onGridReady($event)"
+        (rowSelected)="onRowSelected($event)" (selectionChanged)="onSelectionChanged($event)">
+      </ag-grid-angular>
+    </div>
   </div>
 </div>

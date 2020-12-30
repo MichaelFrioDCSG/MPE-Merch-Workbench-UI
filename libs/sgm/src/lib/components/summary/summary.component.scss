@@ -1,60 +1,98 @@
-.example-icon {
-  padding: 0 14px;
-}
-
-.example-spacer {
-  flex: 1 1 auto;
-}
-
-.breadcrumb-dsg {
-  font-family: Archivo;
-  font-style: normal;
-  font-weight: bold;
-  font-size: 14px;
-  line-height: 15px;
-  letter-spacing: 0.297825px;
-
-  color: #000000;
-}
-
 .button-row-container {
   flex-direction: row;
   display: flex;
-  justify-content: flex-start;
-  border-spacing: 1px;
+  justify-content: flex-end;
+  border-spacing: 3px;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+
+  .breadcrumb-dsg {
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 15px;
+    letter-spacing: 0.297825px;
+    justify-content: flex-start;
+
+    color: #000000;
+    margin: 0 auto 0 0;
+  }
 }
 
-.button-label-dsg {
-  /* Label/Large 16px */
-  font-family: Archivo;
-  font-style: normal;
+.sgm-button {
+  width: 127px;
+  height: 38px;
+  line-height: 38px;
   font-weight: bold;
-  font-size: 16px;
-  line-height: 20px;
-  /* or 100% */
+  letter-spacing: 1.5px;
   display: flex;
   align-items: center;
   text-align: center;
-  letter-spacing: 1.5px;
   text-transform: uppercase;
 }
 
-.grid-wrapper {
-  min-width: 95vw;
-  max-width: 98vw;
+.import-button {
+  font-size: 16px;
+  line-height: 16px;
+  background: #bb5811;
+}
+
+.action-menu-button {
+  font-size: 12px;
+  /* or 100% */
+
+  z-index: 1;
+
+  color: #ffffff;
+}
+
+.grid-wrapper,
+ag-grid-angular {
+  width: 95vw;
+  margin: auto auto;
+}
+
+ag-grid-angular {
+  height: 60vh;
+}
+
+.grid-header {
+  /* Gray/Gray - 400 */
+  background: #c8c8c8;
   display: flex;
-  justify-content: left;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  height: 38px;
 }
 
-.button-secondary-dsg {
-  /* Greyscale/DSG Black */
-  border: 2px solid #191f1c;
-  box-sizing: border-box;
+.grid-header-totals {
+  font-size: 14px;
+  font-weight: bold;
+  height: 38px;
+  line-height: 38px;
+  letter-spacing: 0.297825px;
+  justify-content: flex-start;
+  padding-left: 15px;
+
+  color: #000000;
+  margin: 0 auto 0 0;
 }
 
-.button-tertiary-dsg {
-  /* Greyscale/DSG Black */
-  border: 2px solid #191f1c;
-  box-sizing: border-box;
-  margin-left: 6px;
+.action-menu {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.action-menu-item {
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  border-bottom: 1px solid black;
+}
+
+.action-menu-item:last-of-type {
+  border-bottom: none;
 }
