@@ -4,6 +4,7 @@
   justify-content: flex-end;
   border-spacing: 3px;
   margin-top: 2rem;
+  margin-bottom: 2rem;
 
   .breadcrumb-dsg {
     font-size: 20px;
@@ -17,35 +18,31 @@
   }
 }
 
-.import-button {
+.sgm-button {
   width: 127px;
-  height: 39px;
-  font-size: 16px;
-  line-height: 16px;
-
+  height: 38px;
+  line-height: 38px;
+  font-weight: bold;
+  letter-spacing: 1.5px;
   display: flex;
   align-items: center;
   text-align: center;
-  letter-spacing: 1.5px;
   text-transform: uppercase;
-
-  background: #bb5811;
-
-  margin-bottom: 1.5rem;
 }
 
-.button-label-dsg {
-  /* Label/Large 16px */
-  font-weight: bold;
+.import-button {
   font-size: 16px;
-  line-height: 20px;
+  line-height: 16px;
+  background: #bb5811;
+}
 
+.action-menu-button {
+  font-size: 12px;
   /* or 100% */
-  display: flex;
-  align-items: center;
-  text-align: center;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
+
+  z-index: 1;
+
+  color: #ffffff;
 }
 
 .grid-wrapper,
@@ -58,61 +55,6 @@ ag-grid-angular {
   height: 60vh;
 }
 
-.action-button {
-  width: 127px;
-  height: 38px;
-
-  /* Label/Small 12px */
-
-  font-weight: bold;
-  font-size: 12px;
-  /* or 100% */
-
-  display: flex;
-  align-items: center;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  z-index: 1;
-
-  color: #ffffff;
-}
-
-.view-edit-button {
-  width: 127px;
-  height: auto;
-  font-weight: bold;
-  font-size: 12px;
-  line-height: 12px;
-
-  display: block;
-  align-items: center;
-  padding: auto;
-  text-align: left;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  border: 1px solid black;
-
-  color: #000000;
-}
-
-.delete-button {
-  width: 127px;
-  height: auto;
-  font-weight: bold;
-  font-size: 12px;
-  line-height: 12px;
-  /* identical to box height, or 100% */
-
-  display: block;
-  padding: auto;
-  text-align: left;
-  align-items: center;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  border: 1px solid black;
-  color: #000000;
-}
-
 .grid-header {
   /* Gray/Gray - 400 */
   background: #c8c8c8;
@@ -123,17 +65,34 @@ ag-grid-angular {
   height: 38px;
 }
 
-.actionMenu {
+.grid-header-totals {
+  font-size: 14px;
+  font-weight: bold;
+  height: 38px;
+  line-height: 38px;
+  letter-spacing: 0.297825px;
+  justify-content: flex-start;
+  padding-left: 15px;
+
+  color: #000000;
+  margin: 0 auto 0 0;
+}
+
+.action-menu {
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
   align-items: center;
 }
 
-.actionMenuItem {
+.action-menu-item {
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
   border-bottom: 1px solid black;
 }
 
-.actionMenuItem:last-of-type {
+.action-menu-item:last-of-type {
   border-bottom: none;
 }

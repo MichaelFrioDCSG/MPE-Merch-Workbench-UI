@@ -30,6 +30,10 @@ export class SummaryComponent  {
   public modules: Module[] = AllCommunityModules;
   public selectedData: any;
   public rowCount: number;
+  public get totalResults(): number{
+    return this.clusterGroups.length;
+  };
+  public actionMenuOpen: boolean;
   public title = 'MPE-SGM';
   public clusterGroups: IClusterGroup[] = [];
   public defaultColDef: any = {
@@ -66,24 +70,13 @@ export class SummaryComponent  {
     },
     { headerName: 'LAST MODIFIED BY', field: 'lastModifiedBy', sortable: true, filter: true },
   ];
-  public statusBar: any = {
-    statusPanels: [
-      {
-        statusPanel: 'agTotalAndFilteredRowCountComponent',
-        align: 'left',
-      },
-      {
-        statusPanel: 'agTotalRowCountComponent',
-        align: 'center',
-      },
-      { statusPanel: 'agFilteredRowCountComponent' },
-      { statusPanel: 'agSelectedRowCountComponent' },
-      { statusPanel: 'agAggregationComponent' },
-    ],
-  };
+  public statusBar: any = { };
 
   constructor(private dialog: MatDialog, private store: Store<IStoreGroupMgmtState>, public titleService: Title, private router: Router) {}
 
+public onActionMenuClosed($event){
+  this.actionMenuOpen = false;
+}
   public getSelectedRows() {
     const selectedNodes = this.agGrid.api.getSelectedNodes();
     this.selectedData = JSON.stringify(selectedNodes.map(node => node.data));

@@ -5,24 +5,29 @@
         <div class="breadcrumb-dsg">
           Cluster Group Summary
         </div>
-        <button mat-raised-button color="primary" class="import-button" (click)="openDialog()">
+        <button mat-raised-button color="primary" class="sgm-button import-button" (click)="openDialog()">
           <mat-icon>arrow_upward</mat-icon>
           Import
         </button>
       </div>
 
       <div class="Monochromatic grid-header">
-        <button [disabled]="actionsDisabled" mat-raised-button color="primary" class="action-button"
-          [matMenuTriggerFor]="menu">
-            <i class="material-icons">{{ actionsDisabled ? 'expand_less' : 'expand_more' }}</i>
+        <div class="grid-header-totals">
+          Data Results ({{totalResults}})
+        </div>
+
+
+        <button [disabled]="actionsDisabled" mat-raised-button color="primary" class="sgm-button action-menu-button"
+          [matMenuTriggerFor]="menu" (click)="actionMenuOpen = true">
             Actions
+            <i class="material-icons">{{ actionMenuOpen ? 'expand_less' : 'expand_more' }}</i>
         </button>
 
-        <mat-menu class="actionMenu" #menu="matMenu">
-          <div mat-menu-item class="actionMenuItem" (click)="goToDetail()">
+        <mat-menu class="action-menu" #menu="matMenu" (closed)="onActionMenuClosed($event)">
+          <div mat-menu-item class="action-menu-item" (click)="goToDetail()">
             View/Edit
           </div>
-          <div mat-menu-item class="actionMenuItem" (click)="openDeleteDialog()">
+          <div mat-menu-item class="action-menu-item" (click)="openDeleteDialog()">
             Delete
           </div>
         </mat-menu>
