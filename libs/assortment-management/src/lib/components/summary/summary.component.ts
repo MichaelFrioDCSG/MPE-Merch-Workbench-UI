@@ -7,6 +7,7 @@ import { ImportDialogComponent } from '../dialogs/import-dialog/import-dialog.co
 import { ConfirmationDialogComponent } from '../dialogs/confirmation-dialog/confirmation-dialog.component';
 import { AlertDialogComponent } from '../dialogs/alert-dialog/alert-dialog.component';
 import { Title } from '@angular/platform-browser';
+import { MatMenuModule } from '@angular/material/menu';
 
 @Component({
   selector: 'mpe-summary',

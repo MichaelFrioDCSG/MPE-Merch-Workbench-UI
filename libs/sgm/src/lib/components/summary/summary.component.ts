@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { AgGridAngular } from 'ag-grid-angular';
 import { MatDialog } from '@angular/material/dialog';
 import { AllCommunityModules, Module, GridOptions, GridApi } from '@ag-grid-community/all-modules';
@@ -18,16 +18,22 @@ import { Router } from '@angular/router';
   templateUrl: './summary.component.html',
   styleUrls: ['./summary.component.scss'],
 })
-export class SummaryComponent implements OnInit, OnDestroy {
+export class SummaryComponent  {
   @ViewChild('agGrid', { static: false }) public agGrid: AgGridAngular;
   public clusterGroupsObs: Observable<IClusterGroup[]> = null;
   public style: any;
   public gridOptions: GridOptions;
   public gridColumnApi: any;
   public gridApi: GridApi;
+  public actionsDisabled: boolean;
 
   public modules: Module[] = AllCommunityModules;
   public selectedData: any;
+  public rowCount: number;
+  public get totalResults(): number{
+    return this.clusterGroups.length;
+  };
+  public actionMenuOpen: boolean;
   public title = 'MPE-SGM';
   public clusterGroups: IClusterGroup[] = [];
   public defaultColDef: any = {
@@ -64,28 +70,13 @@ export class SummaryComponent implements OnInit, OnDestroy {
     },
     { headerName: 'LAST MODIFIED BY', field: 'lastModifiedBy', sortable: true, filter: true },
   ];
-  public statusBar: any = {
-    statusPanels: [
-      {
-        statusPanel: 'agTotalAndFilteredRowCountComponent',
-        align: 'left',
-      },
-      {
-        statusPanel: 'agTotalRowCountComponent',
-        align: 'center',
-      },
-      { statusPanel: 'agFilteredRowCountComponent' },
-      { statusPanel: 'agSelectedRowCountComponent' },
-      { statusPanel: 'agAggregationComponent' },
-    ],
-  };
+  public statusBar: any = { };
 
   constructor(private dialog: MatDialog, private store: Store<IStoreGroupMgmtState>, public titleService: Title, private router: Router) {}
 
-  public ngOnDestroy() {}
-
-  public ngOnInit() {}
-
+public onActionMenuClosed($event){
+  this.actionMenuOpen = false;
+}
   public getSelectedRows() {
     const selectedNodes = this.agGrid.api.getSelectedNodes();
     this.selectedData = JSON.stringify(selectedNodes.map(node => node.data));
@@ -125,45 +116,35 @@ export class SummaryComponent implements OnInit, OnDestroy {
   }
 
   public onGridReady(params: any) {
+    this.actionsDisabled = true;
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
     this.store.dispatch(actions.sgmGetSummaries());
 
     this.store.pipe(select(selectClusterGroups)).subscribe((clusterGroups: IClusterGroup[]) => {
       this.clusterGroups = clusterGroups;
+
+      if (this.gridApi.getSelectedRows.length > 0) {
+        this.actionsDisabled = false;
+      } else {
+        this.actionsDisabled = true;
+      }
     });
   }
 
-  public onFirstDataRendered(params) {
-    this.autoSizeAll();
-  }
-
-  public autoSizeAll() {
-    let totalColsWidth = 0;
-    if (this.gridColumnApi) {
-      const allColumnIds = [];
-      this.gridColumnApi.getAllColumns().forEach(column => {
-        if (column.colId !== 'checkboxColumn') {
-          allColumnIds.push(column.colId);
-        }
-      });
-      this.gridColumnApi.autoSizeColumns(allColumnIds, false);
-      this.gridApi.setDomLayout('normal');
-      this.gridColumnApi.getAllColumns().forEach(column => {
-        totalColsWidth += column.getActualWidth();
-      });
-      const gridWidth = document.getElementById('grid-wrapper').offsetWidth;
-      if (gridWidth > totalColsWidth) {
-        this.setGridWidth(totalColsWidth + 2); // +2px hides the horizontal scrollbar at bottom
-      } else {
-        this.setGridWidth(gridWidth);
-      }
+  public onRowSelected($event): void {
+    if ($event.node.selected) {
+      this.actionsDisabled = false;
+    } else {
+      this.actionsDisabled = true;
     }
   }
-
-  public setGridWidth(widthInPixels) {
-    this.style = {
-      width: widthInPixels + 'px',
-    };
+  public onSelectionChanged($event): void {
+    this.rowCount = $event.api.getSelectedNodes().length;
+    if (this.rowCount > 0) {
+      this.actionsDisabled = false;
+    } else {
+      this.actionsDisabled = true;
+    }
   }
 }
