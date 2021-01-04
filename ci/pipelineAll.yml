@@ -23,9 +23,9 @@ resources:
   - name: PCF-VP01-Prod
     type: cf
     source:
-      api: https://api.sys.vn01.pcf.dcsg.com
-      username: ((cf_user_nonprod))
-      password: ((cf_password_nonprod))
+      api: https://api.sys.vp01.pcf.dcsg.com
+      username: ((cf_user_prod))
+      password: ((cf_password_prod))
       organization: merchandise-planning-and-execution
       space: prod
       skip_cert_check: true
