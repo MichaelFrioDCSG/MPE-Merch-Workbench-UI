@@ -1,6 +1,6 @@
 ---
 applications:
-  - name: mpe-merch-workbench
+  - name: merch-workbench-ui
     buildpack: staticfile_buildpack
     instances: 1
     stack: cflinuxfs3

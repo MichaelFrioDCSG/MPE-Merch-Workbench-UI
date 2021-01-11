@@ -1,14 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ImportDialogComponent } from '../dialogs/import-dialog/import-dialog.component';
 import { ConfirmationDialogComponent } from '../dialogs/confirmation-dialog/confirmation-dialog.component';
 import { AlertDialogComponent } from '../dialogs/alert-dialog/alert-dialog.component';
 import { Title } from '@angular/platform-browser';
-import { MatMenuModule } from '@angular/material/menu';
 import { AgGridAngular } from 'ag-grid-angular';
 import { GridApi } from 'ag-grid-community';
 import { IAssortment } from '../../models/IAssortment';
