@@ -12,15 +12,12 @@
       </div>
 
       <div class="Monochromatic grid-header">
-        <div class="grid-header-totals">
-          Data Results ({{totalResults}})
-        </div>
-
+        <div class="grid-header-totals">Data Results ({{ totalResults }})</div>
 
         <button [disabled]="actionsDisabled" mat-raised-button color="primary" class="sgm-button action-menu-button"
           [matMenuTriggerFor]="menu" (click)="actionMenuOpen = true">
-            Actions
-            <i class="material-icons">{{ actionMenuOpen ? 'expand_less' : 'expand_more' }}</i>
+          Actions
+          <i class="material-icons">{{ actionMenuOpen ? 'expand_less' : 'expand_more' }}</i>
         </button>
 
         <mat-menu class="action-menu" #menu="matMenu" (closed)="onActionMenuClosed($event)">
