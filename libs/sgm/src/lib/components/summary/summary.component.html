@@ -14,14 +14,8 @@
       <div class="Monochromatic grid-header">
         <div class="grid-header-totals">Data Results ({{ totalResults }})</div>
 
-        <button
-          [disabled]="actionsDisabled"
-          mat-raised-button
-          color="primary"
-          class="sgm-button action-menu-button"
-          [matMenuTriggerFor]="menu"
-          (click)="actionMenuOpen = true"
-        >
+        <button [disabled]="actionsDisabled" mat-raised-button color="primary" class="sgm-button action-menu-button"
+          [matMenuTriggerFor]="menu" (click)="actionMenuOpen = true">
           Actions
           <i class="material-icons">{{ actionMenuOpen ? 'expand_less' : 'expand_more' }}</i>
         </button>
@@ -36,21 +30,10 @@
         </mat-menu>
       </div>
 
-      <ag-grid-angular
-        #agGrid
-        class="ag-theme-alpine"
-        [rowData]="clusterGroups"
-        [modules]="modules"
-        [defaultColDef]="defaultColDef"
-        [columnDefs]="columnDefs"
-        [statusBar]="statusBar"
-        [gridOptions]="gridOptions"
-        [enableRangeSelection]="true"
-        rowSelection="multiple"
-        (gridReady)="onGridReady($event)"
-        (rowSelected)="onRowSelected($event)"
-        (selectionChanged)="onSelectionChanged($event)"
-      >
+      <ag-grid-angular #agGrid class="ag-theme-alpine" [rowData]="clusterGroups" [modules]="modules"
+        [defaultColDef]="defaultColDef" [columnDefs]="columnDefs" [statusBar]="statusBar" [gridOptions]="gridOptions"
+        [enableRangeSelection]="true" rowSelection="multiple" (gridReady)="onGridReady($event)"
+        (rowSelected)="onRowSelected($event)" (selectionChanged)="onSelectionChanged($event)">
       </ag-grid-angular>
     </div>
   </div>
