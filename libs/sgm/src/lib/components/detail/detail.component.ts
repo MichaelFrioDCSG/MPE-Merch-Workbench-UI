@@ -22,6 +22,7 @@ import { DatePipe } from '@angular/common';
 })
 export class DetailComponent implements OnInit {
   @ViewChild('agGrid', { static: false }) public agGrid: AgGridAngular;
+  public loadingTemplate;
   public gridOptions: GridOptions;
   public gridApi: GridApi;
   public details$: Observable<IDetailRecord[]>;
@@ -61,7 +62,6 @@ export class DetailComponent implements OnInit {
   private pl_attributes_with_values: IProductLocationAttribute[] = [];
 
   private edit(params) {
-    params.api.showLoadingOverlay();
 
     const colId: string = params.column.colId;
     const newValue: string = params.newValue;
@@ -280,11 +280,16 @@ export class DetailComponent implements OnInit {
 
   public ngOnInit() {
     this.titleService.setTitle('Store Group Management');
+    this.loadingTemplate = '<span class="ag-overlay-loading-center">Loading...</span>';
   }
 
   public onGridReady(params: any) {
     this.gridApi = params.api;
     this.store.dispatch(actions.sgmGetDetails({ clusterGroupIds: this.clusterGroupIds }));
+
+    setTimeout(() => {
+      params.api.showLoadingOverlay();
+    }, 5);
 
     this.store.select(selectors.selectSummaryDetails).subscribe(data => {
       const details: IDetailRecord[] = data.gridData;
@@ -294,9 +299,11 @@ export class DetailComponent implements OnInit {
 
       this.totalRecords = details.length;
       this.gridApi.setRowData(details);
+
       this.gridApi.refreshCells();
 
       this.shownRecords = this.gridApi.getDisplayedRowCount();
+
     });
 
     this.store.select(selectors.selectDetailsEdited).subscribe(edited => {
@@ -327,11 +334,17 @@ export class DetailComponent implements OnInit {
 
   public onCommitClick() {
     this.actionsDisabled = true;
+    setTimeout(() => {
+      this.gridApi.showLoadingOverlay();
+    }, 5);
     this.store.dispatch(actions.saveDetails());
   }
 
   public onCancelClick() {
     this.actionsDisabled = true;
+    setTimeout(() => {
+      this.gridApi.showLoadingOverlay();
+    }, 5);
     this.store.dispatch(actions.revertDetails());
   }
 }
