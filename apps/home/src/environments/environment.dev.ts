@@ -10,6 +10,7 @@ export const environment = {
   dev: true,
   uri: 'https://apreportapi-dev.apps.vn01.pcf.dcsg.com/',
   mpe_api: `https://merch-workbench-api-dev.apps.vn01.pcf.dcsg.com`,
+  excel_api: `https://excelapi-dev.apps.vn01.pcf.dcsg.com/api`,
   clientId: '9323662a-5d5c-4795-a651-37f3b9e15164',
   authority: 'https://login.microsoftonline.com/e04b15c8-7a1e-4390-9b5b-28c7c205a233/',
   redirectUrl: 'https://merch-workbench-ui-dev.apps.vn01.pcf.dcsg.com/login',
