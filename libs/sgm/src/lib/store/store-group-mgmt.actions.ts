@@ -1,6 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 import { IClusterGroup, IProductLocationAttribute } from '@mpe/shared';
-import { IModifiedDetailRecord } from '../models/IUpdateDetailArgument';
+import { IModifiedDetailRecord } from '../models/IModifiedDetailRecord';
 
 export const sgmGetSummaries = createAction('[StoreGroupMgmt] Getting Summaries');
 export const sgmGetSummariesSuccess = createAction('[StoreGroupMgmt] Getting Summaries Success', props<{ clusterGroups: IClusterGroup[] }>());
