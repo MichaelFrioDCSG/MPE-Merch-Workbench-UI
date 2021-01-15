@@ -11,9 +11,10 @@ import { ActivatedRoute } from '@angular/router';
 import * as selectors from '../../store/store-group-mgmt.selectors';
 import * as actions from '../../store/store-group-mgmt.actions';
 import { IDetailRecord } from '../../models/IDetailRecord';
-import { IModifiedDetailRecord } from '../../models/IUpdateDetailArgument';
+import { IModifiedDetailRecord } from '../../models/IModifiedDetailRecord';
 import { BulkFillRenderer, IProductLocationAttribute } from '@mpe/shared';
 import { DatePipe } from '@angular/common';
+import { getDetailRecordOpClusterMember } from '../../helpers/getClusterOpClusterMember';
 
 @Component({
   selector: 'mpe-detail',
@@ -91,6 +92,7 @@ export class DetailComponent implements OnInit {
       results.push({
         clusterGroupId: record.clusterGroupId,
         clusterId: record.clusterId,
+        opClusterMember: getDetailRecordOpClusterMember(record, this.pl_attributes),
         clusterLocationId: record.clusterLocationId,
         field: colId,
         value: newValue,
@@ -276,7 +278,7 @@ export class DetailComponent implements OnInit {
     defaultToolPanel: 'columns',
   };
 
-  constructor(private store: Store<IStoreGroupMgmtState>, private titleService: Title, private route: ActivatedRoute) { }
+  constructor(private store: Store<IStoreGroupMgmtState>, private titleService: Title, private route: ActivatedRoute) {}
 
   public ngOnInit() {
     this.titleService.setTitle('Store Group Management');

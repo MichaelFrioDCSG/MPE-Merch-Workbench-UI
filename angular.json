@@ -71,13 +71,13 @@
                   "with": "apps/home/src/environments/environment.local.ts"
                 }
               ],
-              "optimization": true,
+              "optimization": false,
               "outputHashing": "all",
-              "sourceMap": false,
+              "sourceMap": true,
               "extractCss": true,
-              "namedChunks": false,
+              "namedChunks": true,
               "extractLicenses": true,
-              "vendorChunk": false,
+              "vendorChunk": true,
               "buildOptimizer": false
             },
             "qa": {

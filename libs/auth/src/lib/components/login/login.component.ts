@@ -16,7 +16,6 @@ import { selectUserProfile } from '../../store/auth.state';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
-
 export class LoginComponent implements OnInit {
   public userProfile: Observable<IUserProfile> = this.store.pipe(select(AuthSections.selectUserProfile));
   private msalInstance: msal.PublicClientApplication;
@@ -57,7 +56,7 @@ export class LoginComponent implements OnInit {
             //listen for the update to userProfile and redirect to the original url once it's set in state
             this.store.select(selectUserProfile).subscribe((profile: IUserProfile) => {
               if (profile.username !== null) {
-                this.router.navigate(['/' + retUrl]);
+                this.router.navigate([retUrl]);
               }
             });
           }
