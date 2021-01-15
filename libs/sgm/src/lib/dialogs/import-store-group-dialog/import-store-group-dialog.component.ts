@@ -59,6 +59,7 @@ export class ImportStoreGroupDialogComponent implements OnInit, AfterViewInit {
   public populatedLinkSubclasses: string[] = [];
   private combinedLinkSubclasses: string[] = [];
   public filteredLinkSubclasses: IProductHierarchy[] = [];
+  public filteredProductHierarchySubclasses: IProductHierarchy[] = [];
 
   public populatedLinkDepartments: string[] = [];
 
@@ -88,6 +89,15 @@ export class ImportStoreGroupDialogComponent implements OnInit, AfterViewInit {
   ) {}
 
   public ngOnInit() {
+    this.getAssortmentPeriod();
+    this.productHierarchyChanges();
+  }
+
+  public ngAfterViewInit() {
+    this.selectedTabText = this.tabGroup._tabs.first.textLabel;
+  }
+
+  public getAssortmentPeriod() {
     this.loadingAssortmentPeriods = true;
     this.assortmentPeriodService.getAssortmentPeriods(false, true).subscribe((assortmentPeriods: IAssortmentPeriod[]) => {
       this.assortmentPeriods = assortmentPeriods;
@@ -96,18 +106,17 @@ export class ImportStoreGroupDialogComponent implements OnInit, AfterViewInit {
 
       this.loadingAssortmentPeriods = false;
     });
-    this.productHierarchyChanges();
-  }
-
-  public ngAfterViewInit() {
-    this.selectedTabText = this.tabGroup._tabs.first.textLabel;
   }
 
   public onAssortmentPeriodChanged(value) {
     this.assortmentPeriod.setValue(value);
     this.leadSubclass.reset();
     this.resetLinkValues();
-    this.loadingLeadSubClasses = true;
+    if (this.selectedTabText == 'Oracle') {
+      this.loadingLeadSubClasses = true;
+    } else {
+      this.loadingProductHierarchy = true;
+    }
     this.getProductHierarchies();
   }
 
@@ -161,29 +170,41 @@ export class ImportStoreGroupDialogComponent implements OnInit, AfterViewInit {
       .getAssortmentPeriodProductHierarchy(this.assortmentPeriod.value.assortmentPeriodId, false, true)
       .subscribe((productHierarchies: IProductHierarchy[]) => {
         this.productHierarchiesInterface = productHierarchies;
+        this.filteredProductHierarchySubclasses = this.productHierarchiesInterface;
         this.formatProductHierarchies();
         this.loadingProductHierarchy = false;
-        this.leadSubclass.enable({ emitEvent: false });
-        this.loadingLeadSubClasses = false;
+        if (this.selectedTabText == 'Oracle') {
+          this.leadSubclass.enable({ emitEvent: false });
+          this.loadingLeadSubClasses = false;
+        } else {
+          this.formControlProductDepartments.enable({ emitEvent: false });
+        }
       });
   }
 
   public formatProductHierarchies() {
-    this.productDepartmentsDropdownItems = this.filteredLinkSubclasses
-      .map((product: IProductHierarchy) => {
+    if (this.selectedTabText == 'Oracle') {
+      this.productDepartmentsDropdownItems = this.filteredLinkSubclasses
+        .map((product: IProductHierarchy) => {
+          return product.departmentDisplay;
+        })
+        .sort();
+    } else {
+      this.productDepartmentsDropdownItems = this.filteredProductHierarchySubclasses.map((product: IProductHierarchy) => {
         return product.departmentDisplay;
-      })
-      .sort();
+      });
+    }
     this.productDepartmentsDropdownItems = [...new Set(this.productDepartmentsDropdownItems)];
     this.loadingProductHierarchy = false;
-    this.loadingLeadSubClasses = false;
-
-    this.productLeadSubclasses = this.productHierarchiesInterface
-      .map((product: IProductHierarchy) => {
-        return product.subClassDisplay;
-      })
-      .sort();
-    this.productLeadSubclasses = [...new Set(this.productLeadSubclasses)];
+    if (this.selectedTabText == 'Oracle') {
+      this.loadingLeadSubClasses = false;
+      this.productLeadSubclasses = this.productHierarchiesInterface
+        .map((product: IProductHierarchy) => {
+          return product.subClassDisplay;
+        })
+        .sort();
+      this.productLeadSubclasses = [...new Set(this.productLeadSubclasses)];
+    }
   }
 
   public formatLinkSubclasses() {
@@ -238,39 +259,74 @@ export class ImportStoreGroupDialogComponent implements OnInit, AfterViewInit {
       this.formControlProductDepartments.value.length
         ? this.formControlSubDepartments.enable({ emitEvent: false })
         : this.formControlSubDepartments.disable({ emitEvent: true });
-
-      this.productSubDepartmentsDropdownItems = this.filteredLinkSubclasses
-        .filter(product => department.includes(product.departmentDisplay))
-        .map(product => product.subDepartmentDisplay)
-        .sort();
+      if (this.selectedTabText == 'Oracle') {
+        this.productSubDepartmentsDropdownItems = this.filteredLinkSubclasses
+          .filter(product => department.includes(product.departmentDisplay))
+          .map(product => product.subDepartmentDisplay)
+          .sort();
+      } else {
+        this.productSubDepartmentsDropdownItems = this.filteredProductHierarchySubclasses
+          .filter(product => department.includes(product.departmentDisplay))
+          .map(product => product.subDepartmentDisplay)
+          .sort();
+      }
       this.productSubDepartmentsDropdownItems = [...new Set(this.productSubDepartmentsDropdownItems)];
-
-      this.productClassesDropdownItems = this.filteredLinkSubclasses
-        .filter(product =>
-          product.classDisplay.startsWith(
-            department
-              .toString()
-              .replace(/[^\d.-]/g, '')
-              .trim()
-              .split('-')
+      if (this.selectedTabText == 'Oracle') {
+        this.productClassesDropdownItems = this.filteredLinkSubclasses
+          .filter(product =>
+            product.classDisplay.startsWith(
+              department
+                .toString()
+                .replace(/[^\d.-]/g, '')
+                .trim()
+                .split('-')
+            )
           )
-        )
-        .map(product => product.classDisplay)
-        .sort();
+          .map(product => product.classDisplay)
+          .sort();
+      } else {
+        this.productClassesDropdownItems = this.filteredProductHierarchySubclasses
+          .filter(product =>
+            product.classDisplay.startsWith(
+              department
+                .toString()
+                .replace(/[^\d.-]/g, '')
+                .trim()
+                .split('-')
+            )
+          )
+          .map(product => product.classDisplay)
+          .sort();
+      }
       this.productClassesDropdownItems = [...new Set(this.productClassesDropdownItems)];
 
-      this.productSubClassesDropdownItems = this.filteredLinkSubclasses
-        .filter(product =>
-          product.subClassDisplay.startsWith(
-            department
-              .toString()
-              .replace(/[^\d.-]/g, '')
-              .trim()
-              .split('-')
+      if (this.selectedTabText == 'Oracle') {
+        this.productSubClassesDropdownItems = this.filteredLinkSubclasses
+          .filter(product =>
+            product.subClassDisplay.startsWith(
+              department
+                .toString()
+                .replace(/[^\d.-]/g, '')
+                .trim()
+                .split('-')
+            )
           )
-        )
-        .map(product => product.subClassDisplay)
-        .sort();
+          .map(product => product.subClassDisplay)
+          .sort();
+      } else {
+        this.productSubClassesDropdownItems = this.filteredProductHierarchySubclasses
+          .filter(product =>
+            product.subClassDisplay.startsWith(
+              department
+                .toString()
+                .replace(/[^\d.-]/g, '')
+                .trim()
+                .split('-')
+            )
+          )
+          .map(product => product.subClassDisplay)
+          .sort();
+      }
       this.productSubClassesDropdownItems = [...new Set(this.productSubClassesDropdownItems)];
 
       this.addProductHierarchies();
@@ -281,24 +337,46 @@ export class ImportStoreGroupDialogComponent implements OnInit, AfterViewInit {
       this.formControlSubDepartments.value.length
         ? this.formControlClasses.enable({ emitEvent: false })
         : this.formControlClasses.disable({ emitEvent: true });
-      this.productClassesDropdownItems = this.filteredLinkSubclasses
-        .filter(product => subDepartment.includes(product.subDepartmentDisplay))
-        .map(product => product.classDisplay)
-        .sort();
+      if (this.selectedTabText == 'Oracle') {
+        this.productClassesDropdownItems = this.filteredLinkSubclasses
+          .filter(product => subDepartment.includes(product.subDepartmentDisplay))
+          .map(product => product.classDisplay)
+          .sort();
+      } else {
+        this.productClassesDropdownItems = this.filteredProductHierarchySubclasses
+          .filter(product => subDepartment.includes(product.subDepartmentDisplay))
+          .map(product => product.classDisplay)
+          .sort();
+      }
       this.productClassesDropdownItems = [...new Set(this.productClassesDropdownItems)];
 
-      this.productSubClassesDropdownItems = this.filteredLinkSubclasses
-        .filter(product =>
-          product.subClassDisplay.startsWith(
-            subDepartment
-              .toString()
-              .replace(/[^\d.-]/g, '')
-              .trim()
-              .split('-')
+      if (this.selectedTabText == 'Oracle') {
+        this.productSubClassesDropdownItems = this.filteredLinkSubclasses
+          .filter(product =>
+            product.subClassDisplay.startsWith(
+              subDepartment
+                .toString()
+                .replace(/[^\d.-]/g, '')
+                .trim()
+                .split('-')
+            )
           )
-        )
-        .map(product => product.subClassDisplay)
-        .sort();
+          .map(product => product.subClassDisplay)
+          .sort();
+      } else {
+        this.productSubClassesDropdownItems = this.filteredProductHierarchySubclasses
+          .filter(product =>
+            product.subClassDisplay.startsWith(
+              subDepartment
+                .toString()
+                .replace(/[^\d.-]/g, '')
+                .trim()
+                .split('-')
+            )
+          )
+          .map(product => product.subClassDisplay)
+          .sort();
+      }
       this.productSubClassesDropdownItems = [...new Set(this.productSubClassesDropdownItems)];
 
       this.addProductHierarchies();
@@ -309,12 +387,19 @@ export class ImportStoreGroupDialogComponent implements OnInit, AfterViewInit {
       this.formControlClasses.value.length
         ? this.formControlSubClasses.enable({ emitEvent: false })
         : this.formControlSubClasses.disable({ emitEvent: true });
-      this.productSubClassesDropdownItems = this.filteredLinkSubclasses
-        .filter(product => classes.includes(product.classDisplay))
-        .filter(product => product.subClassDisplay !== this.leadSubclass.value)
-        .filter(product => !this.populatedLinkSubclasses.includes(product.subClassId))
-        .map(product => product.subClassDisplay)
-        .sort();
+      if (this.selectedTabText == 'Oracle') {
+        this.productSubClassesDropdownItems = this.filteredLinkSubclasses
+          .filter(product => classes.includes(product.classDisplay))
+          .filter(product => product.subClassDisplay !== this.leadSubclass.value)
+          .filter(product => !this.populatedLinkSubclasses.includes(product.subClassId))
+          .map(product => product.subClassDisplay)
+          .sort();
+      } else {
+        this.productSubClassesDropdownItems = this.filteredProductHierarchySubclasses
+          .filter(product => classes.includes(product.classDisplay))
+          .map(product => product.subClassDisplay)
+          .sort();
+      }
       this.productSubClassesDropdownItems = [...new Set(this.productSubClassesDropdownItems)];
       this.addProductHierarchies();
     });
@@ -427,6 +512,6 @@ export class ImportStoreGroupDialogComponent implements OnInit, AfterViewInit {
     this.formControlSubClasses.reset([]);
 
     this.productHierarchiesInterface = [];
-    this.formatProductHierarchies();
+    this.getAssortmentPeriod();
   }
 }
