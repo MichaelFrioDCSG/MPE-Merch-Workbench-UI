@@ -231,7 +231,7 @@ function updateProductLocationAttributeValue(
   const targetOpClusterMember = getClusterOpClusterMember(attributes, cluster.chain, cluster.tier, clusterLocation.productLocationAttributes);
 
   // Get the target cluster based on the new Op Cluster Member to move the location to
-  let targetCluster = clusterGroup.clusters.find(cluster => cluster.name === targetOpClusterMember);
+  const targetCluster = clusterGroup.clusters.find(c => c.name === targetOpClusterMember);
 
   // Move the cluster location to the target cluster
   moveLocation(attributes, clusterGroup, cluster, targetCluster, clusterLocation, undefined);
