@@ -7,12 +7,20 @@ export function getClusterOpClusterMember(
   tier: string,
   productLocationAttributes: IClusterLocationProductLocationAttributeValue[]
 ) {
-  const attributeValueArray =
-    productLocationAttributes?.map(
-      attribute =>
-        attributes.find(x => x.id === attribute.productLocationAttributeId).values.find(val => val.id === attribute.productLocationAttributeValueId)
-          .value
-    ) || [];
+  const attributeValueArray = attributes
+    // filter out any attributes that are not part of the cluster location
+    .filter(attr => productLocationAttributes.find(pla => pla.productLocationAttributeId === attr.id))
+    // order them by display sequece to standardize the op cluster member order
+    .sort((a, b) => a.displaySequence - b.displaySequence)
+    // find the pl attribute value based on the value id
+    .map(
+      attr =>
+        attr.values.find(
+          attrValue =>
+            attrValue.id === productLocationAttributes.find(pla => pla.productLocationAttributeId === attr.id).productLocationAttributeValueId
+        ).value
+    );
+
   return [`${chain}_${tier}`, ...attributeValueArray].join(' / ');
 }
 

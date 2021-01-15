@@ -193,8 +193,11 @@ function updateProductLocationAttributeValue(
   attributes: IProductLocationAttribute[],
   mod: IModifiedDetailRecord
 ) {
+  // Get a copy of the product location attributes and sort it by display sequence
+  const plAttributes = [...attributes].sort((a, b) => a.displaySequence - b.displaySequence);
+
   // Get product location attribute
-  const sourceAttribute: IProductLocationAttribute = attributes.find(attribute => attribute.oracleName === mod.field);
+  const sourceAttribute: IProductLocationAttribute = plAttributes.find(attribute => attribute.oracleName === mod.field);
   let targetAttribute: IClusterLocationProductLocationAttributeValue = clusterLocation.productLocationAttributes.find(
     attr => attr.productLocationAttributeId === sourceAttribute.id
   );
@@ -228,13 +231,13 @@ function updateProductLocationAttributeValue(
   }
 
   // Get the new Op Cluster Member
-  const targetOpClusterMember = getClusterOpClusterMember(attributes, cluster.chain, cluster.tier, clusterLocation.productLocationAttributes);
+  const targetOpClusterMember = getClusterOpClusterMember(plAttributes, cluster.chain, cluster.tier, clusterLocation.productLocationAttributes);
 
   // Get the target cluster based on the new Op Cluster Member to move the location to
   const targetCluster = clusterGroup.clusters.find(c => c.name === targetOpClusterMember);
 
   // Move the cluster location to the target cluster
-  moveLocation(attributes, clusterGroup, cluster, targetCluster, clusterLocation, undefined);
+  moveLocation(plAttributes, clusterGroup, cluster, targetCluster, clusterLocation, undefined);
 }
 
 function updateLocation(sourceCluster: ICluster, mod: IModifiedDetailRecord) {
