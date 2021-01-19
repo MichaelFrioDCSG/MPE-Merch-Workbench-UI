@@ -331,7 +331,7 @@ export class ImportStoreGroupDialogComponent implements OnInit {
       this.creatingStoreGroups = false;
       if (data.isSuccess) {
         this.showToastMessage('Cluster Import Success', [], false);
-        //this.store.dispatch(actions.sgmGetSummaries());
+        this.store.dispatch(actions.sgmGetSummaries());
         this.dialogRef.close({ data: null });
       } else {
         this.showErrors = true;
