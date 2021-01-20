@@ -1,4 +1,97 @@
+.button-row-container {
+  flex-direction: row;
+  display: flex;
+  justify-content: flex-end;
+  border-spacing: 3px;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+
+  .breadcrumb-dsg {
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 15px;
+    letter-spacing: 0.297825px;
+    justify-content: flex-start;
+
+    color: #000000;
+    margin: 0 auto 0 0;
+  }
+}
+.agm-button {
+  width: 127px;
+  height: 38px;
+  line-height: 38px;
+  font-weight: bold;
+  letter-spacing: 1.5px;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.import-button {
+  font-size: 16px;
+  line-height: 16px;
+  background: #bb5811;
+}
+
+.action-menu-button {
+  font-size: 12px;
+  /* or 100% */
+
+  z-index: 1;
+
+  color: #ffffff;
+}
+
+.grid-wrapper,
 ag-grid-angular {
-  width: 100%;
-  height: 700px;
+  width: 95vw;
+  margin: auto auto;
+}
+
+ag-grid-angular {
+  height: 60vh;
+}
+
+.grid-header {
+  /* Gray/Gray - 400 */
+  background: #c8c8c8;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  height: 38px;
+}
+
+.grid-header-totals {
+  font-size: 14px;
+  font-weight: bold;
+  height: 38px;
+  line-height: 38px;
+  letter-spacing: 0.297825px;
+  justify-content: flex-start;
+  padding-left: 15px;
+
+  color: #000000;
+  margin: 0 auto 0 0;
+}
+
+.action-menu {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.action-menu-item {
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  border-bottom: 1px solid black;
+}
+
+.action-menu-item:last-of-type {
+  border-bottom: none;
 }

@@ -14,6 +14,7 @@ import { ICreateStoreGroupResponse } from '../../../../../shared/src/lib/models/
 import { ICreateStoreGroupRequest } from '../../../../../shared/src/lib/models/dto/ICreateStoreGroupRequest';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ToastMessageComponent } from 'libs/shared/src/lib/components/toast-message/toast-message.component';
+import { ConvertActionBindingResult } from '@angular/compiler/src/compiler_util/expression_converter';
 
 @Component({
   selector: 'app-import-store-group-dialog',
@@ -53,6 +54,7 @@ export class ImportStoreGroupDialogComponent implements OnInit {
   public productLinkSubclasses: string[] = [];
   public storeGroups: IStoreGroup[] = [];
 
+  public departmentHasBeenModified = false;
   public loadingAssortmentPeriods = false;
   public loadingProductHierarchy = false;
   public loadingLeadSubClasses = false;
@@ -116,6 +118,7 @@ export class ImportStoreGroupDialogComponent implements OnInit {
     this.formControlSubDepartments.reset([]);
     this.formControlClasses.reset([]);
     this.formControlSubClasses.reset([]);
+    this.departmentHasBeenModified = true;
   }
 
   public onProductSubDepartmentChanged(value) {
@@ -182,13 +185,16 @@ export class ImportStoreGroupDialogComponent implements OnInit {
   }
 
   public addProductHierarchies() {
-    if (this.formControlProductDepartments.value) {
+    if (this.departmentHasBeenModified) {
       this.selectedLinkSubclasses = this.productHierarchiesInterface
         .filter(product => !this.formControlProductDepartments.value.length || this.formControlProductDepartments.value.includes(product.departmentDisplay))
         .filter(product => !this.formControlSubDepartments.value.length || this.formControlSubDepartments.value.includes(product.subDepartmentDisplay))
         .filter(product => !this.formControlClasses.value.length || this.formControlClasses.value.includes(product.classDisplay))
         .filter(product => !this.formControlSubClasses.value.length || this.formControlSubClasses.value.includes(product.subClassDisplay))
         .map(product => product.subClassId);
+    }
+    else {
+      this.selectedLinkSubclasses = [];
     }
   }
 
@@ -276,7 +282,7 @@ export class ImportStoreGroupDialogComponent implements OnInit {
   public createStoreGroups() {
     const leadSubclassId = this.productHierarchiesInterface.find(hierarchy => hierarchy.subClassDisplay === this.leadSubclass.value).subClassId;
 
-    this.combinedLinkSubclasses = [...new Set([...this.populatedLinkSubclasses, ...this.selectedLinkSubclasses])];
+    this.combinedLinkSubclasses = [...new Set([leadSubclassId, ...this.populatedLinkSubclasses, ...this.selectedLinkSubclasses])];
 
     const body: ICreateStoreGroupRequest = {
       storeGroupName: this.storeGroupName.value,

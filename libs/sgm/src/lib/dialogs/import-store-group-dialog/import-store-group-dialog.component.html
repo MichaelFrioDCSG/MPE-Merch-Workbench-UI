@@ -75,8 +75,8 @@
   <div class="col-md-12">
     <div mat-dialog-actions class="show-on-right">
       <button mat-raised-button color="primary" [disabled]="!validForm() || creatingStoreGroups == true"
-        (click)="createStoreGroups()">
-        {{ creatingStoreGroups == false ? 'Import Cluster Group' : 'Importing Cluster Group...' }}
+        (click)="createStoreGroups()" [class.spinner]="creatingStoreGroups">
+        {{ creatingStoreGroups == false ? 'Import Cluster Group' : 'Importing Cluster Group...'}}
       </button>
       <button mat-raised-button color="warn" mat-dialog-close cdkFocusInitial>Close</button>
     </div>

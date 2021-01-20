@@ -11,9 +11,10 @@ import { ActivatedRoute } from '@angular/router';
 import * as selectors from '../../store/store-group-mgmt.selectors';
 import * as actions from '../../store/store-group-mgmt.actions';
 import { IDetailRecord } from '../../models/IDetailRecord';
-import { IModifiedDetailRecord } from '../../models/IUpdateDetailArgument';
+import { IModifiedDetailRecord } from '../../models/IModifiedDetailRecord';
 import { BulkFillRenderer, IProductLocationAttribute } from '@mpe/shared';
 import { DatePipe } from '@angular/common';
+import { getDetailRecordOpClusterMember } from '../../helpers/getClusterOpClusterMember';
 
 @Component({
   selector: 'mpe-detail',
@@ -22,6 +23,7 @@ import { DatePipe } from '@angular/common';
 })
 export class DetailComponent implements OnInit {
   @ViewChild('agGrid', { static: false }) public agGrid: AgGridAngular;
+  public loadingTemplate;
   public gridOptions: GridOptions;
   public gridApi: GridApi;
   public details$: Observable<IDetailRecord[]>;
@@ -61,7 +63,6 @@ export class DetailComponent implements OnInit {
   private pl_attributes_with_values: IProductLocationAttribute[] = [];
 
   private edit(params) {
-    params.api.showLoadingOverlay();
 
     const colId: string = params.column.colId;
     const newValue: string = params.newValue;
@@ -91,6 +92,7 @@ export class DetailComponent implements OnInit {
       results.push({
         clusterGroupId: record.clusterGroupId,
         clusterId: record.clusterId,
+        opClusterMember: getDetailRecordOpClusterMember(record, this.pl_attributes),
         clusterLocationId: record.clusterLocationId,
         field: colId,
         value: newValue,
@@ -276,15 +278,20 @@ export class DetailComponent implements OnInit {
     defaultToolPanel: 'columns',
   };
 
-  constructor(private store: Store<IStoreGroupMgmtState>, private titleService: Title, private route: ActivatedRoute) { }
+  constructor(private store: Store<IStoreGroupMgmtState>, private titleService: Title, private route: ActivatedRoute) {}
 
   public ngOnInit() {
     this.titleService.setTitle('Store Group Management');
+    this.loadingTemplate = '<span class="ag-overlay-loading-center">Loading...</span>';
   }
 
   public onGridReady(params: any) {
     this.gridApi = params.api;
     this.store.dispatch(actions.sgmGetDetails({ clusterGroupIds: this.clusterGroupIds }));
+
+    setTimeout(() => {
+      params.api.showLoadingOverlay();
+    }, 5);
 
     this.store.select(selectors.selectSummaryDetails).subscribe(data => {
       const details: IDetailRecord[] = data.gridData;
@@ -294,9 +301,11 @@ export class DetailComponent implements OnInit {
 
       this.totalRecords = details.length;
       this.gridApi.setRowData(details);
+
       this.gridApi.refreshCells();
 
       this.shownRecords = this.gridApi.getDisplayedRowCount();
+
     });
 
     this.store.select(selectors.selectDetailsEdited).subscribe(edited => {
@@ -327,11 +336,17 @@ export class DetailComponent implements OnInit {
 
   public onCommitClick() {
     this.actionsDisabled = true;
+    setTimeout(() => {
+      this.gridApi.showLoadingOverlay();
+    }, 5);
     this.store.dispatch(actions.saveDetails());
   }
 
   public onCancelClick() {
     this.actionsDisabled = true;
+    setTimeout(() => {
+      this.gridApi.showLoadingOverlay();
+    }, 5);
     this.store.dispatch(actions.revertDetails());
   }
 }
