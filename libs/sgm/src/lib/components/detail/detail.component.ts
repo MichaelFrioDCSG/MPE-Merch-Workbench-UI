@@ -63,7 +63,6 @@ export class DetailComponent implements OnInit {
   private pl_attributes_with_values: IProductLocationAttribute[] = [];
 
   private edit(params) {
-
     const colId: string = params.column.colId;
     const newValue: string = params.newValue;
     const node = params.node;
@@ -305,7 +304,6 @@ export class DetailComponent implements OnInit {
       this.gridApi.refreshCells();
 
       this.shownRecords = this.gridApi.getDisplayedRowCount();
-
     });
 
     this.store.select(selectors.selectDetailsEdited).subscribe(edited => {
