@@ -503,14 +503,6 @@ describe('DetailComponent', () => {
     expect(btn.disabled).toEqual(false);
   });
 
-  it('Shown records should be shown correctly', async () => {
-    component.shownRecords = 45;
-    fixture.detectChanges();
-
-    const span = query('[data-test="shown-records"]');
-    expect(span.textContent).toEqual('45');
-  });
-
   it('Total records should be shown correctly', async () => {
     component.totalRecords = 87;
     fixture.detectChanges();

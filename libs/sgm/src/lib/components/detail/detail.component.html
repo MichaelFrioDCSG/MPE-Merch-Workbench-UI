@@ -8,7 +8,10 @@
       </div>
 
       <div class="grid-header">
-        <div class="grid-header-text">Data Results ({{ totalRecords }})</div>
+        <div class="grid-header-text">
+          Data Results (<span data-test="shown-records">{{ shownRecords }}</span> of <span data-test="total-records">{{ totalRecords }}</span
+          >)
+        </div>
 
         <button mat-flat-button class="btn-primary" (click)="onCancelClick()" [disabled]="actionsDisabled" data-test="revert-button">Cancel</button>
         <button mat-flat-button class="btn-secondary" (click)="onCommitClick()" [disabled]="actionsDisabled" data-test="commit-button">
