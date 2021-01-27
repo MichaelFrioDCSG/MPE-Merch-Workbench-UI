@@ -120,12 +120,15 @@ export class DetailComponent implements OnInit {
           cellRendererFramework: BulkFillRenderer,
           valueSetter: params => this.edit(params),
         };
-        this.columnDefs.push(newColDef);
+        const tierColIndex = this.columnDefs.findIndex(x => x.headerName === 'TIER');
+        this.columnDefs.splice(tierColIndex + 1, 0, newColDef);
         updateColumns = true;
       }
     }
 
     if (updateColumns) {
+      this.gridApi.refreshHeader();
+      this.agGrid.api.setColumnDefs([]);
       this.gridApi.setColumnDefs(this.columnDefs);
     }
   }
@@ -141,6 +144,7 @@ export class DetailComponent implements OnInit {
       field: 'clusterGroupName',
       width: 200,
       hide: false,
+      pinned: 'left',
     },
     {
       headerName: 'CLUSTER LABEL',
@@ -151,18 +155,15 @@ export class DetailComponent implements OnInit {
       valueSetter: params => this.edit(params),
     },
     {
-      headerName: 'CLUSTER',
-      field: 'clusterName',
-      width: 200,
-      hide: false,
-      valueGetter: params => this.opClusterMemberDisplay(params),
-    },
-    {
-      headerName: 'NOTES',
-      field: 'notes',
+      headerName: 'CHAIN',
+      field: 'chain',
       editable: true,
-      width: 200,
+      width: 100,
       hide: false,
+      cellEditor: 'agRichSelectCellEditor',
+      cellEditorParams: {
+        values: this.chains,
+      },
       cellRendererFramework: BulkFillRenderer,
       valueSetter: params => this.edit(params),
     },
@@ -180,20 +181,12 @@ export class DetailComponent implements OnInit {
       valueSetter: params => this.edit(params),
     },
     {
-      headerName: 'CHAIN',
-      field: 'chain',
-      editable: true,
-      width: 100,
+      headerName: 'CLUSTER',
+      field: 'clusterName',
+      width: 200,
       hide: false,
-      cellEditor: 'agRichSelectCellEditor',
-      cellEditorParams: {
-        values: this.chains,
-      },
-      cellRendererFramework: BulkFillRenderer,
-      valueSetter: params => this.edit(params),
+      valueGetter: params => this.opClusterMemberDisplay(params),
     },
-    { headerName: 'CITY', field: 'city', hide: false },
-    { headerName: 'NUMBER OF ENTRANCES', field: 'numberOfEntrances', hide: false },
     {
       headerName: 'WAREHOUSE NUMBER',
       hide: false,
@@ -202,12 +195,25 @@ export class DetailComponent implements OnInit {
       filterParams: { comparator: this.numericComparator },
     },
     {
+      headerName: 'NOTES',
+      field: 'notes',
+      editable: true,
+      width: 200,
+      hide: false,
+      cellRendererFramework: BulkFillRenderer,
+      valueSetter: params => this.edit(params),
+    },
+    { headerName: 'CITY', field: 'city' },
+    { headerName: 'NUMBER OF ENTRANCES', field: 'numberOfEntrances' },
+    {
       headerName: 'STORE NUMBER',
       field: 'storeNumber',
       filter: 'agSetColumnFilter',
       filterParams: { comparator: this.numericComparator },
+      hide: false,
+      pinned: 'left',
     },
-    { headerName: 'STORE NAME', field: 'storeName' },
+    { headerName: 'STORE NAME', field: 'storeName', hide: false, pinned: 'left' },
     { headerName: 'ASSORTMENT PERIOD', field: 'assortmentPeriod' },
     { headerName: 'AD MARKET', field: 'adMarket' },
     { headerName: 'COMPANY CLIMATE', field: 'climate' },
