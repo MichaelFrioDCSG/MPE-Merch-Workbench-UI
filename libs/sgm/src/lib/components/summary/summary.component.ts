@@ -33,7 +33,7 @@ export class SummaryComponent implements OnInit {
   public rowCount: number;
   public get totalResults(): number {
     return this.clusterGroups.length;
-  };
+  }
   public actionMenuOpen: boolean;
   public title = 'MPE-SGM';
   public clusterGroups: IClusterGroup[] = [];
@@ -55,8 +55,8 @@ export class SummaryComponent implements OnInit {
       suppressSizeToFit: true,
       resizable: false,
     },
-    { headerName: 'CLUSTER GROUP', field: 'name', sortable: true, filter: true },
-    { headerName: 'CLUSTER GROUP DESCRIPTION', field: 'description', sortable: true, filter: true },
+    { headerName: 'CLUSTER GROUP', field: 'name', sortable: true, filter: true, minWidth: 275 },
+    { headerName: 'CLUSTER GROUP DESCRIPTION', field: 'description', sortable: true, filter: true, minWidth: 300 },
     { headerName: 'ASSORTMENT PERIOD', field: 'asmtPeriod.asmtPeriodLabel', sortable: true, filter: true, minWidth: 232 },
 
     {
@@ -64,7 +64,7 @@ export class SummaryComponent implements OnInit {
       field: 'lastModifiedOn',
       sortable: true,
       filter: true,
-      minWidth: 205,
+      minWidth: 215,
       cellRenderer: (data: { value: string | number | Date }) => {
         return data.value ? new Date(data.value).toLocaleDateString() + ' ' + new Date(data.value).toLocaleTimeString() : '';
       },
@@ -73,7 +73,7 @@ export class SummaryComponent implements OnInit {
   ];
   public statusBar: any = {};
 
-  constructor(private dialog: MatDialog, private store: Store<IStoreGroupMgmtState>, public titleService: Title, private router: Router) { }
+  constructor(private dialog: MatDialog, private store: Store<IStoreGroupMgmtState>, public titleService: Title, private router: Router) {}
 
   public ngOnInit() {
     this.loadingTemplate = '<span class="ag-overlay-loading-center">Loading...</span>';
