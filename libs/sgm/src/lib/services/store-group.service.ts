@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import { ICreateStoreGroupRequest } from '../../../../shared/src/lib/models/dto/ICreateStoreGroupRequest';
 import { Observable } from 'rxjs';
 import { ICreateStoreGroupResponse } from '../../../../shared/src/lib/models/dto/ICreateStoreGroupResponse';
+import { IStoreInformationExcelImport } from '../../../../shared/src/lib/models/dto/IStoreInformationExcelImport';
 
 @Injectable({
   providedIn: 'root',
@@ -18,5 +19,17 @@ export class StoreGroupService {
         return data;
       })
     );
+  }
+
+  public getStoreInformationExcelImport(): Observable<IStoreInformationExcelImport[]> {
+    return this.http.get(`${environment.mpe_api}/api/ClusterGroups/store-information/excel`).pipe(
+      map((data: IStoreInformationExcelImport[]) => {
+        return data;
+      })
+    );
+  }
+
+  public getStoreInformationExcelImportPromise() {
+    return this.getStoreInformationExcelImport().toPromise();
   }
 }

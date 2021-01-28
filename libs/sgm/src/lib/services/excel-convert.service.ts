@@ -16,4 +16,7 @@ export class ExcelConvertService {
       })
     );
   }
+  public convertExcelToJsonPromise(file) {
+    return this.convertExcelToJson(file).toPromise();
+  }
 }

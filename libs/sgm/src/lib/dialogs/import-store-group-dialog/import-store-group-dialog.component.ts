@@ -449,12 +449,32 @@ export class ImportStoreGroupDialogComponent implements OnInit, AfterViewInit {
 
   public createStoreGroupExcel() {
     let formData: FormData = new FormData();
+    let convertedExcelData: any[] = null;
+    let storeInformation: any[] = null;
     formData.append('file', this.excelFile, this.excelFile.name);
-    this.excelConvertService.convertExcelToJson(formData).subscribe(data => {
-      this.excelFile = null;
-      this.formControlExcelFile.reset();
-      this.excelDocumentRef.nativeElement.value = '';
-    });
+    Promise.resolve(formData)
+      // Convert the Excel and set variable
+      .then(formData => this.excelConvertService.convertExcelToJsonPromise(formData))
+      .then(excelData => {
+        // This will get the first sheet in the Excel regardless of the sheet name
+        convertedExcelData = excelData[Object.keys(excelData)[0]];
+      })
+      // Go get Store Information from DB and set variable
+      .then(() => this.storeGroupService.getStoreInformationExcelImportPromise())
+      .then(storeInfo => (storeInformation = storeInfo))
+      // Add stores that do not exist in excel but exist in DB + remove stores that exist in excel but do not exist in DB
+      .then(() => {
+        // Add stores that do not exist in excel but exist in DB, add to excel array with defaults
+        const storesNotInExcel = storeInformation.filter(
+          storeLocation => !convertedExcelData.some(excelLocation => excelLocation.Location === storeLocation.storeNumber)
+        );
+        console.log('Stores Not In Excel: ', storesNotInExcel);
+        console.log('Converted Excel Data: ', convertedExcelData);
+        console.log('Store Information: ', storeInformation);
+        // Stores that exist in Excel but not in DB, throw error
+        const storesNotInDB = convertedExcelData.filter(x => !storeInformation.some(y => x.Location === y.storeNumber));
+        console.log('Stores Not in DB: ', storesNotInDB);
+      });
   }
 
   public getAssortmentPeriodLabel(assortmentPeriod: IAssortmentPeriod) {
@@ -513,5 +533,11 @@ export class ImportStoreGroupDialogComponent implements OnInit, AfterViewInit {
 
     this.productHierarchiesInterface = [];
     this.getAssortmentPeriod();
+  }
+
+  private resetExcelFile() {
+    this.excelFile = null;
+    this.formControlExcelFile.reset();
+    this.excelDocumentRef.nativeElement.value = '';
   }
 }
