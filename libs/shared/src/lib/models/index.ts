@@ -14,3 +14,5 @@ export { ICreateStoreGroupResponse } from './dto/ICreateStoreGroupResponse';
 export { IProductLocationAttribute } from './IProductLocationAttribute';
 export { IProductLocationAttributeValue } from './IProductLocationAttributeValue';
 export { IClusterLocationProductLocationAttributeValue } from './IClusterLocationProductLocationAttributeValue';
+export { IExcelConvertSGM } from './IExcelConvertSGM';
+export { IExcelStoreInformation } from './IExcelStoreInformation';

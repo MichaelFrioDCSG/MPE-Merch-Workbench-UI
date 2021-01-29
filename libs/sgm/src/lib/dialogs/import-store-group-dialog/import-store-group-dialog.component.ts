@@ -17,6 +17,7 @@ import { ToastMessageComponent } from 'libs/shared/src/lib/components/toast-mess
 import { ConvertActionBindingResult } from '@angular/compiler/src/compiler_util/expression_converter';
 import { MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
 import { ExcelConvertService } from '../../services/excel-convert.service';
+import { IExcelConvertSGM, IExcelStoreInformation } from '@mpe/shared';
 
 @Component({
   selector: 'app-import-store-group-dialog',
@@ -54,6 +55,8 @@ export class ImportStoreGroupDialogComponent implements OnInit, AfterViewInit {
   // Excel Import Only Variables
   public formControlExcelFile = new FormControl({ value: null }, [Validators.required]);
   public excelFile: File;
+  public convertedExcelData: IExcelConvertSGM[] = null;
+  public excelStoreInformation: IExcelStoreInformation[] = null;
 
   public selectedLinkSubclasses: string[] = [];
   public populatedLinkSubclasses: string[] = [];
@@ -410,6 +413,7 @@ export class ImportStoreGroupDialogComponent implements OnInit, AfterViewInit {
   }
 
   public createStoreGroups() {
+    this.createStoreGroupErrors = [];
     if (this.selectedTabText == 'Oracle') {
       this.createStoreGroupOracle();
     } else {
@@ -449,31 +453,32 @@ export class ImportStoreGroupDialogComponent implements OnInit, AfterViewInit {
 
   public createStoreGroupExcel() {
     let formData: FormData = new FormData();
-    let convertedExcelData: any[] = null;
-    let storeInformation: any[] = null;
+    this.convertedExcelData = null;
+    this.excelStoreInformation = null;
+    this.showErrors = false;
     formData.append('file', this.excelFile, this.excelFile.name);
     Promise.resolve(formData)
       // Convert the Excel and set variable
       .then(formData => this.excelConvertService.convertExcelToJsonPromise(formData))
-      .then(excelData => {
+      .then((excelData: IExcelConvertSGM[]) => {
         // This will get the first sheet in the Excel regardless of the sheet name
-        convertedExcelData = excelData[Object.keys(excelData)[0]];
+        this.convertedExcelData = excelData[Object.keys(excelData)[0]];
       })
       // Go get Store Information from DB and set variable
       .then(() => this.storeGroupService.getStoreInformationExcelImportPromise())
-      .then(storeInfo => (storeInformation = storeInfo))
-      // Add stores that do not exist in excel but exist in DB + remove stores that exist in excel but do not exist in DB
+      .then((storeInfo: IExcelStoreInformation[]) => (this.excelStoreInformation = storeInfo))
+      // Add stores that do not exist in excel but exist in DB
+      // Also thows error if there are stores that exist in excel but do not exist in DB
       .then(() => {
-        // Add stores that do not exist in excel but exist in DB, add to excel array with defaults
-        const storesNotInExcel = storeInformation.filter(
-          storeLocation => !convertedExcelData.some(excelLocation => excelLocation.Location === storeLocation.storeNumber)
-        );
-        console.log('Stores Not In Excel: ', storesNotInExcel);
-        console.log('Converted Excel Data: ', convertedExcelData);
-        console.log('Store Information: ', storeInformation);
-        // Stores that exist in Excel but not in DB, throw error
-        const storesNotInDB = convertedExcelData.filter(x => !storeInformation.some(y => x.Location === y.storeNumber));
-        console.log('Stores Not in DB: ', storesNotInDB);
+        // Stores that exist in Excel but not in DB, show error and stop execution
+        if (this.checkForStoresNotInDBExcel()) {
+          return;
+        }
+        // Add stores that do not exist in excel but exist in DB
+        this.addStoresToExcel();
+        // Add default values if Chain/Tier does not exist
+        this.setChainTierDefaultsToExcel();
+        console.log('Final Excel Data: ', this.convertedExcelData);
       });
   }
 
@@ -497,6 +502,71 @@ export class ImportStoreGroupDialogComponent implements OnInit, AfterViewInit {
   public tabChanged(tabChangeEvent: MatTabChangeEvent): void {
     this.selectedTabText = tabChangeEvent.tab.textLabel;
     this.resetFormAndValues();
+  }
+
+  private checkForStoresNotInDBExcel(): boolean {
+    const storesNotInDB = this.convertedExcelData.filter(x => !this.excelStoreInformation.some(y => x.Location === y.storeNumber));
+    console.log(storesNotInDB);
+    if (storesNotInDB) {
+      storesNotInDB.map(store =>
+        this.createStoreGroupErrors.push(
+          `Store Number: ${store.Location} does not exist. Please make sure that ${store.Location} is a valid location.`
+        )
+      );
+      // Only going to show a maximum of 5 messages at a time
+      this.createStoreGroupErrors = this.createStoreGroupErrors.slice(0, 5);
+      this.showErrors = true;
+      return true;
+    }
+    return false;
+  }
+
+  private addStoresToExcel() {
+    const storesNotInExcel: IExcelStoreInformation[] = this.excelStoreInformation.filter(
+      storeLocation => !this.convertedExcelData.some(excelLocation => excelLocation.Location === storeLocation.storeNumber)
+    );
+    for (let storeNotInExcel of storesNotInExcel) {
+      const newStore: IExcelConvertSGM = {
+        Location: storeNotInExcel.storeNumber,
+        Chain: storeNotInExcel.chain,
+        Tier: storeNotInExcel.tier,
+        BRANDSHOP: null,
+        CLIMATE: null,
+        COMPETITOR: null,
+        FIXTURING: null,
+        'NUMBER OF FLOORS': null,
+        OPEN1: null,
+        OPEN2: null,
+        OPEN3: null,
+        REGION: null,
+        RESTRICTIONS: null,
+        'SET TIME': null,
+        'SPECIAL EVENTS': null,
+        SPECIES: null,
+      };
+      this.convertedExcelData.push(newStore);
+    }
+  }
+
+  private setChainTierDefaultsToExcel() {
+    this.convertedExcelData.map(excelLocation => {
+      // If for some reason the find returns undefined the .chain/tier will not exist
+      // and will break so we are catching in case that happens
+      try {
+        if (!excelLocation.Chain) {
+          excelLocation.Chain = this.excelStoreInformation.find(store => store.storeNumber === excelLocation.Location).chain;
+        }
+        if (!excelLocation.Tier) {
+          excelLocation.Tier = this.excelStoreInformation.find(store => store.storeNumber === excelLocation.Location).tier;
+        }
+      } catch {
+        this.showToastMessage(
+          'Adding Stores to Excel Error',
+          [`Store Number: ${excelLocation.Location} had an issue trying to apply the default chain or tier to this store`],
+          true
+        );
+      }
+    });
   }
 
   private showToastMessage(title: string, messages: string[], isError: boolean = false): void {

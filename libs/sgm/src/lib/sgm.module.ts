@@ -22,6 +22,7 @@ import { InputMultiselectDropdownComponent } from 'libs/shared/src/lib/component
 import { DetailComponent } from './components/detail/detail.component';
 import { SummaryComponent } from './components/summary/summary.component';
 
+import { SharedModule } from '@mpe/shared';
 
 export const sgmRoutes: Route[] = [
   { path: ':id', component: DetailComponent },
@@ -33,6 +34,7 @@ export const sgmRoutes: Route[] = [
     CommonModule,
     RouterModule,
     BrowserModule,
+    SharedModule,
     BrowserAnimationsModule,
     FormsModule,
     ReactiveFormsModule,
