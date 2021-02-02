@@ -16,11 +16,28 @@ import { InputDropdownFilterComponent } from './components/inputs/input-dropdown
 import { InputMultiselectDropdownComponent } from './components/inputs/input-multiselect-dropdown/input-multiselect-dropdown.component';
 import { InputSpinnerComponent } from './components/inputs/input-spinner/input-spinner.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AgGridModule } from 'ag-grid-angular';
+import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
+import AssortmentMgmtEffects from './store/assortment-mgmt.effects';
+import * as fromAssortmentMgmt from './store/assortment-mgmt.reducer';
 
 export const amRoutes: Route[] = [{ path: '', component: SummaryComponent }];
 
 @NgModule({
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, BrowserModule, RouterModule, BrowserAnimationsModule, SharedModule, MaterialModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    BrowserModule,
+    RouterModule,
+    BrowserAnimationsModule,
+    SharedModule,
+    MaterialModule,
+    AgGridModule.withComponents([]),
+    StoreModule.forFeature(fromAssortmentMgmt.assortmentMgmtFeatureKey, fromAssortmentMgmt.reducer),
+    EffectsModule.forFeature([AssortmentMgmtEffects]),
+  ],
   declarations: [
     AssortmentManagementUIComponent,
     SummaryComponent,

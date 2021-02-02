@@ -18,6 +18,9 @@ import { ConvertActionBindingResult } from '@angular/compiler/src/compiler_util/
 import { MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
 import { ExcelConvertService } from '../../services/excel-convert.service';
 import { IExcelConvertSGM, IExcelStoreInformation } from '@mpe/shared';
+import { Store } from '@ngrx/store';
+import * as actions from '../../store/store-group-mgmt.actions';
+import { IStoreGroupMgmtState } from '../../store/store-group-mgmt.reducer';
 
 @Component({
   selector: 'app-import-store-group-dialog',
@@ -88,8 +91,8 @@ export class ImportStoreGroupDialogComponent implements OnInit, AfterViewInit {
     public productHierarchyService: ProductHierarchyService,
     public storeGroupService: StoreGroupService,
     public excelConvertService: ExcelConvertService,
+    private store: Store<IStoreGroupMgmtState>
     private snackBar: MatSnackBar
-  ) {}
 
   public ngOnInit() {
     this.getAssortmentPeriod();
@@ -442,6 +445,7 @@ export class ImportStoreGroupDialogComponent implements OnInit, AfterViewInit {
       this.creatingStoreGroups = false;
       if (data.isSuccess) {
         this.showToastMessage('Cluster Import Success', [], false);
+        this.store.dispatch(actions.sgmGetSummaries());
         this.dialogRef.close({ data: null });
       } else {
         this.showErrors = true;

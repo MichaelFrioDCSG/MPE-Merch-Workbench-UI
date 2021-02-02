@@ -7,8 +7,9 @@ import {
   IClusterLocationProductLocationAttributeValue,
   IProductLocationAttributeValue,
 } from '@mpe/shared';
-import { IModifiedDetailRecord } from '../models/IUpdateDetailArgument';
+import { IModifiedDetailRecord } from '../models/IModifiedDetailRecord';
 import * as actions from './store-group-mgmt.actions';
+import { getClusterOpClusterMember } from '../helpers/getClusterOpClusterMember';
 
 export interface IStoreGroupMgmtState {
   clusterGroups: IClusterGroup[];
@@ -74,7 +75,7 @@ const reducer$ = createReducer(
     (state: IStoreGroupMgmtState, action): IStoreGroupMgmtState => ({
       ...state,
       selectedClusterGroups: action.clusterGroups,
-      productLocationAttributes: action.plAttributes,
+      productLocationAttributes: [...action.plAttributes].sort((a, b) => a.displaySequence - b.displaySequence),
       loading: false,
       edited: false,
       getDetailsErrorMessages: [],
@@ -131,153 +132,112 @@ function cloneClusterGroup(clusterGroup: IClusterGroup): IClusterGroup {
 }
 
 function updateSelectedClusterGroupRecords(state: IStoreGroupMgmtState, modifications: IModifiedDetailRecord[]): IClusterGroup[] {
-  const clusterGroups: IClusterGroup[] = state.selectedClusterGroups.map(cg => cloneClusterGroup(cg));
+  const newSelectedClusterGroupsState: IClusterGroup[] = state.selectedClusterGroups.map(cg => cloneClusterGroup(cg));
   const plAttributesFields = state.productLocationAttributes.map(x => x.oracleName);
 
   for (const mod of modifications) {
-    // Locate source cluster group
-    const sourceClusterGroup: IClusterGroup = clusterGroups.find(clusterGroup => clusterGroup.id === mod.clusterGroupId);
+    // Locate source cluster group, cluster, & location record
+    const sourceClusterGroup: IClusterGroup = newSelectedClusterGroupsState.find(clusterGroup => clusterGroup.id === mod.clusterGroupId);
+    const sourceCluster: ICluster = sourceClusterGroup.clusters.find(cluster => cluster.name === mod.opClusterMember);
+    const sourceClusterLocation = sourceCluster.clusterLocations.find(cl => cl.id === mod.clusterLocationId);
 
-    // Locate source cluster & location record
-    const sourceCluster: ICluster = sourceClusterGroup.clusters.find(cluster => cluster.id === mod.clusterId);
-
-    // Locate target cluster
-    //  Create target cluster if does not exist
+    // Locate target cluster or create it if it does not exist
     let targetCluster: ICluster;
     if (mod.field === 'tier') {
       const opClusterMember = getClusterOpClusterMember(
         state.productLocationAttributes,
         sourceCluster.chain,
         mod.value,
-        sourceCluster.clusterLocations[0].productLocationAttributes
+        sourceClusterLocation?.productLocationAttributes
       );
       targetCluster = sourceClusterGroup.clusters.find(cluster => cluster.name === opClusterMember);
-      moveLocation(state.productLocationAttributes, sourceClusterGroup, sourceCluster, targetCluster, mod);
+      moveLocation(state.productLocationAttributes, sourceClusterGroup, sourceCluster, targetCluster, sourceClusterLocation, mod);
     } else if (mod.field === 'chain') {
       const opClusterMember = getClusterOpClusterMember(
         state.productLocationAttributes,
         mod.value,
         sourceCluster.tier,
-        sourceCluster.clusterLocations[0].productLocationAttributes
+        sourceClusterLocation.productLocationAttributes
       );
       targetCluster = sourceClusterGroup.clusters.find(cluster => cluster.name === opClusterMember);
-      moveLocation(state.productLocationAttributes, sourceClusterGroup, sourceCluster, targetCluster, mod);
+      moveLocation(state.productLocationAttributes, sourceClusterGroup, sourceCluster, targetCluster, sourceClusterLocation, mod);
     } else if (mod.field === 'notes') {
       updateLocation(sourceCluster, mod);
     } else if (mod.field === 'clusterLabel') {
       updateLocation(sourceCluster, mod);
     } else if (plAttributesFields.includes(mod.field)) {
-      updateProductLocationAttributeValue(sourceClusterGroup, sourceCluster, state.productLocationAttributes, mod);
+      updateProductLocationAttributeValue(sourceClusterGroup, sourceCluster, sourceClusterLocation, state.productLocationAttributes, mod);
     }
   }
 
   // Clean up clusters with no locations
-  for (const clusterGroup of clusterGroups) {
+  for (const clusterGroup of newSelectedClusterGroupsState) {
     removeEmptyClusters(clusterGroup);
   }
 
-  return clusterGroups;
+  return newSelectedClusterGroupsState;
 }
 
 function removeEmptyClusters(clusterGroup: IClusterGroup) {
-  const x = clusterGroup.clusters.filter((cluster: ICluster) => cluster.clusterLocations.length === 0);
-  for (const y of x) {
-    const index = clusterGroup.clusters.indexOf(y);
+  const clusters = clusterGroup.clusters.filter((cluster: ICluster) => cluster.clusterLocations.length === 0);
+  for (const cluster of clusters) {
+    const index = clusterGroup.clusters.indexOf(cluster);
     clusterGroup.clusters.splice(index, 1);
   }
 }
 
-function getClusterOpClusterMember(
-  attributes: IProductLocationAttribute[],
-  chain: string,
-  tier: string,
-  productLocationAttributes: IClusterLocationProductLocationAttributeValue[]
-) {
-  const attributeValueArray =
-    productLocationAttributes?.map(
-      attribute =>
-        attributes.find(x => x.id === attribute.productLocationAttributeId).values.find(val => val.id === attribute.productLocationAttributeValueId)
-          .value
-    ) || [];
-  return [`${chain}_${tier}`, ...attributeValueArray].join(' / ');
-}
-
 function updateProductLocationAttributeValue(
-  sourceClusterGroup: IClusterGroup,
-  sourceCluster: ICluster,
+  clusterGroup: IClusterGroup,
+  cluster: ICluster,
+  clusterLocation: IClusterLocation,
   attributes: IProductLocationAttribute[],
   mod: IModifiedDetailRecord
 ) {
-  const sourceClusterLocation: IClusterLocation = sourceCluster.clusterLocations.find(
-    clusterLocation => clusterLocation.id === mod.clusterLocationId
-  );
+  // Get a copy of the product location attributes and sort it by display sequence
+  const plAttributes = [...attributes].sort((a, b) => a.displaySequence - b.displaySequence);
 
-  // init the array if needed
-  sourceClusterLocation.productLocationAttributes = sourceClusterLocation.productLocationAttributes || [];
-
-  // get source pl attribute
-  const sourceAttribute: IProductLocationAttribute = attributes.find(attribute => attribute.oracleName === mod.field);
-  let sourceAttributeValueXref: IClusterLocationProductLocationAttributeValue = sourceClusterLocation.productLocationAttributes.find(
+  // Get product location attribute
+  const sourceAttribute: IProductLocationAttribute = plAttributes.find(attribute => attribute.oracleName === mod.field);
+  let targetAttribute: IClusterLocationProductLocationAttributeValue = clusterLocation.productLocationAttributes.find(
     attr => attr.productLocationAttributeId === sourceAttribute.id
   );
 
-  // get target pl attribute value
+  // Get product location attribute value
   const targetAttributeValue: IProductLocationAttributeValue = sourceAttribute.values.find(attributeValue => attributeValue.value === mod.value);
 
-  // mod value is a delete
+  // If there was no value set and we are clearing the value bail out
+  if (targetAttribute === undefined && `${mod.value}` === '') {
+    return;
+  }
+
+  // CLEAR PRODUCT LOCATION VALUE
   if (`${mod.value}` === '') {
-    sourceClusterLocation.productLocationAttributes.splice(0, 1);
+    const deleteIndex = clusterLocation.productLocationAttributes.indexOf(targetAttribute);
+    clusterLocation.productLocationAttributes.splice(deleteIndex, 1);
   }
-  // found xref
-  else if (sourceAttributeValueXref) {
-    sourceAttributeValueXref.productLocationAttributeValueId = targetAttributeValue.id;
+  // UPDATE PRODUCT LOCATION VALUE ID
+  else if (targetAttribute) {
+    targetAttribute.productLocationAttributeValueId = targetAttributeValue.id;
   }
-  // no xref
-  else {
-    sourceAttributeValueXref = {
+  // ADD NEW PRODUCT LOCATION VALUE
+  else if (targetAttribute === undefined) {
+    targetAttribute = {
       id: -1,
-      clusterLocationId: sourceClusterLocation.id,
+      clusterLocationId: clusterLocation.id,
       productLocationAttributeId: sourceAttribute.id,
       productLocationAttributeValueId: targetAttributeValue.id,
     };
-    sourceClusterLocation.productLocationAttributes.push(sourceAttributeValueXref);
+    clusterLocation.productLocationAttributes.push(targetAttribute);
   }
 
-  // get the new target OpClusterMember
-  const targetOpClusterMember = getClusterOpClusterMember(
-    attributes,
-    sourceCluster.chain,
-    sourceCluster.tier,
-    sourceClusterLocation.productLocationAttributes
-  );
+  // Get the new Op Cluster Member
+  const targetOpClusterMember = getClusterOpClusterMember(plAttributes, cluster.chain, cluster.tier, clusterLocation.productLocationAttributes);
 
-  // get the cluster based on the new target OpClusterMember
-  let targetCluster = sourceClusterGroup.clusters.find(cluster => {
-    const clusterLocations = cluster.clusterLocations.filter(cl => cl.id !== sourceClusterLocation.id);
-    const productLocationAttributes = clusterLocations.length > 0 ? clusterLocations[0].productLocationAttributes : undefined;
-    return getClusterOpClusterMember(attributes, cluster.chain, cluster.tier, productLocationAttributes) === targetOpClusterMember;
-  });
+  // Get the target cluster based on the new Op Cluster Member to move the location to
+  const targetCluster = clusterGroup.clusters.find(c => c.name === targetOpClusterMember);
 
-  // if not found, create a new cluster and add it to the cluster group
-  if (!targetCluster) {
-    targetCluster = {
-      ...sourceCluster,
-      id: -1,
-      name: targetOpClusterMember,
-      clusterLocations: [],
-    };
-    sourceClusterGroup.clusters.push(targetCluster);
-  }
-
-  // move the cluster location to the target cluster
-  sourceCluster.clusterLocations.splice(sourceCluster.clusterLocations.indexOf(sourceClusterLocation), 1);
-  sourceClusterLocation.clusterId = targetCluster.id;
-  targetCluster.clusterLocations.push(sourceClusterLocation);
-
-  // remove source cluster if it has no locations
-  if (sourceCluster.clusterLocations.length === 0) {
-    sourceClusterGroup.clusters.splice(sourceClusterGroup.clusters.indexOf(sourceCluster), 1);
-  }
+  // Move the cluster location to the target cluster
+  moveLocation(plAttributes, clusterGroup, cluster, targetCluster, clusterLocation, undefined);
 }
 
 function updateLocation(sourceCluster: ICluster, mod: IModifiedDetailRecord) {
@@ -287,38 +247,40 @@ function updateLocation(sourceCluster: ICluster, mod: IModifiedDetailRecord) {
 
 function moveLocation(
   attributes: IProductLocationAttribute[],
-  clusterGroup: IClusterGroup,
+  sourceClusterGroup: IClusterGroup,
   sourceCluster: ICluster,
   targetCluster: ICluster,
+  location: IClusterLocation,
   mod: IModifiedDetailRecord
 ) {
-  // Locate source cluster & location record
-  const sourceLocation: IClusterLocation = sourceCluster.clusterLocations.find(clusterLocation => clusterLocation.id === mod.clusterLocationId);
-  const sourceLocationIndex: number = sourceCluster.clusterLocations.indexOf(sourceLocation);
-
   // Create target cluster if does not exist
   if (targetCluster === undefined) {
     targetCluster = {
       ...sourceCluster,
       id: -1,
-      [mod.field]: mod.value,
       clusterLocations: [],
     };
 
+    // Update cluster field if modification was passed
+    if (mod) {
+      targetCluster[mod.field] = mod.value;
+    }
+
     // Update the name after creating to make sure chain/tier mods are taken into account
-    targetCluster.name = getClusterOpClusterMember(attributes, targetCluster.chain, targetCluster.tier, sourceLocation.productLocationAttributes);
-    clusterGroup.clusters.push(targetCluster);
+    targetCluster.name = getClusterOpClusterMember(attributes, targetCluster.chain, targetCluster.tier, location.productLocationAttributes);
+    sourceClusterGroup.clusters.push(targetCluster);
   }
 
   // Create target location
   const targetLocation: IClusterLocation = {
-    ...sourceLocation,
+    ...location,
     clusterId: targetCluster.id,
   };
 
   // Remove location from source cluster
+  const locationIndex: number = sourceCluster.clusterLocations.indexOf(location);
   sourceCluster.clusterLocations = [...sourceCluster.clusterLocations];
-  sourceCluster.clusterLocations.splice(sourceLocationIndex, 1);
+  sourceCluster.clusterLocations.splice(locationIndex, 1);
 
   // Add location to target cluster
   targetCluster.clusterLocations = [...targetCluster.clusterLocations, targetLocation];

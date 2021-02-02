@@ -64,7 +64,6 @@ export const selectSummaryDetails = createSelector(selectAppState, (state: IStor
   return { gridData: details, productLocationAttributes: state.productLocationAttributes };
 });
 export const selectDetailsEdited = createSelector(selectAppState, (state: IStoreGroupMgmtState): boolean => state.edited);
-export const selectProductLocationAttributes = createSelector(
-  selectAppState,
-  (state: IStoreGroupMgmtState): IProductLocationAttribute[] => state.productLocationAttributes
+export const selectProductLocationAttributes = createSelector(selectAppState, (state: IStoreGroupMgmtState): IProductLocationAttribute[] =>
+  [...state.productLocationAttributes].sort((a, b) => a.displaySequence - b.displaySequence)
 );

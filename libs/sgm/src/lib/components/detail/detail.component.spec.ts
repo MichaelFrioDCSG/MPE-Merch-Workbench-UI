@@ -314,7 +314,7 @@ describe('DetailComponent', () => {
       expect(columnDef.editable).toBeFalsy();
       expect(columnDef.sortable).toEqual(true);
       expect(columnDef.filter).toEqual(true);
-      expect(columnDef.hide).toEqual(true);
+      expect(columnDef.hide).toEqual(false);
       expect(columnDef.width).toEqual(250);
     });
   });

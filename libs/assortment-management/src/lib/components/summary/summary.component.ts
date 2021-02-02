@@ -7,9 +7,13 @@ import { ImportDialogComponent } from '../dialogs/import-dialog/import-dialog.co
 import { ConfirmationDialogComponent } from '../dialogs/confirmation-dialog/confirmation-dialog.component';
 import { AlertDialogComponent } from '../dialogs/alert-dialog/alert-dialog.component';
 import { Title } from '@angular/platform-browser';
+import { select, Store } from '@ngrx/store';
+import { IAssortmentMgmtState } from '../../store/assortment-mgmt.reducer';
+import * as actions from '../../store/assortment-mgmt.actions';
+import { IAssortment } from '@mpe/shared';
+import { selectAssortments } from '../../store/assortment-mgmt.selectors';
 import { AgGridAngular } from 'ag-grid-angular';
 import { GridApi } from 'ag-grid-community';
-import { IAssortment } from '../../models/IAssortment';
 
 @Component({
   selector: 'mpe-summary',
@@ -17,7 +21,8 @@ import { IAssortment } from '../../models/IAssortment';
   styleUrls: ['./summary.component.scss'],
 })
 export class SummaryComponent implements OnInit {
-  constructor(private http: HttpClient, private dialog: MatDialog, private snackBar: MatSnackBar, private titleService: Title) {}
+  constructor(private dialog: MatDialog, private snackBar: MatSnackBar, private titleService: Title, private store: Store<IAssortmentMgmtState>) {}
+
   public agGrid: AgGridAngular;
   public headerSelected: boolean;
   public actionsDisabled: boolean;
@@ -30,8 +35,12 @@ export class SummaryComponent implements OnInit {
   }
 
   public rowCount: number;
-  public rowDataHeader: any[];
   public rowData: any[];
+  public defaultColDef: any = {
+    resizable: true,
+    sortable: true,
+    filter: true,
+  };
   public columnDefs: any = [
     {
       headerName: '',
@@ -40,15 +49,21 @@ export class SummaryComponent implements OnInit {
       headerCheckboxSelection: true,
       headerCheckboxSelectionFilteredOnly: false,
       checkboxSelection: true,
+      sortable: false,
+      filter: false,
+      resizable: false,
     },
-    { headerName: 'Assortment View', field: 'asmt_view', sortable: true, filter: true },
-    { headerName: 'Assortment ID', field: 'asmt_period_id', sortable: true, filter: true, hide: true },
-    { headerName: 'Assortment Period', field: 'assortment_period', sortable: true, filter: true },
-    { headerName: 'Subclass(s)', field: 'subclass_id', sortable: true, filter: true, hide: true },
-    { headerName: 'Clusters', field: 'clusters', sortable: true, filter: true },
-    { headerName: 'Source', field: 'source', sortable: true, filter: true },
-    { headerName: 'Last Modified Date', field: 'last_modified_date', sortable: true, filter: true },
-    { headerName: 'Last Modified By', field: 'last_modified_by', sortable: true, filter: true },
+    { headerName: 'ASSORTMENT PERIOD', field: 'asmtPeriod.asmtPeriodLabel', minWidth: 232 },
+    { headerName: 'SUBCLASS', field: 'prodHier.subclassLabel', minWidth: 300 },
+    {
+      headerName: 'LAST MODIFIED DATE',
+      field: 'updatedOn',
+      minWidth: 215,
+      cellRenderer: (data: { value: string | number | Date }) => {
+        return data.value ? new Date(data.value).toLocaleDateString() + ' ' + new Date(data.value).toLocaleTimeString() : '';
+      },
+    },
+    { headerName: 'LAST MODIFIED BY', field: 'updatedBy' },
   ];
 
   public ngOnInit(): void {
@@ -60,13 +75,13 @@ export class SummaryComponent implements OnInit {
     this.selectedData = JSON.stringify(selectedNodes.map(node => node.data));
   }
   public onGridReady($event): void {
-    // $event.api.sizeColumnsToFit();
     $event.api.onlySelected = true;
     this.actionsDisabled = true;
 
-    // load Assortment Summary data
-    this.getSummaryData().subscribe(data => {
-      this.assortments = data.assortmentdata;
+    this.store.dispatch(actions.amGetSummaries());
+
+    this.store.pipe(select(selectAssortments)).subscribe((assortments: IAssortment[]) => {
+      this.assortments = assortments;
     });
   }
   public onRowSelected($event): void {
@@ -83,10 +98,6 @@ export class SummaryComponent implements OnInit {
     } else {
       this.actionsDisabled = true;
     }
-  }
-
-  public getSummaryData(): Observable<any> {
-    return this.http.get('../assets/am_summary_full.json');
   }
 
   public openDialog(): void {

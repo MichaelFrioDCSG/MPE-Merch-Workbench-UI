@@ -21,7 +21,7 @@ export class AuthGuardService implements CanActivate {
   public canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
     //check if user authenticated, cancel navigation and re-direct to login if not
     if (!this.isLoggedIn) {
-      const retUrl = route.url.length === 0 ? 'sgm' : route.url;
+      const retUrl = state?.url?.length === 0 ? '/sgm' : state.url;
       const queryParams = { queryParams: { retUrl } };
       this.router.navigate(['login'], queryParams);
       //return false to cancel the navigation
