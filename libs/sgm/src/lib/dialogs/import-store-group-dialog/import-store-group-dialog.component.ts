@@ -91,8 +91,9 @@ export class ImportStoreGroupDialogComponent implements OnInit, AfterViewInit {
     public productHierarchyService: ProductHierarchyService,
     public storeGroupService: StoreGroupService,
     public excelConvertService: ExcelConvertService,
-    private store: Store<IStoreGroupMgmtState>
+    private store: Store<IStoreGroupMgmtState>,
     private snackBar: MatSnackBar
+  ) {}
 
   public ngOnInit() {
     this.getAssortmentPeriod();
