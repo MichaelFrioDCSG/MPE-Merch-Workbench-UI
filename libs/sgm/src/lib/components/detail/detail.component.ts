@@ -42,6 +42,7 @@ export class DetailComponent implements OnInit {
     hide: true,
     enableRowGroup: true,
     editable: false,
+    singleClickEdit: true,
   };
   private datePipe: DatePipe = new DatePipe('en-US');
 
