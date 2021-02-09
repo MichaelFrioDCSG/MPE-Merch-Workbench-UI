@@ -48,7 +48,6 @@ export class ImportStoreGroupDialogComponent implements OnInit {
   public formControlSystemicallyLinkedSubClasses = new FormControl({ value: [], disabled: true });
 
   public selectedLinkSubclasses: string[] = [];
-  public populatedLinkSubclasses: string[] = [];
   public systemicallyLinkedSubclasses: string[] = [];
   private combinedLinkSubclasses: string[] = [];
   public filteredLinkSubclasses: IProductHierarchy[] = [];
@@ -117,13 +116,11 @@ export class ImportStoreGroupDialogComponent implements OnInit {
         this.formatLinkSubclasses();
 
         this.filteredLinkSubclasses = this.productHierarchiesInterface
-          .filter(product => !this.populatedLinkSubclasses.includes(product.subClassId))
+          .filter(product => !this.systemicallyLinkedSubclasses.includes(product.subClassId))
           .filter(product => product.subClassDisplay !== this.leadSubclass.value);
 
-        this.systemicallyLinkedSubclasses = this.populatedLinkSubclasses;
-
         this.systemicallyLinkedSubClassesDropdownItems = this.productHierarchiesInterface
-          .filter(product => this.populatedLinkSubclasses.includes(product.subClassId))
+          .filter(product => this.systemicallyLinkedSubclasses.includes(product.subClassId))
           .filter(product => product.subClassDisplay !== this.leadSubclass.value)
           .map(product => product.subClassDisplay)
           .sort();
@@ -202,12 +199,12 @@ export class ImportStoreGroupDialogComponent implements OnInit {
   }
 
   public formatLinkSubclasses() {
-    this.populatedLinkSubclasses = this.linkedSubclassesInterface
+    this.systemicallyLinkedSubclasses = this.linkedSubclassesInterface
       .map((linksubclass: ILinkSubclass) => {
         return linksubclass.subClassId;
       })
       .sort();
-    this.populatedLinkSubclasses = [...new Set(this.populatedLinkSubclasses)];
+    this.systemicallyLinkedSubclasses = [...new Set(this.systemicallyLinkedSubclasses)];
 
     this.populatedLinkDepartments = this.linkedSubclassesInterface
       .map((linksubclass: ILinkSubclass) => {
@@ -327,7 +324,7 @@ export class ImportStoreGroupDialogComponent implements OnInit {
       this.productSubClassesDropdownItems = this.filteredLinkSubclasses
         .filter(product => classes.includes(product.classDisplay))
         .filter(product => product.subClassDisplay !== this.leadSubclass.value)
-        .filter(product => !this.populatedLinkSubclasses.includes(product.subClassId))
+        .filter(product => !this.systemicallyLinkedSubclasses.includes(product.subClassId))
         .map(product => product.subClassDisplay)
         .sort();
       this.productSubClassesDropdownItems = [...new Set(this.productSubClassesDropdownItems)];
