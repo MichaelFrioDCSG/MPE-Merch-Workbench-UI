@@ -127,7 +127,13 @@ export class ImportStoreGroupDialogComponent implements OnInit {
         this.systemicallyLinkedSubClassesDropdownItems = [...new Set(this.systemicallyLinkedSubClassesDropdownItems)];
 
         this.loadingSystemicallyLinkedSubClasses = false;
-        this.formControlSystemicallyLinkedSubClasses.enable();
+
+        if (this.systemicallyLinkedSubClassesDropdownItems.length === 0) {
+          this.formControlSystemicallyLinkedSubClasses.disable();
+        } else {
+          this.formControlSystemicallyLinkedSubClasses.enable();
+        }
+
         this.formControlSystemicallyLinkedSubClasses.setValue(this.systemicallyLinkedSubClassesDropdownItems);
 
         this.formatProductHierarchies();
