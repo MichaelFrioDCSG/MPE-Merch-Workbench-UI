@@ -121,6 +121,7 @@ describe('ImportStoreGroupDialogComponent', () => {
     component.formControlSubDepartments.setValue('500_001 - Snowboard Boots');
     component.formControlClasses.setValue('500_001_002 - Snowboard Boots without Socks');
     component.formControlSubClasses.setValue('500_001_002_001 - Really Cool Snowboard Boots without Socks');
+    component.formControlSystemicallyLinkedSubClasses.setValue('400_001_002_001 - Really Cool Snowboard Boots with wool Socks');
 
     expect(component.productSubDepartmentsDropdownItems.every(subdepartment => subdepartment.startsWith('500'))).toBe(true);
     expect(component.productSubDepartmentsDropdownItems.every(subdepartment => subdepartment.startsWith('400'))).toBe(false);
@@ -131,6 +132,8 @@ describe('ImportStoreGroupDialogComponent', () => {
     expect(component.productSubDepartmentsDropdownItems.length).toBe(1);
     expect(component.productClassesDropdownItems.length).toBe(1);
     expect(component.productSubClassesDropdownItems.includes(leadsubclassId)).toBe(false);
+    expect(component.systemicallyLinkedSubClassesDropdownItems.every(subclasses => subclasses.startsWith('500_001_002'))).toBe(false);
+    expect(component.systemicallyLinkedSubClassesDropdownItems.every(subclasses => subclasses.startsWith('400_001_002'))).toBe(true);
   });
 
   it('should create', async () => {
