@@ -124,3 +124,11 @@ ag-grid-angular {
 ag-grid-angular {
   height: 60vh;
 }
+.ag-cell-focus,
+.ag-cell-no-focus {
+  border: none;
+}
+.no-border.ag-cell:focus {
+  border: none;
+  outline: none;
+}

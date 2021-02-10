@@ -121,6 +121,11 @@ describe('DetailComponent', () => {
       expect(columnDef.width).toEqual(200);
     });
   });
+  it('Check Grid Options configured correctly', async () => {
+    waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
+      expect(component.gridOptions.suppressCellSelection).toEqual(true);
+    });
+  });
 
   it('Notes Column configured correctly', async () => {
     waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {

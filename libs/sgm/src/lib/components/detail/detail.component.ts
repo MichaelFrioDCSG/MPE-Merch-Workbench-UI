@@ -24,7 +24,7 @@ import { getDetailRecordOpClusterMember } from '../../helpers/getClusterOpCluste
 export class DetailComponent implements OnInit {
   @ViewChild('agGrid', { static: false }) public agGrid: AgGridAngular;
   public loadingTemplate;
-  public gridOptions: GridOptions;
+  public gridOptions: GridOptions = { suppressCellSelection: true };
   public gridApi: GridApi;
   public details$: Observable<IDetailRecord[]>;
   public modules: Module[] = AllCommunityModules;
@@ -32,8 +32,10 @@ export class DetailComponent implements OnInit {
     const queryStringParameter = this.route.snapshot.paramMap.get('id');
     return queryStringParameter.split(',').map(id => parseInt(id, 10));
   }
+  constructor(private store: Store<IStoreGroupMgmtState>, private titleService: Title, private route: ActivatedRoute) {}
   public shownRecords: number;
   public totalRecords: number;
+
   public defaultColDef: any = {
     resizable: true,
     sortable: true,
@@ -43,6 +45,8 @@ export class DetailComponent implements OnInit {
     enableRowGroup: true,
     editable: false,
     singleClickEdit: true,
+    suppressNavigable: true,
+    cellClass: 'no-border',
   };
   private datePipe: DatePipe = new DatePipe('en-US');
 
@@ -283,8 +287,6 @@ export class DetailComponent implements OnInit {
     ],
     defaultToolPanel: 'columns',
   };
-
-  constructor(private store: Store<IStoreGroupMgmtState>, private titleService: Title, private route: ActivatedRoute) {}
 
   public ngOnInit() {
     this.titleService.setTitle('Store Group Management');
