@@ -5,11 +5,11 @@ import { IUserProfile } from '../../store/models/IUserProfile';
 import { IAuthState } from '../../store/models/IAuthState';
 import * as AuthSections from '../../store/auth.state';
 import * as actions from '../../store/auth.actions';
-
 import * as msal from '@azure/msal-browser';
 import { environment } from '@mpe/home/src/environments/environment';
 import { ActivatedRoute, Router } from '@angular/router';
 import { selectUserProfile } from '../../store/auth.state';
+
 
 @Component({
   selector: 'mpe-login',
@@ -19,8 +19,10 @@ import { selectUserProfile } from '../../store/auth.state';
 export class LoginComponent implements OnInit {
   public userProfile: Observable<IUserProfile> = this.store.pipe(select(AuthSections.selectUserProfile));
   private msalInstance: msal.PublicClientApplication;
+  private rolesService;
 
-  constructor(private router: Router, private route: ActivatedRoute, private store: Store<IAuthState>) {}
+
+  constructor(private router: Router, private route: ActivatedRoute, private store: Store<IAuthState>) { }
 
   public ngOnInit(): void {
     const msalConfig = {
@@ -32,13 +34,17 @@ export class LoginComponent implements OnInit {
     };
 
     this.msalInstance = new msal.PublicClientApplication(msalConfig);
+    //this.rolesService = this.rolesService.getAccount().idTokenClaims.roles;
     this.msalInstance
       .handleRedirectPromise()
       .then(tokenResponse => {
         // If the tokenResponse !== null, then you are coming back from a successful authentication redirect.
         if (tokenResponse !== null) {
           //auth success - call login action
+          var idTokenResponse = this.parseJwt(tokenResponse.idToken);
+          var roles = idTokenResponse.roles;
           const currentAccounts: msal.AccountInfo[] = this.msalInstance.getAllAccounts();
+
           if (currentAccounts === null) {
             return;
           } else if (currentAccounts.length > 1) {
@@ -47,7 +53,7 @@ export class LoginComponent implements OnInit {
             const userProfile: IUserProfile = {
               name: currentAccounts[0].name,
               username: currentAccounts[0].username,
-              roles: [],
+              roles: roles
             };
             //async call to set user profile in store
             this.store.dispatch(actions.setUserProfile({ UserProfile: userProfile }));
@@ -77,4 +83,14 @@ export class LoginComponent implements OnInit {
         const breakHere = '';
       });
   }
+
+  public parseJwt(token) {
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    return JSON.parse(jsonPayload);
+  };
 }

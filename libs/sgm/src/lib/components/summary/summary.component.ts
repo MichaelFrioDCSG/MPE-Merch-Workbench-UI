@@ -12,6 +12,7 @@ import { actions as sharedActions } from '@mpe/shared';
 import { ImportStoreGroupDialogComponent } from '../../dialogs/import-store-group-dialog/import-store-group-dialog.component';
 import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
+import { selectUserProfile, IAuthState, IUserProfile, LoginComponent } from '@mpe/auth';
 
 @Component({
   selector: 'mpe-landing',
@@ -27,7 +28,8 @@ export class SummaryComponent implements OnInit {
   public gridColumnApi: any;
   public gridApi: GridApi;
   public actionsDisabled: boolean;
-
+  public userProfile: Observable<IUserProfile>;
+  public userRoles: any[];
   public modules: Module[] = AllCommunityModules;
   public selectedData: any;
   public rowCount: number;
@@ -73,10 +75,16 @@ export class SummaryComponent implements OnInit {
   ];
   public statusBar: any = {};
 
-  constructor(private dialog: MatDialog, private store: Store<IStoreGroupMgmtState>, public titleService: Title, private router: Router) {}
+  constructor(private dialog: MatDialog, private store: Store<IStoreGroupMgmtState>, public titleService: Title, private router: Router) { }
 
   public ngOnInit() {
     this.loadingTemplate = '<span class="ag-overlay-loading-center">Loading...</span>';
+    this.userProfile = this.store.pipe(select(selectUserProfile));
+    this.userProfile.subscribe(profile => {
+      this.userRoles = profile.roles;
+      console.log(this.userRoles);
+    })
+    console.log(this.userProfile);
   }
 
   public onActionMenuClosed($event) {
@@ -147,6 +155,7 @@ export class SummaryComponent implements OnInit {
       this.actionsDisabled = true;
     }
   }
+
   public onSelectionChanged($event): void {
     this.rowCount = $event.api.getSelectedNodes().length;
     if (this.rowCount > 0) {

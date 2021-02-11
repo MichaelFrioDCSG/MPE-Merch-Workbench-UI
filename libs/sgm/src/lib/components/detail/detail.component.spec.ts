@@ -48,8 +48,12 @@ describe('DetailComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have the expected number column headers', async () => {
+  it('should have the expected number column headers for sgmWriteColumnDefs', async () => {
     expect(component.columnDefs.length).toEqual(26);
+  });
+
+  it('should have the expected number column headers for sgmReadColumnDefs', async () => {
+    expect(component.sgmReadColumnDefs.length).toEqual(26);
   });
 
   it('Row Group panel is visible', async () => {

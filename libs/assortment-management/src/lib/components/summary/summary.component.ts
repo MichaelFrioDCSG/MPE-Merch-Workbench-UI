@@ -14,6 +14,7 @@ import { IAssortment } from '@mpe/shared';
 import { selectAssortments } from '../../store/assortment-mgmt.selectors';
 import { AgGridAngular } from 'ag-grid-angular';
 import { GridApi } from 'ag-grid-community';
+import { selectUserProfile, IAuthState, IUserProfile, LoginComponent } from '@mpe/auth';
 
 @Component({
   selector: 'mpe-summary',
@@ -21,7 +22,7 @@ import { GridApi } from 'ag-grid-community';
   styleUrls: ['./summary.component.scss'],
 })
 export class SummaryComponent implements OnInit {
-  constructor(private dialog: MatDialog, private snackBar: MatSnackBar, private titleService: Title, private store: Store<IAssortmentMgmtState>) {}
+  constructor(private dialog: MatDialog, private snackBar: MatSnackBar, private titleService: Title, private store: Store<IAssortmentMgmtState>) { }
 
   public agGrid: AgGridAngular;
   public headerSelected: boolean;
@@ -33,7 +34,7 @@ export class SummaryComponent implements OnInit {
   public get totalResults(): number {
     return this.assortments.length;
   }
-
+  public userProfile: Observable<IUserProfile>;
   public rowCount: number;
   public rowData: any[];
   public defaultColDef: any = {
@@ -68,6 +69,7 @@ export class SummaryComponent implements OnInit {
 
   public ngOnInit(): void {
     this.titleService.setTitle('Assortment Management');
+    this.userProfile = this.store.pipe(select(selectUserProfile));
   }
 
   public getSelectedRows() {

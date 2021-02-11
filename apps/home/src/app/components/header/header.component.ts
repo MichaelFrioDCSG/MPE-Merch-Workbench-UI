@@ -15,10 +15,11 @@ export class HeaderComponent implements OnInit {
   public routes: Routes;
   public activeRoute: any;
   public userProfile: Observable<IUserProfile>;
-  constructor(public router: Router, private store: Store<IAuthState>) {}
+  constructor(public router: Router, private store: Store<IAuthState>) { }
 
   public ngOnInit(): void {
     this.userProfile = this.store.pipe(select(selectUserProfile));
+    console.log("HEADER USER PROFILE", this.userProfile);
     this.routes = [];
     for (const route of routes) {
       if (route?.data?.display === undefined || route?.data?.display === true) {
