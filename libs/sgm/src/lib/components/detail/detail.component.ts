@@ -1,12 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { AgGridAngular } from 'ag-grid-angular';
 import { Observable } from 'rxjs';
-import { AllCommunityModules, Module, GridOptions, GridApi, ColDef, ColGroupDef } from '@ag-grid-community/all-modules';
+import { AllCommunityModules, Module, GridOptions, GridApi, ColDef, ColGroupDef, IsColumnFunc } from '@ag-grid-community/all-modules';
 import { Store, select } from '@ngrx/store';
 import { IStoreGroupMgmtState } from '../../store/store-group-mgmt.reducer';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
-import * as AuthSections from '../../../../../auth/src/lib/store/auth.state';
 import * as selectors from '../../store/store-group-mgmt.selectors';
 import * as actions from '../../store/store-group-mgmt.actions';
 import { IDetailRecord } from '../../models/IDetailRecord';
@@ -24,7 +23,7 @@ import { selectUserProfile, IAuthState, IUserProfile } from '@mpe/auth';
 export class DetailComponent implements OnInit {
   @ViewChild('agGrid', { static: false }) public agGrid: AgGridAngular;
   public loadingTemplate;
-  public userProfile: Observable<IUserProfile>;
+  public userProfile: IUserProfile;
   public areGridColumnsConfigured: boolean;
   public userRoles: any[];
   public gridOptions: GridOptions;
@@ -80,6 +79,10 @@ export class DetailComponent implements OnInit {
     return true;
   }
 
+  public isEditable() {
+    return this.userProfile.roles.includes('Admin') || this.userProfile.roles.includes('SGMWrite');
+  }
+
   private getModifiedDetailRecords(node: any, colId: string, newValue: string): IModifiedDetailRecord[] {
     let results: IModifiedDetailRecord[] = [];
     if (node.group) {
@@ -99,7 +102,6 @@ export class DetailComponent implements OnInit {
         value: newValue,
       });
     }
-
     return results;
   }
 
@@ -115,6 +117,7 @@ export class DetailComponent implements OnInit {
           headerName: headerName,
           field: attr.oracleName,
           hide: hideColumn,
+          editable: params => this.isEditable(),
           cellEditor: 'agRichSelectCellEditor',
           cellEditorParams: {
             values: [].concat([''], attr.values.map(x => x.value).sort()),
@@ -153,6 +156,7 @@ export class DetailComponent implements OnInit {
       headerName: 'CLUSTER LABEL',
       field: 'clusterLabel',
       width: 200,
+      editable: params => this.isEditable(),
       hide: false,
       valueSetter: params => this.edit(params),
     },
@@ -161,6 +165,7 @@ export class DetailComponent implements OnInit {
       field: 'chain',
       width: 100,
       hide: false,
+      editable: params => this.isEditable(),
       cellEditor: 'agRichSelectCellEditor',
       cellEditorParams: {
         values: this.chains,
@@ -173,6 +178,7 @@ export class DetailComponent implements OnInit {
       field: 'tier',
       width: 150,
       hide: false,
+      editable: params => this.isEditable(),
       cellEditor: 'agRichSelectCellEditor',
       cellEditorParams: {
         values: this.tiers,
@@ -199,6 +205,7 @@ export class DetailComponent implements OnInit {
       field: 'notes',
       width: 200,
       hide: false,
+      editable: params => this.isEditable(),
       cellRendererFramework: BulkFillRenderer,
       valueSetter: params => this.edit(params),
     },
@@ -239,7 +246,6 @@ export class DetailComponent implements OnInit {
       filterParams: { comparator: this.numericComparator },
     },
   ];
-
 
   public rowGroupPanelShow = 'always';
 
@@ -288,17 +294,17 @@ export class DetailComponent implements OnInit {
   public ngOnInit() {
     this.titleService.setTitle('Store Group Management');
     this.loadingTemplate = '<span class="ag-overlay-loading-center">Loading...</span>';
+    this.authStore.pipe(select(selectUserProfile)).subscribe(profile =>
+      this.userProfile = profile
+    );
   }
 
   public onGridReady(params: any) {
     this.gridApi = params.api;
-    this.userProfile = this.authStore.pipe(select(selectUserProfile));
-
     this.store.dispatch(actions.sgmGetDetails({ clusterGroupIds: this.clusterGroupIds }));
-
     setTimeout(() => {
       params.api.showLoadingOverlay();
-    }, 5);
+    }, 50);
 
     this.store.select(selectors.selectSummaryDetails).subscribe(data => {
       const details: IDetailRecord[] = data.gridData;
@@ -308,16 +314,13 @@ export class DetailComponent implements OnInit {
       this.totalRecords = details.length;
       this.gridApi.setRowData(details);
 
-      this.gridApi.refreshCells();
-
-      //multiple params in the bind needed
-      (this.areGridColumnsConfigured) ? this.userProfile.subscribe(this.isEditable.bind(this)) : null;
-
       this.shownRecords = this.gridApi.getDisplayedRowCount();
     });
 
+    this.gridApi.refreshCells();
+
     this.store.select(selectors.selectDetailsEdited).subscribe(edited => {
-      this.actionsDisabled = !edited;
+      this.actionsDisabled = !this.isEditable() || !edited;
     });
 
     this.store.select(selectors.selectProductLocationAttributes).subscribe(values => {
@@ -358,105 +361,4 @@ export class DetailComponent implements OnInit {
     this.store.dispatch(actions.revertDetails());
   }
 
-  private isEditable(profile: IUserProfile) {
-    let updateColumns = false;
-    let removeColIndex = 0;
-    if (profile.roles.includes('Admin') || profile.roles.includes('SGMWrite')) {
-      this.columnDefs.forEach(colDef => {
-        (colDef.headerName.includes('NOTES')) ? (
-          colDef = {
-            headerName: 'NOTES',
-            field: 'notes',
-            width: 200,
-            editable: true,
-            hide: false,
-            cellRendererFramework: BulkFillRenderer,
-            valueSetter: params => this.edit(params),
-          },
-          removeColIndex = this.columnDefs.findIndex(x => x.headerName === 'NOTES'),
-          this.columnDefs.splice(removeColIndex, 1, colDef)
-        ) : colDef = colDef;
-
-        (colDef.headerName.includes('TIER')) ? (
-          colDef = {
-            headerName: 'TIER',
-            field: 'tier',
-            width: 150,
-            editable: true,
-            hide: false,
-            cellEditor: 'agRichSelectCellEditor',
-            cellEditorParams: {
-              values: this.tiers,
-            },
-            cellRendererFramework: BulkFillRenderer,
-            valueSetter: params => this.edit(params),
-          },
-          removeColIndex = this.columnDefs.findIndex(x => x.headerName === 'TIER'),
-          this.columnDefs.splice(removeColIndex, 1, colDef)
-        ) : colDef = colDef;
-
-        (colDef.headerName.includes('CHAIN')) ? (
-          colDef = {
-            headerName: 'CHAIN',
-            field: 'chain',
-            width: 100,
-            editable: true,
-            hide: false,
-            cellEditor: 'agRichSelectCellEditor',
-            cellEditorParams: {
-              values: this.chains,
-            },
-            cellRendererFramework: BulkFillRenderer,
-            valueSetter: params => this.edit(params),
-          },
-          removeColIndex = this.columnDefs.findIndex(x => x.headerName === 'CHAIN'),
-          this.columnDefs.splice(removeColIndex, 1, colDef)
-        ) : colDef = colDef;
-
-        (colDef.headerName.includes('CLUSTER LABEL')) ? (
-          colDef = {
-            headerName: 'CLUSTER LABEL',
-            field: 'clusterLabel',
-            width: 200,
-            editable: true,
-            hide: false,
-            valueSetter: params => this.edit(params),
-          },
-          removeColIndex = this.columnDefs.findIndex(x => x.headerName === 'CLUSTER LABEL'),
-          this.columnDefs.splice(removeColIndex, 1, colDef)
-        ) : colDef = colDef;
-
-        this.store.select(selectors.selectSummaryDetails).subscribe(data => {
-          data.productLocationAttributes.forEach(attr => {
-            (colDef.headerName.includes(attr.name.toUpperCase())) ? (
-              colDef = {
-                headerName: attr.name.toUpperCase(),
-                field: attr.oracleName,
-                hide: false,
-                editable: true,
-                cellEditor: 'agRichSelectCellEditor',
-                cellEditorParams: {
-                  values: [].concat([''], attr.values.map(x => x.value).sort()),
-                },
-                cellRendererFramework: BulkFillRenderer,
-                valueSetter: params => this.edit(params),
-              },
-              removeColIndex = this.columnDefs.findIndex(x => x.headerName === attr.name.toUpperCase()),
-              this.columnDefs.splice(removeColIndex, 1, colDef)
-            ) : colDef = colDef;
-          });
-        });
-
-        updateColumns = true;
-        console.log("WHAT I WANT", colDef);
-      });
-
-      if (updateColumns) {
-        console.log("WHAT IS BEING SENT", this.columnDefs);
-        this.gridApi.refreshHeader();
-        this.agGrid.api.setColumnDefs([]);
-        this.gridApi.setColumnDefs(this.columnDefs);
-      }
-    }
-  }
 }

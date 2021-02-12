@@ -7,17 +7,26 @@ import { AgGridModule } from 'ag-grid-angular';
 import { FormsModule } from '@angular/forms';
 import { MaterialModule } from '@mpe/material';
 import { ClusterGroupsService } from '@mpe/AsmtMgmtService';
+import { Store, select } from '@ngrx/store';
+import { selectUserProfile, IUserProfile } from '@mpe/auth';
 
 import { IStoreGroupMgmtState, initialState } from '../../store/store-group-mgmt.reducer';
+//import { IAuthState, initialState } from 'libs/auth/src/lib/store/auth.reducers';
 
 import { DetailComponent } from './detail.component';
 
 import 'ag-grid-enterprise';
+import { userInfo } from 'os';
 
 describe('DetailComponent', () => {
   let component: DetailComponent;
   let fixture: ComponentFixture<DetailComponent>;
   let store: MockStore;
+  const initialState = {
+    name: 'Testing',
+    roles: ['Admin'],
+    username: 'Testing@dcsg.com',
+  };
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
@@ -31,7 +40,7 @@ describe('DetailComponent', () => {
     fixture = TestBed.createComponent(DetailComponent);
     component = fixture.componentInstance;
 
-    const thisState = getMockState();
+    const thisState = getUserProfileMockState();
     store.setState(thisState);
 
     // Run component life cycle events
@@ -53,7 +62,7 @@ describe('DetailComponent', () => {
   });
 
   it('should have the expected number column headers for sgmReadColumnDefs', async () => {
-    expect(component.sgmReadColumnDefs.length).toEqual(26);
+    expect(component.columnDefs.length).toEqual(26);
   });
 
   it('Row Group panel is visible', async () => {
@@ -115,12 +124,14 @@ describe('DetailComponent', () => {
   it('Cluster Label Column configured correctly', async () => {
     waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
       const columnDef = component.agGrid.gridOptions.api.getColumnDef('clusterLabel');
+      component.ngOnInit();
+
       expect(columnDef).toBeTruthy();
 
       expect(columnDef.headerName).toEqual('CLUSTER LABEL');
       expect(columnDef.resizable).toEqual(true);
-      expect(columnDef.editable).toEqual(true);
       expect(columnDef.sortable).toEqual(true);
+      expect(columnDef.editable).toEqual(component.isEditable());
       expect(columnDef.filter).toEqual(true);
       expect(columnDef.width).toEqual(200);
     });
@@ -129,11 +140,11 @@ describe('DetailComponent', () => {
   it('Notes Column configured correctly', async () => {
     waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
       const columnDef = component.agGrid.gridOptions.api.getColumnDef('notes');
+
       expect(columnDef).toBeTruthy();
 
       expect(columnDef.headerName).toEqual('NOTES');
       expect(columnDef.resizable).toEqual(true);
-      expect(columnDef.editable).toEqual(true);
       expect(columnDef.sortable).toEqual(true);
       expect(columnDef.filter).toEqual(true);
       expect(columnDef.width).toEqual(200);
@@ -172,7 +183,6 @@ describe('DetailComponent', () => {
 
       expect(columnDef.headerName).toEqual('TIER');
       expect(columnDef.resizable).toEqual(true);
-      expect(columnDef.editable).toEqual(true);
       expect(columnDef.sortable).toEqual(true);
       expect(columnDef.filter).toEqual(true);
       expect(columnDef.width).toEqual(150);
@@ -193,7 +203,6 @@ describe('DetailComponent', () => {
 
       expect(columnDef.headerName).toEqual('CHAIN');
       expect(columnDef.resizable).toEqual(true);
-      expect(columnDef.editable).toEqual(true);
       expect(columnDef.sortable).toEqual(true);
       expect(columnDef.filter).toEqual(true);
       expect(columnDef.width).toEqual(100);
@@ -361,7 +370,7 @@ describe('DetailComponent', () => {
       component.agGrid.gridOptions.api.stopEditing();
 
       // Update the state
-      const newState = getMockState();
+      const newState = getSGMMockState();
       newState.selectedClusterGroups[0].clusters[0].clusterLocations[0].clusterLabel = 'test 123';
       store.setState(newState);
       store.refreshState();
@@ -398,7 +407,7 @@ describe('DetailComponent', () => {
       component.agGrid.gridOptions.api.stopEditing();
 
       // Update the state
-      const newState = getMockState();
+      const newState = getSGMMockState();
       newState.selectedClusterGroups[0].clusters[0].clusterLocations[0].notes = 'test notes 123';
       store.setState(newState);
       store.refreshState();
@@ -528,7 +537,14 @@ describe('DetailComponent', () => {
 });
 
 // Data Helper methods below
-function getMockState(): IStoreGroupMgmtState {
+function getUserProfileMockState(): IUserProfile {
+  return {
+    username: 'Mock Username',
+    name: 'Mock Name',
+    roles: ['Admin']
+  }
+}
+function getSGMMockState(): IStoreGroupMgmtState {
   return {
     ...initialState,
     edited: false,
@@ -612,6 +628,7 @@ function getMockState(): IStoreGroupMgmtState {
 function waitForGridApiToBeAvailable(gridOptions, success) {
   // recursive without a terminating condition,
   // but jasmines default test timeout will kill it (jasmine.DEFAULT_TIMEOUT_INTERVAL)
+
   if (gridOptions.api) {
     success();
   } else {
