@@ -96,3 +96,11 @@ ag-grid-angular {
 .action-menu-item:last-of-type {
   border-bottom: none;
 }
+.ag-cell-focus,
+.ag-cell-no-focus {
+  border: none;
+}
+.no-border.ag-cell:focus {
+  border: none;
+  outline: none;
+}
