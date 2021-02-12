@@ -39,7 +39,6 @@ export class SummaryComponent implements OnInit {
   public clusterGroups: IClusterGroup[] = [];
   public defaultColDef: any = {
     resizable: true,
-    suppressNavigable: true,
     cellClass: 'no-border',
   };
   public deletingStoreGroups: boolean;

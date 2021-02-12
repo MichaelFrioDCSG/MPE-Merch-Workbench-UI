@@ -41,7 +41,6 @@ export class SummaryComponent implements OnInit {
     resizable: true,
     sortable: true,
     filter: true,
-    suppressNavigable: true,
     cellClass: 'no-border',
   };
   public columnDefs: any = [
