@@ -7,15 +7,16 @@ import { HttpClient } from '@angular/common/http';
 
 import { AssortmentPeriodService } from '../../../services/assortment-period.service';
 import { ProductHierarchyService } from '../../../services/product-hierarchy.service';
-import { OracleImportService } from '../../../services/oracle-import.service';
-import { ImportValidationService } from '../../../services/import-validation.service';
-import { ImportAssortmentService } from '../../../services/import-assortment.service';
+import { AssortmentService } from '@mpe/AsmtMgmtService';
 
 import { IAssortment } from '../../../models/IAssortment';
 import { IAssortmentPeriod } from '../../../models/IAssortmentPeriod';
 import { IProductHierarchy } from '../../../models/IProductHierarchy';
 
 import { ImportOverrideDialogComponent } from '../import-override-dialog/import-override-dialog.component';
+import { Store } from '@ngrx/store';
+import { IAssortmentMgmtState } from '../../../store/assortment-mgmt.reducer';
+import * as actions from '../../../store/assortment-mgmt.actions';
 
 @Component({
   selector: 'mpe-import-dialog',
@@ -51,11 +52,10 @@ export class ImportDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any,
     public formBuilder: FormBuilder,
     private http: HttpClient,
+    private store: Store<IAssortmentMgmtState>,
     public assortmentPeriodService: AssortmentPeriodService,
     public productHierarchyService: ProductHierarchyService,
-    public oracleImportService: OracleImportService,
-    public importValidationService: ImportValidationService,
-    public importAssortmentService: ImportAssortmentService,
+    public assortmentService: AssortmentService,
     private dialog: MatDialog
   ) {}
 
@@ -108,11 +108,6 @@ export class ImportDialogComponent implements OnInit {
         this.loadingProductHierarchy = false;
         this.productDepartments.enable({ emitEvent: false });
       });
-  }
-
-  //Grab json data for testing grid
-  public getJSON(): Observable<any> {
-    return this.http.get('../../assets/assortment-data.json');
   }
 
   private filterAssortmentPeriods() {
@@ -191,31 +186,15 @@ export class ImportDialogComponent implements OnInit {
 
   //Get Assortment Periods from Assortment-Period service
   public validateImport() {
-    //overrideExistingAssortment = false;
-
-    //Show subclass prior to API call
-    //console.log('subclassId is: ' + this.productHierarchiesData[0].subClassId);
-    console.log('subclassId is: ' + this.productSubClasses.value);
-
     const subclassIds: string[] = [];
     this.productSubClasses.value.forEach((displaySubclass: string) => {
       const subclassId = displaySubclass.split(' -')[0];
-      subclassIds.push(subclassId);
+      subclassIds.push(subclassId.replace(/\./g, '_'));
     });
-
-    console.log(subclassIds);
-
-    // const subclassId: string[] = [this.productHierarchiesData[0].subClassId.replace(
-    //   /\./g,
-    //   '_'
-    // )];
     const overRideValue = this.overrideExistingAssortment.valueOf;
 
-    this.importValidationService.getAmAssortments(this.assortmentPeriod.value.assortmentPeriodId, subclassIds).subscribe(
-      (assortment: IAssortment[]) => {
-        //for now - write message to show connection to API and values returned
-        console.log('adding Assortments from API: ' + this.assortmentImport.values);
-
+    this.assortmentService.getAssortmentsByAssortmentPeriodSubclassIds(this.assortmentPeriod.value.assortmentPeriodId, subclassIds).subscribe(
+      (assortment: IProductHierarchy[]) => {
         if (assortment.length > 0) {
           this.openImportOverrideDialog(this.assortmentPeriod.value.assortmentPeriodId, subclassIds, overRideValue);
         } else {
@@ -229,7 +208,9 @@ export class ImportDialogComponent implements OnInit {
   }
 
   public insertImportData(assortmentPeriodId, subclassId, overRideValue) {
-    this.importAssortmentService.putAssortments(assortmentPeriodId, subclassId, overRideValue);
+    this.assortmentService
+      .putAssortments(assortmentPeriodId, subclassId, overRideValue)
+      .subscribe(data => this.store.dispatch(actions.amGetSummaries()));
   }
 
   public openImportOverrideDialog(assortmentPeriodId, subclassId, overRideValue): void {

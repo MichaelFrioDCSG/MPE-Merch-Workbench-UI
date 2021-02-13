@@ -11,9 +11,10 @@ import { ActivatedRoute } from '@angular/router';
 import * as selectors from '../../store/store-group-mgmt.selectors';
 import * as actions from '../../store/store-group-mgmt.actions';
 import { IDetailRecord } from '../../models/IDetailRecord';
-import { IModifiedDetailRecord } from '../../models/IUpdateDetailArgument';
+import { IModifiedDetailRecord } from '../../models/IModifiedDetailRecord';
 import { BulkFillRenderer, IProductLocationAttribute } from '@mpe/shared';
 import { DatePipe } from '@angular/common';
+import { getDetailRecordOpClusterMember } from '../../helpers/getClusterOpClusterMember';
 
 @Component({
   selector: 'mpe-detail',
@@ -23,7 +24,7 @@ import { DatePipe } from '@angular/common';
 export class DetailComponent implements OnInit {
   @ViewChild('agGrid', { static: false }) public agGrid: AgGridAngular;
   public loadingTemplate;
-  public gridOptions: GridOptions;
+  public gridOptions: GridOptions = { suppressCellSelection: true };
   public gridApi: GridApi;
   public details$: Observable<IDetailRecord[]>;
   public modules: Module[] = AllCommunityModules;
@@ -31,8 +32,10 @@ export class DetailComponent implements OnInit {
     const queryStringParameter = this.route.snapshot.paramMap.get('id');
     return queryStringParameter.split(',').map(id => parseInt(id, 10));
   }
+  constructor(private store: Store<IStoreGroupMgmtState>, private titleService: Title, private route: ActivatedRoute) {}
   public shownRecords: number;
   public totalRecords: number;
+
   public defaultColDef: any = {
     resizable: true,
     sortable: true,
@@ -41,6 +44,9 @@ export class DetailComponent implements OnInit {
     hide: true,
     enableRowGroup: true,
     editable: false,
+    singleClickEdit: true,
+    suppressNavigable: true,
+    cellClass: 'no-border',
   };
   private datePipe: DatePipe = new DatePipe('en-US');
 
@@ -62,7 +68,6 @@ export class DetailComponent implements OnInit {
   private pl_attributes_with_values: IProductLocationAttribute[] = [];
 
   private edit(params) {
-
     const colId: string = params.column.colId;
     const newValue: string = params.newValue;
     const node = params.node;
@@ -91,6 +96,7 @@ export class DetailComponent implements OnInit {
       results.push({
         clusterGroupId: record.clusterGroupId,
         clusterId: record.clusterId,
+        opClusterMember: getDetailRecordOpClusterMember(record, this.pl_attributes),
         clusterLocationId: record.clusterLocationId,
         field: colId,
         value: newValue,
@@ -119,12 +125,15 @@ export class DetailComponent implements OnInit {
           cellRendererFramework: BulkFillRenderer,
           valueSetter: params => this.edit(params),
         };
-        this.columnDefs.push(newColDef);
+        const tierColIndex = this.columnDefs.findIndex(x => x.headerName === 'TIER');
+        this.columnDefs.splice(tierColIndex + 1, 0, newColDef);
         updateColumns = true;
       }
     }
 
     if (updateColumns) {
+      this.gridApi.refreshHeader();
+      this.agGrid.api.setColumnDefs([]);
       this.gridApi.setColumnDefs(this.columnDefs);
     }
   }
@@ -140,6 +149,7 @@ export class DetailComponent implements OnInit {
       field: 'clusterGroupName',
       width: 200,
       hide: false,
+      pinned: 'left',
     },
     {
       headerName: 'CLUSTER LABEL',
@@ -150,18 +160,15 @@ export class DetailComponent implements OnInit {
       valueSetter: params => this.edit(params),
     },
     {
-      headerName: 'CLUSTER',
-      field: 'clusterName',
-      width: 200,
-      hide: false,
-      valueGetter: params => this.opClusterMemberDisplay(params),
-    },
-    {
-      headerName: 'NOTES',
-      field: 'notes',
+      headerName: 'CHAIN',
+      field: 'chain',
       editable: true,
-      width: 200,
+      width: 100,
       hide: false,
+      cellEditor: 'agRichSelectCellEditor',
+      cellEditorParams: {
+        values: this.chains,
+      },
       cellRendererFramework: BulkFillRenderer,
       valueSetter: params => this.edit(params),
     },
@@ -179,20 +186,12 @@ export class DetailComponent implements OnInit {
       valueSetter: params => this.edit(params),
     },
     {
-      headerName: 'CHAIN',
-      field: 'chain',
-      editable: true,
-      width: 100,
+      headerName: 'CLUSTER',
+      field: 'clusterName',
+      width: 200,
       hide: false,
-      cellEditor: 'agRichSelectCellEditor',
-      cellEditorParams: {
-        values: this.chains,
-      },
-      cellRendererFramework: BulkFillRenderer,
-      valueSetter: params => this.edit(params),
+      valueGetter: params => this.opClusterMemberDisplay(params),
     },
-    { headerName: 'CITY', field: 'city', hide: false },
-    { headerName: 'NUMBER OF ENTRANCES', field: 'numberOfEntrances', hide: false },
     {
       headerName: 'WAREHOUSE NUMBER',
       hide: false,
@@ -201,12 +200,25 @@ export class DetailComponent implements OnInit {
       filterParams: { comparator: this.numericComparator },
     },
     {
+      headerName: 'NOTES',
+      field: 'notes',
+      editable: true,
+      width: 200,
+      hide: false,
+      cellRendererFramework: BulkFillRenderer,
+      valueSetter: params => this.edit(params),
+    },
+    { headerName: 'CITY', field: 'city' },
+    { headerName: 'NUMBER OF ENTRANCES', field: 'numberOfEntrances' },
+    {
       headerName: 'STORE NUMBER',
       field: 'storeNumber',
       filter: 'agSetColumnFilter',
       filterParams: { comparator: this.numericComparator },
+      hide: false,
+      pinned: 'left',
     },
-    { headerName: 'STORE NAME', field: 'storeName' },
+    { headerName: 'STORE NAME', field: 'storeName', hide: false, pinned: 'left' },
     { headerName: 'ASSORTMENT PERIOD', field: 'assortmentPeriod' },
     { headerName: 'AD MARKET', field: 'adMarket' },
     { headerName: 'COMPANY CLIMATE', field: 'climate' },
@@ -276,8 +288,6 @@ export class DetailComponent implements OnInit {
     defaultToolPanel: 'columns',
   };
 
-  constructor(private store: Store<IStoreGroupMgmtState>, private titleService: Title, private route: ActivatedRoute) { }
-
   public ngOnInit() {
     this.titleService.setTitle('Store Group Management');
     this.loadingTemplate = '<span class="ag-overlay-loading-center">Loading...</span>';
@@ -303,7 +313,6 @@ export class DetailComponent implements OnInit {
       this.gridApi.refreshCells();
 
       this.shownRecords = this.gridApi.getDisplayedRowCount();
-
     });
 
     this.store.select(selectors.selectDetailsEdited).subscribe(edited => {
