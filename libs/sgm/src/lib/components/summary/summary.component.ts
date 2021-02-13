@@ -73,7 +73,7 @@ export class SummaryComponent implements OnInit {
   ];
   public statusBar: any = {};
 
-  constructor(private dialog: MatDialog, private store: Store<IStoreGroupMgmtState>, public titleService: Title, private router: Router) {}
+  constructor(private dialog: MatDialog, private store: Store<IStoreGroupMgmtState>, public titleService: Title, private router: Router) { }
 
   public ngOnInit() {
     this.loadingTemplate = '<span class="ag-overlay-loading-center">Loading...</span>';
