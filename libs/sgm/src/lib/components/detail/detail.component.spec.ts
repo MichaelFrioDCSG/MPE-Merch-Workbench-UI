@@ -121,6 +121,11 @@ describe('DetailComponent', () => {
       expect(columnDef.width).toEqual(200);
     });
   });
+  it('Check Grid Options configured correctly', async () => {
+    waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
+      expect(component.gridOptions.suppressCellSelection).toEqual(true);
+    });
+  });
 
   it('Notes Column configured correctly', async () => {
     waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
@@ -314,7 +319,7 @@ describe('DetailComponent', () => {
       expect(columnDef.editable).toBeFalsy();
       expect(columnDef.sortable).toEqual(true);
       expect(columnDef.filter).toEqual(true);
-      expect(columnDef.hide).toEqual(true);
+      expect(columnDef.hide).toEqual(false);
       expect(columnDef.width).toEqual(250);
     });
   });

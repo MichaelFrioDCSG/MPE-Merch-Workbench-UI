@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { AgGridAngular } from 'ag-grid-angular';
 import { MatDialog } from '@angular/material/dialog';
 import { AllCommunityModules, Module, GridOptions, GridApi } from '@ag-grid-community/all-modules';
@@ -18,8 +18,9 @@ import { Router } from '@angular/router';
   templateUrl: './summary.component.html',
   styleUrls: ['./summary.component.scss'],
 })
-export class SummaryComponent  {
+export class SummaryComponent implements OnInit {
   @ViewChild('agGrid', { static: false }) public agGrid: AgGridAngular;
+  public loadingTemplate;
   public clusterGroupsObs: Observable<IClusterGroup[]> = null;
   public style: any;
   public gridOptions: GridOptions;
@@ -30,9 +31,9 @@ export class SummaryComponent  {
   public modules: Module[] = AllCommunityModules;
   public selectedData: any;
   public rowCount: number;
-  public get totalResults(): number{
+  public get totalResults(): number {
     return this.clusterGroups.length;
-  };
+  }
   public actionMenuOpen: boolean;
   public title = 'MPE-SGM';
   public clusterGroups: IClusterGroup[] = [];
@@ -54,8 +55,8 @@ export class SummaryComponent  {
       suppressSizeToFit: true,
       resizable: false,
     },
-    { headerName: 'CLUSTER GROUP', field: 'name', sortable: true, filter: true },
-    { headerName: 'CLUSTER GROUP DESCRIPTION', field: 'description', sortable: true, filter: true },
+    { headerName: 'CLUSTER GROUP', field: 'name', sortable: true, filter: true, minWidth: 275 },
+    { headerName: 'CLUSTER GROUP DESCRIPTION', field: 'description', sortable: true, filter: true, minWidth: 300 },
     { headerName: 'ASSORTMENT PERIOD', field: 'asmtPeriod.asmtPeriodLabel', sortable: true, filter: true, minWidth: 232 },
 
     {
@@ -63,20 +64,24 @@ export class SummaryComponent  {
       field: 'lastModifiedOn',
       sortable: true,
       filter: true,
-      minWidth: 205,
+      minWidth: 215,
       cellRenderer: (data: { value: string | number | Date }) => {
         return data.value ? new Date(data.value).toLocaleDateString() + ' ' + new Date(data.value).toLocaleTimeString() : '';
       },
     },
     { headerName: 'LAST MODIFIED BY', field: 'lastModifiedBy', sortable: true, filter: true },
   ];
-  public statusBar: any = { };
+  public statusBar: any = {};
 
-  constructor(private dialog: MatDialog, private store: Store<IStoreGroupMgmtState>, public titleService: Title, private router: Router) {}
+  constructor(private dialog: MatDialog, private store: Store<IStoreGroupMgmtState>, public titleService: Title, private router: Router) { }
 
-public onActionMenuClosed($event){
-  this.actionMenuOpen = false;
-}
+  public ngOnInit() {
+    this.loadingTemplate = '<span class="ag-overlay-loading-center">Loading...</span>';
+  }
+
+  public onActionMenuClosed($event) {
+    this.actionMenuOpen = false;
+  }
   public getSelectedRows() {
     const selectedNodes = this.agGrid.api.getSelectedNodes();
     this.selectedData = JSON.stringify(selectedNodes.map(node => node.data));
@@ -119,6 +124,9 @@ public onActionMenuClosed($event){
     this.actionsDisabled = true;
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
+    setTimeout(() => {
+      params.api.showLoadingOverlay();
+    }, 5);
     this.store.dispatch(actions.sgmGetSummaries());
 
     this.store.pipe(select(selectClusterGroups)).subscribe((clusterGroups: IClusterGroup[]) => {

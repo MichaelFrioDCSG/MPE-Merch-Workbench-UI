@@ -1,61 +1,38 @@
 <div class="main-content">
   <div class="container-fluid">
-    <section>
-      <div class="example-button-row">
-        <div class="example-flex-contianer">
-          <div class="example-button-container">
-            <button
-              mat-mini-fab
-              color="primary"
-              *ngIf="!headerSelected"
-              matTooltipPosition="right"
-              matTooltip="Import"
-              matTooltipClass="tool-tip-style"
-              mat-button
-              (click)="openDialog()"
-            >
-              <i class="material-icons">add</i>
-            </button>
-            <button
-              mat-mini-fab
-              color="accent"
-              *ngIf="headerSelected"
-              matTooltipPosition="right"
-              matTooltip="Edit/View"
-              matTooltipClass="tool-tip-style"
-              mat-button
-              (click)="openAlertDialog()"
-            >
-              <i class="material-icons">edit</i>
-            </button>
-            <button
-              mat-mini-fab
-              color="warn"
-              *ngIf="headerSelected"
-              matTooltipPosition="right"
-              matTooltip="Delete"
-              matTooltipClass="tool-tip-style"
-              mat-button
-              (click)="openDeleteDialog()"
-            >
-              <i class="material-icons">delete</i>
-            </button>
-          </div>
+    <div id="grid-wrapper" class="grid-wrapper">
+      <div class="button-row-container">
+        <div class="breadcrumb-dsg">
+          Assortments Summary
         </div>
+        <button mat-raised-button color="primary" class="agm-button import-button" (click)="openDialog()">
+          <mat-icon>arrow_upward</mat-icon>
+          Import
+        </button>
       </div>
-    </section>
-    <ag-grid-angular
-      #agGrid
-      class="ag-theme-alpine"
-      [columnDefs]="columnDefs"
-      [statusBar]="statusBar"
-      [sideBar]="sideBar"
-      rowSelection="multiple"
-      [rowData]="rowDataHeader"
-      (gridReady)="onGridReady($event)"
-      (rowSelected)="onRowSelected($event)"
-      (selectionChanged)="onSelectionChanged($event)"
-    >
-    </ag-grid-angular>
+
+      <div class="Monochromatic grid-header">
+        <div class="grid-header-totals">Data Results ({{ totalResults }})</div>
+        <button [disabled]="actionsDisabled" mat-raised-button color="primary" class="agm-button action-menu-button"
+          [matMenuTriggerFor]="menu" (click)="actionMenuOpen = true">
+          Actions
+          <i class="material-icons">{{ actionMenuOpen ? 'expand_less' : 'expand_more' }}</i>
+        </button>
+
+        <mat-menu class="action-menu" #menu="matMenu" (closed)="onActionMenuClosed($event)">
+          <div mat-menu-item class="action-menu-item">
+            View/Edit
+          </div>
+          <div mat-menu-item class="action-menu-item">
+            Delete
+          </div>
+        </mat-menu>
+      </div>
+    </div>
   </div>
+
+  <ag-grid-angular #agGrid class="ag-theme-alpine" [defaultColDef]="defaultColDef" [columnDefs]="columnDefs"
+    rowSelection="multiple" [rowData]="assortments" (gridReady)="onGridReady($event)"
+    (rowSelected)="onRowSelected($event)" (selectionChanged)="onSelectionChanged($event)">
+  </ag-grid-angular>
 </div>

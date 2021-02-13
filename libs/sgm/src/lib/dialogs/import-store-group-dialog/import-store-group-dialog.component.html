@@ -34,10 +34,16 @@
               [disable]="leadSubclass.disabled" [required]="true" (onValueChanged)="onLeadSubclassChanged($event)">
             </app-input-dropdown-filter>
           </div>
+          <div class="col-md-4">
+            <app-input-multiselect-dropdown [placeholder]="'Auto Linked Subclass(es)'" [title]="'Manage Auto Linked Subclasses'"
+              [arrayValues]="systemicallyLinkedSubClassesDropdownItems" [loading]="loadingSystemicallyLinkedSubClasses" [inputFormControl]="formControlSystemicallyLinkedSubClasses"
+              [required]="false" (onValueChanged)="onSystemicallyLinkedSubClassChanged($event)" >
+            </app-input-multiselect-dropdown>
+          </div>
         </div>
         <div class="row add-space-above">
           <div class="col-md-12">
-            Link(s)
+            Add Linked Subclass(es)
           </div>
         </div>
         <div class="row row-centered">
@@ -75,8 +81,8 @@
   <div class="col-md-12">
     <div mat-dialog-actions class="show-on-right">
       <button mat-raised-button color="primary" [disabled]="!validForm() || creatingStoreGroups == true"
-        (click)="createStoreGroups()">
-        {{ creatingStoreGroups == false ? 'Import Cluster Group' : 'Importing Cluster Group...' }}
+        (click)="createStoreGroups()" [class.spinner]="creatingStoreGroups">
+        {{ creatingStoreGroups == false ? 'Import Cluster Group' : 'Importing Cluster Group...'}}
       </button>
       <button mat-raised-button color="warn" mat-dialog-close cdkFocusInitial>Close</button>
     </div>

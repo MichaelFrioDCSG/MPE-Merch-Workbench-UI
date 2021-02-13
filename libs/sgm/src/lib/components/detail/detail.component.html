@@ -1,52 +1,32 @@
 <div class="main-content">
   <div class="container-fluid">
-    <div class="row">
-      <div class="col-12 breadcrumb-dsg mt-2 mb-2">
-        <p><span class="hover" [routerLink]="['/sgm']">Summary</span> | Detail</p>
+    <div id="grid-wrapper" class="grid-wrapper">
+      <div class="button-row-container">
+        <div class="col-12 breadcrumb-dsg mt-2 mb-2">
+          <p><span class="hover" [routerLink]="['/sgm']">Cluster Group</span> | Detail</p>
+        </div>
       </div>
-    </div>
 
-    <div class="row">
-      <div class="col-12">
-        <h3>Cluster Group Detail</h3>
-      </div>
-    </div>
+      <div class="grid-header">
+        <div class="grid-header-text">
+          Data Results (<span data-test="shown-records">{{ shownRecords }}</span> of <span data-test="total-records">{{
+            totalRecords }}</span>)
+        </div>
 
-    <div class="row grid-header">
-      <div class="col-9 grid-header-text">
-        Data Results (<span data-test="shown-records">{{ shownRecords }}</span> of <span data-test="total-records">{{ totalRecords }}</span
-        >)
-      </div>
-      <div class="col-3 actionButons">
-        <button mat-flat-button class="btn-primary" (click)="onCancelClick()" [disabled]="actionsDisabled" data-test="revert-button">Cancel</button>
-        <button mat-flat-button class="btn-secondary" (click)="onCommitClick()" [disabled]="actionsDisabled" data-test="commit-button">
+        <button mat-flat-button class="btn-primary" (click)="onCancelClick()" [disabled]="actionsDisabled"
+          data-test="revert-button">Cancel</button>
+        <button mat-flat-button class="btn-secondary" (click)="onCommitClick()" [disabled]="actionsDisabled"
+          data-test="commit-button">
           <mat-icon>save</mat-icon> Commit
         </button>
       </div>
-    </div>
-  </div>
 
-  <div class="row">
-    <div class="col-12">
-      <div id="grid-wrapper" class="grid-wrapper">
-        <ag-grid-angular
-          #agGrid
-          class="ag-theme-alpine"
-          [immutableData]="true"
-          [getRowNodeId]="getRowNodeId"
-          [modules]="modules"
-          [defaultColDef]="defaultColDef"
-          [columnDefs]="columnDefs"
-          [sideBar]="sideBar"
-          [rowGroupPanelShow]="rowGroupPanelShow"
-          [enableGroupEdit]="true"
-          [gridOptions]="gridOptions"
-          rowSelection="multiple"
-          (gridReady)="onGridReady($event)"
-          (filterChanged)="onFilterChanged($event)"
-        >
-        </ag-grid-angular>
-      </div>
+      <ag-grid-angular #agGrid class="ag-theme-alpine" [immutableData]="true" [getRowNodeId]="getRowNodeId"
+        [modules]="modules" [defaultColDef]="defaultColDef" [columnDefs]="columnDefs" [sideBar]="sideBar"
+        [rowGroupPanelShow]="rowGroupPanelShow" [enableGroupEdit]="true" [gridOptions]="gridOptions"
+        rowSelection="multiple" (gridReady)="onGridReady($event)" (filterChanged)="onFilterChanged($event)"
+        [overlayLoadingTemplate]="loadingTemplate">
+      </ag-grid-angular>
     </div>
   </div>
 </div>
