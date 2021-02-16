@@ -34,8 +34,10 @@ export class DetailComponent implements OnInit {
     const queryStringParameter = this.route.snapshot.paramMap.get('id');
     return queryStringParameter.split(',').map(id => parseInt(id, 10));
   }
+
   public shownRecords: number;
   public totalRecords: number;
+
   public defaultColDef: any = {
     resizable: true,
     sortable: true,
@@ -43,7 +45,9 @@ export class DetailComponent implements OnInit {
     width: 250,
     hide: true,
     enableRowGroup: true,
-    editable: false
+    editable: false,
+    suppressNavigable: true,
+    cellClass: 'no-border',
   };
   private datePipe: DatePipe = new DatePipe('en-US');
   public actionsDisabled = false;

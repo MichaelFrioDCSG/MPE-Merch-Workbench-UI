@@ -30,6 +30,7 @@ export class ImportStoreGroupDialogComponent implements OnInit {
 
   public productHierarchiesInterface: IProductHierarchy[] = [];
   public linkedSubclassesInterface: ILinkSubclass[] = [];
+  public systemicallyLinkedSubClassesDropdownItems: any[] = [];
   public productDepartmentsDropdownItems: string[] = [];
   public productLinkSubclassesDropdownItems: any[] = [];
   public productSubDepartmentsDropdownItems: string[] = [];
@@ -44,9 +45,10 @@ export class ImportStoreGroupDialogComponent implements OnInit {
   public formControlSubDepartments = new FormControl({ value: [], disabled: true });
   public formControlClasses = new FormControl({ value: [], disabled: true });
   public formControlSubClasses = new FormControl({ value: [], disabled: true });
+  public formControlSystemicallyLinkedSubClasses = new FormControl({ value: [], disabled: true });
 
   public selectedLinkSubclasses: string[] = [];
-  public populatedLinkSubclasses: string[] = [];
+  public systemicallyLinkedSubclasses: string[] = [];
   private combinedLinkSubclasses: string[] = [];
   public filteredLinkSubclasses: IProductHierarchy[] = [];
 
@@ -60,6 +62,7 @@ export class ImportStoreGroupDialogComponent implements OnInit {
   public loadingAssortmentPeriods = false;
   public loadingProductHierarchy = false;
   public loadingLeadSubClasses = false;
+  public loadingSystemicallyLinkedSubClasses = false;
   public creatingStoreGroups = false;
   public createStoreGroupErrors: string[] = [];
   public showErrors = false;
@@ -105,6 +108,7 @@ export class ImportStoreGroupDialogComponent implements OnInit {
     !this.leadSubclass.value
       ? this.formControlProductDepartments.disable({ emitEvent: true })
       : this.formControlProductDepartments.enable({ emitEvent: false });
+    this.loadingSystemicallyLinkedSubClasses = true;
     this.productHierarchyService
       .GetLinkSubclasses(this.assortmentPeriod.value.assortmentPeriodId, leadSubclassId)
       .subscribe((linkedSubclasses: ILinkSubclass[]) => {
@@ -112,11 +116,39 @@ export class ImportStoreGroupDialogComponent implements OnInit {
         this.formatLinkSubclasses();
 
         this.filteredLinkSubclasses = this.productHierarchiesInterface
-          .filter(product => !this.populatedLinkSubclasses.includes(product.subClassId))
+          .filter(product => !this.systemicallyLinkedSubclasses.includes(product.subClassId))
           .filter(product => product.subClassDisplay !== this.leadSubclass.value);
+
+        this.systemicallyLinkedSubClassesDropdownItems = this.productHierarchiesInterface
+          .filter(product => this.systemicallyLinkedSubclasses.includes(product.subClassId))
+          .filter(product => product.subClassDisplay !== this.leadSubclass.value)
+          .map(product => product.subClassDisplay)
+          .sort();
+        this.systemicallyLinkedSubClassesDropdownItems = [...new Set(this.systemicallyLinkedSubClassesDropdownItems)];
+
+        this.loadingSystemicallyLinkedSubClasses = false;
+
+        if (this.systemicallyLinkedSubClassesDropdownItems.length === 0) {
+          this.formControlSystemicallyLinkedSubClasses.disable();
+        } else {
+          this.formControlSystemicallyLinkedSubClasses.enable();
+        }
+
+        this.formControlSystemicallyLinkedSubClasses.setValue(this.systemicallyLinkedSubClassesDropdownItems);
 
         this.formatProductHierarchies();
       });
+  }
+
+  public onSystemicallyLinkedSubClassChanged(value) {
+    this.formControlSystemicallyLinkedSubClasses.setValue(value);
+    this.systemicallyLinkedSubclasses = this.productHierarchiesInterface
+      .filter(
+        product =>
+          !this.formControlSystemicallyLinkedSubClasses.value.length ||
+          this.formControlSystemicallyLinkedSubClasses.value.includes(product.subClassDisplay)
+      )
+      .map(product => product.subClassId);
   }
 
   public onProductDepartmentChanged(value) {
@@ -173,12 +205,12 @@ export class ImportStoreGroupDialogComponent implements OnInit {
   }
 
   public formatLinkSubclasses() {
-    this.populatedLinkSubclasses = this.linkedSubclassesInterface
+    this.systemicallyLinkedSubclasses = this.linkedSubclassesInterface
       .map((linksubclass: ILinkSubclass) => {
         return linksubclass.subClassId;
       })
       .sort();
-    this.populatedLinkSubclasses = [...new Set(this.populatedLinkSubclasses)];
+    this.systemicallyLinkedSubclasses = [...new Set(this.systemicallyLinkedSubclasses)];
 
     this.populatedLinkDepartments = this.linkedSubclassesInterface
       .map((linksubclass: ILinkSubclass) => {
@@ -298,7 +330,7 @@ export class ImportStoreGroupDialogComponent implements OnInit {
       this.productSubClassesDropdownItems = this.filteredLinkSubclasses
         .filter(product => classes.includes(product.classDisplay))
         .filter(product => product.subClassDisplay !== this.leadSubclass.value)
-        .filter(product => !this.populatedLinkSubclasses.includes(product.subClassId))
+        .filter(product => !this.systemicallyLinkedSubclasses.includes(product.subClassId))
         .map(product => product.subClassDisplay)
         .sort();
       this.productSubClassesDropdownItems = [...new Set(this.productSubClassesDropdownItems)];
@@ -313,7 +345,7 @@ export class ImportStoreGroupDialogComponent implements OnInit {
   public createStoreGroups() {
     const leadSubclassId = this.productHierarchiesInterface.find(hierarchy => hierarchy.subClassDisplay === this.leadSubclass.value).subClassId;
 
-    this.combinedLinkSubclasses = [...new Set([leadSubclassId, ...this.populatedLinkSubclasses, ...this.selectedLinkSubclasses])];
+    this.combinedLinkSubclasses = [...new Set([leadSubclassId, ...this.systemicallyLinkedSubclasses, ...this.selectedLinkSubclasses])];
 
     const body: ICreateStoreGroupRequest = {
       storeGroupName: this.storeGroupName.value,
@@ -365,6 +397,7 @@ export class ImportStoreGroupDialogComponent implements OnInit {
     this.formControlSubDepartments.reset([]);
     this.formControlClasses.reset([]);
     this.formControlSubClasses.reset([]);
+    this.formControlSystemicallyLinkedSubClasses.reset([]);
   }
 
   private resetFormAndValues() {
