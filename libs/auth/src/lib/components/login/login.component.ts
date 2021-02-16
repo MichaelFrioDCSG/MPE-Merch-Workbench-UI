@@ -19,8 +19,6 @@ import { selectUserProfile } from '../../store/auth.state';
 export class LoginComponent implements OnInit {
   public userProfile: Observable<IUserProfile> = this.store.pipe(select(AuthSections.selectUserProfile));
   private msalInstance: msal.PublicClientApplication;
-  private rolesService;
-
 
   constructor(private router: Router, private route: ActivatedRoute, private store: Store<IAuthState>) { }
 
@@ -34,7 +32,7 @@ export class LoginComponent implements OnInit {
     };
 
     this.msalInstance = new msal.PublicClientApplication(msalConfig);
-    //this.rolesService = this.rolesService.getAccount().idTokenClaims.roles;
+
     this.msalInstance
       .handleRedirectPromise()
       .then(tokenResponse => {

@@ -6,4 +6,3 @@ export * from './lib/store/auth.reducers';
 export * from './lib/store/models/IAuthState';
 export * from './lib/store/models/IUserProfile';
 export * from './lib/services/auth-guard.service';
-export * from './lib/services/role-gaurd.service'

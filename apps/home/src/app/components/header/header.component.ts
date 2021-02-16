@@ -19,7 +19,6 @@ export class HeaderComponent implements OnInit {
 
   public ngOnInit(): void {
     this.userProfile = this.store.pipe(select(selectUserProfile));
-    console.log("HEADER USER PROFILE", this.userProfile);
     this.routes = [];
     for (const route of routes) {
       if (route?.data?.display === undefined || route?.data?.display === true) {

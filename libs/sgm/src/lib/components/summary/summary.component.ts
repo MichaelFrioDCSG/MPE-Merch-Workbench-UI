@@ -12,7 +12,7 @@ import { actions as sharedActions } from '@mpe/shared';
 import { ImportStoreGroupDialogComponent } from '../../dialogs/import-store-group-dialog/import-store-group-dialog.component';
 import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
-import { selectUserProfile, IAuthState, IUserProfile, LoginComponent } from '@mpe/auth';
+import { selectUserProfile, IUserProfile } from '@mpe/auth';
 
 @Component({
   selector: 'mpe-landing',
