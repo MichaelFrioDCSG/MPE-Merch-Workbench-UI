@@ -23,7 +23,7 @@ export class SummaryComponent implements OnInit {
   public loadingTemplate;
   public clusterGroupsObs: Observable<IClusterGroup[]> = null;
   public style: any;
-  public gridOptions: GridOptions;
+  public gridOptions: GridOptions = { suppressCellSelection: true };
   public gridColumnApi: any;
   public gridApi: GridApi;
   public actionsDisabled: boolean;
@@ -39,6 +39,7 @@ export class SummaryComponent implements OnInit {
   public clusterGroups: IClusterGroup[] = [];
   public defaultColDef: any = {
     resizable: true,
+    cellClass: 'no-border',
   };
   public deletingStoreGroups: boolean;
   public columnDefs = [
