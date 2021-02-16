@@ -82,9 +82,7 @@ export class SummaryComponent implements OnInit {
     this.userProfile = this.store.pipe(select(selectUserProfile));
     this.userProfile.subscribe(profile => {
       this.userRoles = profile.roles;
-      console.log(this.userRoles);
     })
-    console.log(this.userProfile);
   }
 
   public onActionMenuClosed($event) {
