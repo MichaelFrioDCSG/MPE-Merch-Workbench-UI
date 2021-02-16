@@ -6,14 +6,14 @@
         <div class="row">
           <div class="col-md-4">
             <mat-form-field class="example-full-width">
-              <input matInput [formControl]="storeGroupName" placeholder="Cluster Group Name" [required]="true" />
-              <mat-error *ngIf="storeGroupName.hasError('required')"> Cluster Group Name is <strong>required</strong>
+              <input matInput [formControl]="clusterGroupName" placeholder="Cluster Group Name" [required]="true" />
+              <mat-error *ngIf="clusterGroupName.hasError('required')"> Cluster Group Name is <strong>required</strong>
               </mat-error>
             </mat-form-field>
           </div>
           <div class="col-md-4">
             <mat-form-field class="example-full-width">
-              <input matInput [formControl]="storeGroupDescription" placeholder="Cluster Group Description" />
+              <input matInput [formControl]="clusterGroupDescription" placeholder="Cluster Group Description" />
             </mat-form-field>
           </div>
         </div>
@@ -35,9 +35,11 @@
             </app-input-dropdown-filter>
           </div>
           <div class="col-md-4">
-            <app-input-multiselect-dropdown [placeholder]="'Auto Linked Subclass(es)'" [title]="'Manage Auto Linked Subclasses'"
-              [arrayValues]="systemicallyLinkedSubClassesDropdownItems" [loading]="loadingSystemicallyLinkedSubClasses" [inputFormControl]="formControlSystemicallyLinkedSubClasses"
-              [required]="false" (onValueChanged)="onSystemicallyLinkedSubClassChanged($event)" >
+            <app-input-multiselect-dropdown [placeholder]="'Auto Linked Subclass(es)'"
+              [title]="'Manage Auto Linked Subclasses'" [arrayValues]="systemicallyLinkedSubClassesDropdownItems"
+              [loading]="loadingSystemicallyLinkedSubClasses"
+              [inputFormControl]="formControlSystemicallyLinkedSubClasses" [required]="false"
+              (onValueChanged)="onSystemicallyLinkedSubClassChanged($event)">
             </app-input-multiselect-dropdown>
           </div>
         </div>
@@ -80,16 +82,16 @@
 <div class="row row-centered">
   <div class="col-md-12">
     <div mat-dialog-actions class="show-on-right">
-      <button mat-raised-button color="primary" [disabled]="!validForm() || creatingStoreGroups == true"
-        (click)="createStoreGroups()" [class.spinner]="creatingStoreGroups">
-        {{ creatingStoreGroups == false ? 'Import Cluster Group' : 'Importing Cluster Group...'}}
+      <button mat-raised-button color="primary" [disabled]="!validForm() || creatingClusterGroups == true"
+        (click)="checkForExistingClusterGroup()" [class.spinner]="creatingClusterGroups">
+        {{ creatingClusterGroups == false ? 'Import Cluster Group' : 'Importing Cluster Group...'}}
       </button>
       <button mat-raised-button color="warn" mat-dialog-close cdkFocusInitial>Close</button>
     </div>
   </div>
   <ng-container *ngIf="showErrors">
     <div class="col-md-12">
-      <ng-container *ngFor="let error of createStoreGroupErrors">
+      <ng-container *ngFor="let error of createClusterGroupErrors">
         <mat-icon color="accent">warning</mat-icon>
         <span class="error-message">{{ error }}</span>
       </ng-container>
