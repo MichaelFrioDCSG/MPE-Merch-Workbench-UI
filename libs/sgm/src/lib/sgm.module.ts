@@ -5,23 +5,19 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser';
 import { AgGridModule } from 'ag-grid-angular';
-import { HttpClientModule } from '@angular/common/http';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { MaterialModule } from '@mpe/material';
 
-import { ClusterGroupsService } from '@mpe/AsmtMgmtService';
+import { ClusterGroupService } from '@mpe/AsmtMgmtService';
+import { InputSpinnerComponent, InputDropdownFilterComponent, InputMultiselectDropdownComponent } from '@mpe/shared';
 
 import StoreGroupMgmtEffects from './store/store-group-mgmt.effects';
 import * as fromStoreGroupMgmt from './store/store-group-mgmt.reducer';
 
-import { ImportStoreGroupDialogComponent } from './dialogs/import-store-group-dialog/import-store-group-dialog.component';
-import { InputSpinnerComponent } from 'libs/shared/src/lib/components/inputs/input-spinner/input-spinner.component';
-import { InputDropdownFilterComponent } from 'libs/shared/src/lib/components/inputs/input-dropdown-filter/input-dropdown-filter.component';
-import { InputMultiselectDropdownComponent } from 'libs/shared/src/lib/components/inputs/input-multiselect-dropdown/input-multiselect-dropdown.component';
+import { ImportClusterGroupDialogComponent } from './dialogs/import-cluster-group-dialog/import-cluster-group-dialog.component';
 import { DetailComponent } from './components/detail/detail.component';
 import { SummaryComponent } from './components/summary/summary.component';
-
 
 export const sgmRoutes: Route[] = [
   { path: ':id', component: DetailComponent },
@@ -43,7 +39,7 @@ export const sgmRoutes: Route[] = [
   ],
   declarations: [
     SummaryComponent,
-    ImportStoreGroupDialogComponent,
+    ImportClusterGroupDialogComponent,
     InputSpinnerComponent,
     InputMultiselectDropdownComponent,
     InputDropdownFilterComponent,
@@ -51,6 +47,6 @@ export const sgmRoutes: Route[] = [
   ],
   exports: [SummaryComponent, DetailComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  providers: [{ provide: ClusterGroupsService, useClass: ClusterGroupsService }],
+  providers: [{ provide: ClusterGroupService, useClass: ClusterGroupService }],
 })
 export class SgmModule {}

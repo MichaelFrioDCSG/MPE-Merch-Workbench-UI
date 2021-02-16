@@ -41,7 +41,7 @@
 
       <ag-grid-angular #agGrid class="ag-theme-alpine" [rowData]="clusterGroups" [modules]="modules"
         [defaultColDef]="defaultColDef" [columnDefs]="columnDefs" [statusBar]="statusBar" [gridOptions]="gridOptions"
-        [enableRangeSelection]="true" rowSelection="multiple" (gridReady)="onGridReady($event)"
+        [enableRangeSelection]="false" rowSelection="multiple" (gridReady)="onGridReady($event)"
         (rowSelected)="onRowSelected($event)" (selectionChanged)="onSelectionChanged($event)"
         [overlayLoadingTemplate]="loadingTemplate">
       </ag-grid-angular>

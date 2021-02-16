@@ -3,27 +3,32 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormBuilder, Validators, FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
-import { IProductHierarchy } from '../../../../../shared/src/lib/models/IProductHierarchy';
-import { ILinkSubclass } from '../../../../../sgm/src/lib/models/ILinkSubclass';
-import { AssortmentPeriodService } from 'libs/sgm/src/lib/services/assortment-period.service';
-import { IAssortmentPeriod } from '../../../../../shared/src/lib/models/IAssortmentPeriod';
-import { ProductHierarchyService } from 'libs/sgm/src/lib/services/product-hierarchy.service';
-import { IStoreGroup } from '../../../../../shared/src/lib/models/IStoreGroup';
-import { StoreGroupService } from 'libs/sgm/src/lib/services/store-group.service';
-import { ICreateStoreGroupResponse } from '../../../../../shared/src/lib/models/dto/ICreateStoreGroupResponse';
-import { ICreateStoreGroupRequest } from '../../../../../shared/src/lib/models/dto/ICreateStoreGroupRequest';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ToastMessageComponent } from 'libs/shared/src/lib/components/toast-message/toast-message.component';
 import { Store } from '@ngrx/store';
+
+import { ClusterGroupService, AssortmentPeriodService, ProductHierarchyService } from '@mpe/AsmtMgmtService';
+
 import * as actions from '../../store/store-group-mgmt.actions';
 import { IStoreGroupMgmtState } from '../../store/store-group-mgmt.reducer';
 
+import {
+  IProductHierarchy,
+  ILinkSubclass,
+  IAssortmentPeriod,
+  ICreateClusterGroupRequestDto,
+  ICreateClusterGroupResponseDto,
+  ToastMessageComponent,
+  actions as sharedActions,
+  IMessageDialogData,
+  IWarningDialogData,
+} from '@mpe/shared';
+
 @Component({
-  selector: 'app-import-store-group-dialog',
-  templateUrl: './import-store-group-dialog.component.html',
-  styleUrls: ['./import-store-group-dialog.component.scss'],
+  selector: 'app-import-cluster-group-dialog',
+  templateUrl: './import-cluster-group-dialog.component.html',
+  styleUrls: ['./import-cluster-group-dialog.component.scss'],
 })
-export class ImportStoreGroupDialogComponent implements OnInit {
+export class ImportClusterGroupDialogComponent implements OnInit {
   public jsonData: IProductHierarchy[] = [];
   public assortmentPeriods: IAssortmentPeriod[] = [];
   public filteredAssortmentPeriods: Observable<any[]>;
@@ -37,8 +42,8 @@ export class ImportStoreGroupDialogComponent implements OnInit {
   public productClassesDropdownItems: any[] = [];
   public productSubClassesDropdownItems: any[] = [];
 
-  public storeGroupName = new FormControl('', [Validators.required]);
-  public storeGroupDescription = new FormControl('');
+  public clusterGroupName = new FormControl('', [Validators.required]);
+  public clusterGroupDescription = new FormControl('');
   public assortmentPeriod = new FormControl('', [Validators.required]);
   public leadSubclass = new FormControl({ value: '', disabled: true }, [Validators.required]);
   public formControlProductDepartments = new FormControl({ value: [], disabled: true });
@@ -55,40 +60,45 @@ export class ImportStoreGroupDialogComponent implements OnInit {
   public populatedLinkDepartments: string[] = [];
 
   public productLeadSubclasses: string[] = [];
-  public productLinkSubclasses: string[] = [];
-  public storeGroups: IStoreGroup[] = [];
+  public clusterGroups: ICreateClusterGroupRequestDto[] = [];
 
   public departmentHasBeenModified = false;
   public loadingAssortmentPeriods = false;
   public loadingProductHierarchy = false;
   public loadingLeadSubClasses = false;
   public loadingSystemicallyLinkedSubClasses = false;
-  public creatingStoreGroups = false;
-  public createStoreGroupErrors: string[] = [];
+  public creatingClusterGroups = false;
+  public createClusterGroupErrors: string[] = [];
   public showErrors = false;
 
   public addedProductHierarchies: IProductHierarchy[] = [];
 
   constructor(
-    public dialogRef: MatDialogRef<ImportStoreGroupDialogComponent>,
+    public dialogRef: MatDialogRef<ImportClusterGroupDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     public formBuilder: FormBuilder,
     public assortmentPeriodService: AssortmentPeriodService,
     public productHierarchyService: ProductHierarchyService,
-    public storeGroupService: StoreGroupService,
+    public clusterGroupService: ClusterGroupService,
     private snackBar: MatSnackBar,
     private store: Store<IStoreGroupMgmtState>
   ) {}
 
   public ngOnInit() {
     this.loadingAssortmentPeriods = true;
-    this.assortmentPeriodService.getAssortmentPeriods(false, true).subscribe((assortmentPeriods: IAssortmentPeriod[]) => {
-      this.assortmentPeriods = assortmentPeriods;
-      this.assortmentPeriods.sort();
-      this.filterAssortmentPeriods();
+    this.assortmentPeriodService.getAssortmentPeriods(false, true).subscribe(
+      (assortmentPeriods: IAssortmentPeriod[]) => {
+        this.assortmentPeriods = assortmentPeriods;
+        this.assortmentPeriods.sort();
+        this.filterAssortmentPeriods();
 
-      this.loadingAssortmentPeriods = false;
-    });
+        this.loadingAssortmentPeriods = false;
+      },
+      ex => {
+        this.loadingAssortmentPeriods = false;
+        this.showToastMessage('Error while retrieving Assortment Periods', [], true);
+      }
+    );
     this.productHierarchyChanges();
   }
 
@@ -342,35 +352,80 @@ export class ImportStoreGroupDialogComponent implements OnInit {
     });
   }
 
-  public createStoreGroups() {
+  public checkForExistingClusterGroup() {
+    const clusterGroupName = this.clusterGroupName.value;
+    const assortmentPeriodId = this.assortmentPeriod.value.assortmentPeriodId;
+    const leadSubclassId = this.productHierarchiesInterface.find(hierarchy => hierarchy.subClassDisplay === this.leadSubclass.value).subClassId;
+    const combinedLinkSubclasses = [...new Set([leadSubclassId, ...this.systemicallyLinkedSubclasses, ...this.selectedLinkSubclasses])];
+
+    this.clusterGroupService.checkForExistingClusterGroup(clusterGroupName, assortmentPeriodId, combinedLinkSubclasses).subscribe(
+      data => {
+        // No existing cluster groups found
+        if (!data || !data.errorMessages || data.errorMessages.length === 0) {
+          this.createClusterGroups();
+        } else {
+          const args: IWarningDialogData = {
+            title: 'WARNING: Cluster Group already exists in Store Group Management',
+            messages: data.errorMessages,
+            action: 'Overwrite',
+            okAction: () => {
+              this.createClusterGroups(true);
+            },
+          };
+
+          this.creatingClusterGroups = false;
+          this.store.dispatch(sharedActions.showWarningDialog(args));
+        }
+      },
+      ex => {
+        // show error dialog
+        const args: IMessageDialogData = {
+          messages: [ex.error.errors],
+        };
+        this.creatingClusterGroups = false;
+        this.store.dispatch(sharedActions.showMessageDialog(args));
+      }
+    );
+  }
+
+  public createClusterGroups(overwrite: boolean = false) {
     const leadSubclassId = this.productHierarchiesInterface.find(hierarchy => hierarchy.subClassDisplay === this.leadSubclass.value).subClassId;
 
     this.combinedLinkSubclasses = [...new Set([leadSubclassId, ...this.systemicallyLinkedSubclasses, ...this.selectedLinkSubclasses])];
 
-    const body: ICreateStoreGroupRequest = {
-      storeGroupName: this.storeGroupName.value,
-      storeGroupDescription: this.storeGroupDescription.value,
+    const body: ICreateClusterGroupRequestDto = {
+      clusterGroupName: this.clusterGroupName.value,
+      clusterGroupDescription: this.clusterGroupDescription.value,
       assortmentPeriodId: this.assortmentPeriod.value.assortmentPeriodId,
       sourceSubclassId: leadSubclassId,
       targetSubclassIds: this.combinedLinkSubclasses,
+      overwrite: overwrite,
     };
 
-    this.creatingStoreGroups = true;
+    this.creatingClusterGroups = true;
     this.showErrors = false;
-    this.createStoreGroupErrors = [];
+    this.createClusterGroupErrors = [];
 
-    this.storeGroupService.createStoreGroup(body).subscribe((data: ICreateStoreGroupResponse) => {
-      this.creatingStoreGroups = false;
-      if (data.isSuccess) {
-        this.showToastMessage('Cluster Import Success', [], false);
-        this.store.dispatch(actions.sgmGetSummaries());
-        this.dialogRef.close({ data: null });
-      } else {
+    this.clusterGroupService.createClusterGroup(body).subscribe(
+      (data: ICreateClusterGroupResponseDto) => {
+        this.creatingClusterGroups = false;
+        if (data.isSuccess) {
+          this.showToastMessage('Cluster Import Success', [], false);
+          this.store.dispatch(actions.sgmGetSummaries());
+          this.dialogRef.close({ data: null });
+        } else {
+          this.showErrors = true;
+          this.createClusterGroupErrors = data.errorMessages;
+          this.showToastMessage('Error when Importing Clusters', [], true);
+        }
+      },
+      ex => {
+        this.creatingClusterGroups = false;
         this.showErrors = true;
-        this.createStoreGroupErrors = data.errorMessages;
+        this.createClusterGroupErrors = [ex.error.errors];
         this.showToastMessage('Error when Importing Clusters', [], true);
       }
-    });
+    );
   }
 
   public getAssortmentPeriodLabel(assortmentPeriod: IAssortmentPeriod) {
@@ -378,7 +433,7 @@ export class ImportStoreGroupDialogComponent implements OnInit {
   }
 
   public validForm() {
-    return this.storeGroupName.valid && this.assortmentPeriod.valid && this.leadSubclass.valid;
+    return this.clusterGroupName.valid && this.assortmentPeriod.valid && this.leadSubclass.valid && !this.loadingProductHierarchy;
   }
 
   private showToastMessage(title: string, messages: string[], isError: boolean = false): void {
@@ -398,23 +453,5 @@ export class ImportStoreGroupDialogComponent implements OnInit {
     this.formControlClasses.reset([]);
     this.formControlSubClasses.reset([]);
     this.formControlSystemicallyLinkedSubClasses.reset([]);
-  }
-
-  private resetFormAndValues() {
-    this.storeGroupName.reset('', { emitEvent: false });
-    this.storeGroupDescription.reset('', { emitEvent: false });
-    this.assortmentPeriod.reset('', { emitEvent: false });
-
-    this.leadSubclass.reset('', { emitEvent: false });
-    this.leadSubclass.disable();
-
-    this.formControlProductDepartments.reset([]);
-    this.formControlProductDepartments.disable();
-    this.formControlSubDepartments.reset([]);
-    this.formControlClasses.reset([]);
-    this.formControlSubClasses.reset([]);
-
-    this.productHierarchiesInterface = [];
-    this.formatProductHierarchies();
   }
 }

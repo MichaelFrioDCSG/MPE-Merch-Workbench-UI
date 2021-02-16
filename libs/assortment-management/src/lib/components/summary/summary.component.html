@@ -40,7 +40,7 @@
   </div>
 
   <ag-grid-angular #agGrid class="ag-theme-alpine" [defaultColDef]="defaultColDef" [columnDefs]="columnDefs"
-    rowSelection="multiple" [rowData]="assortments" (gridReady)="onGridReady($event)"
+    rowSelection="multiple" [gridOptions]="gridOptions" [rowData]="assortments" (gridReady)="onGridReady($event)"
     (rowSelected)="onRowSelected($event)" (selectionChanged)="onSelectionChanged($event)">
   </ag-grid-angular>
 </div>

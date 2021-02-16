@@ -2,17 +2,18 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { AgGridAngular } from 'ag-grid-angular';
 import { MatDialog } from '@angular/material/dialog';
 import { AllCommunityModules, Module, GridOptions, GridApi } from '@ag-grid-community/all-modules';
-import { IClusterGroup } from '@mpe/shared';
 import { Store, select } from '@ngrx/store';
-import { selectClusterGroups } from '../../store/store-group-mgmt.selectors';
-import { IStoreGroupMgmtState } from '../../store/store-group-mgmt.reducer';
 import { Observable } from 'rxjs';
-import * as actions from '../../store/store-group-mgmt.actions';
-import { actions as sharedActions } from '@mpe/shared';
-import { ImportStoreGroupDialogComponent } from '../../dialogs/import-store-group-dialog/import-store-group-dialog.component';
 import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { selectUserProfile, IUserProfile } from '@mpe/auth';
+
+import { actions as sharedActions, IClusterGroup } from '@mpe/shared';
+
+import { selectClusterGroups } from '../../store/store-group-mgmt.selectors';
+import { IStoreGroupMgmtState } from '../../store/store-group-mgmt.reducer';
+import * as actions from '../../store/store-group-mgmt.actions';
+import { ImportClusterGroupDialogComponent } from '../../dialogs/import-cluster-group-dialog/import-cluster-group-dialog.component';
 
 @Component({
   selector: 'mpe-landing',
@@ -24,7 +25,7 @@ export class SummaryComponent implements OnInit {
   public loadingTemplate;
   public clusterGroupsObs: Observable<IClusterGroup[]> = null;
   public style: any;
-  public gridOptions: GridOptions;
+  public gridOptions: GridOptions = { suppressCellSelection: true };
   public gridColumnApi: any;
   public gridApi: GridApi;
   public actionsDisabled: boolean;
@@ -41,8 +42,9 @@ export class SummaryComponent implements OnInit {
   public clusterGroups: IClusterGroup[] = [];
   public defaultColDef: any = {
     resizable: true,
+    cellClass: 'no-border',
   };
-  public deletingStoreGroups: boolean;
+  public deletingClusterGroups: boolean;
   public columnDefs = [
     {
       colId: 'checkboxColumn',
@@ -75,7 +77,7 @@ export class SummaryComponent implements OnInit {
   ];
   public statusBar: any = {};
 
-  constructor(private dialog: MatDialog, private store: Store<IStoreGroupMgmtState>, public titleService: Title, private router: Router) { }
+  constructor(private dialog: MatDialog, private store: Store<IStoreGroupMgmtState>, public titleService: Title, private router: Router) {}
 
   public ngOnInit() {
     this.loadingTemplate = '<span class="ag-overlay-loading-center">Loading...</span>';
@@ -94,7 +96,7 @@ export class SummaryComponent implements OnInit {
   }
 
   public openDialog(): void {
-    const dialogRef = this.dialog.open(ImportStoreGroupDialogComponent, {
+    const dialogRef = this.dialog.open(ImportClusterGroupDialogComponent, {
       width: '100rem',
       data: {},
     });

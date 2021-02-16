@@ -7,8 +7,7 @@ import { AgGridModule } from 'ag-grid-angular';
 import { FormsModule } from '@angular/forms';
 import { MaterialModule } from '@mpe/material';
 import { ClusterGroupsService } from '@mpe/AsmtMgmtService';
-import { Store, select } from '@ngrx/store';
-import { selectUserProfile, IUserProfile, IAuthState } from '@mpe/auth';
+import { IAuthState } from '@mpe/auth';
 
 import { IStoreGroupMgmtState, initialState as sgmInitialState } from '../../store/store-group-mgmt.reducer';
 import { initialState as authnitialstate } from 'libs/auth/src/lib/store/auth.reducers';
@@ -16,7 +15,6 @@ import { initialState as authnitialstate } from 'libs/auth/src/lib/store/auth.re
 import { DetailComponent } from './detail.component';
 
 import 'ag-grid-enterprise';
-import { userInfo } from 'os';
 
 describe('DetailComponent', () => {
   let component: DetailComponent;

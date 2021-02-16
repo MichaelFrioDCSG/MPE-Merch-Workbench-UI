@@ -13,8 +13,8 @@ import * as actions from '../../store/assortment-mgmt.actions';
 import { IAssortment } from '@mpe/shared';
 import { selectAssortments } from '../../store/assortment-mgmt.selectors';
 import { AgGridAngular } from 'ag-grid-angular';
-import { GridApi } from 'ag-grid-community';
-import { selectUserProfile, IAuthState, IUserProfile, LoginComponent } from '@mpe/auth';
+import { GridApi, GridOptions } from 'ag-grid-community';
+import { selectUserProfile, IUserProfile } from '@mpe/auth';
 
 @Component({
   selector: 'mpe-summary',
@@ -25,6 +25,7 @@ export class SummaryComponent implements OnInit {
   constructor(private dialog: MatDialog, private snackBar: MatSnackBar, private titleService: Title, private store: Store<IAssortmentMgmtState>) { }
 
   public agGrid: AgGridAngular;
+  public gridOptions: GridOptions = { suppressCellSelection: true };
   public headerSelected: boolean;
   public actionsDisabled: boolean;
   public selectedData: any;
@@ -41,6 +42,7 @@ export class SummaryComponent implements OnInit {
     resizable: true,
     sortable: true,
     filter: true,
+    cellClass: 'no-border',
   };
   public columnDefs: any = [
     {

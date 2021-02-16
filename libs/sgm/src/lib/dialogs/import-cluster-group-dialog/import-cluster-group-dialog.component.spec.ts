@@ -1,15 +1,13 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ImportStoreGroupDialogComponent } from './import-store-group-dialog.component';
+import { ImportClusterGroupDialogComponent } from './import-cluster-group-dialog.component';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { MaterialModule } from '@mpe/material';
-import { ILinkSubclass } from '../../models/ILinkSubclass';
-import { ProductHierarchyService } from '../../services/product-hierarchy.service';
-import { AssortmentPeriodService } from '../../services/assortment-period.service';
+import { AssortmentPeriodService, ProductHierarchyService } from '@mpe/AsmtMgmtService';
 import { of } from 'rxjs';
-import { IProductHierarchy } from '@mpe/shared';
+import { IProductHierarchy, ILinkSubclass } from '@mpe/shared';
 import { _ } from 'ag-grid-community';
 import { Store } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
@@ -83,8 +81,8 @@ const mockLinkSubclassData: ILinkSubclass[] = [
 ];
 
 describe('ImportStoreGroupDialogComponent', () => {
-  let component: ImportStoreGroupDialogComponent;
-  let fixture: ComponentFixture<ImportStoreGroupDialogComponent>;
+  let component: ImportClusterGroupDialogComponent;
+  let fixture: ComponentFixture<ImportClusterGroupDialogComponent>;
   const mockAssortmentPeriodService: any = { getAssortmentPeriods: (a, b) => of([]) };
   const mockProductHierarchyService: any = {
     GetLinkSubclasses: (assortmentPeriodId, copyfromsubclassId) => of(mockLinkSubclassData),
@@ -94,7 +92,7 @@ describe('ImportStoreGroupDialogComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ImportStoreGroupDialogComponent],
+      declarations: [ImportClusterGroupDialogComponent],
       imports: [FormsModule, ReactiveFormsModule, HttpClientModule, MaterialModule],
       providers: [
         { provide: MAT_DIALOG_DATA, useValue: {} },
@@ -106,7 +104,7 @@ describe('ImportStoreGroupDialogComponent', () => {
     }).compileComponents();
 
     store = TestBed.inject(MockStore);
-    fixture = TestBed.createComponent(ImportStoreGroupDialogComponent);
+    fixture = TestBed.createComponent(ImportClusterGroupDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

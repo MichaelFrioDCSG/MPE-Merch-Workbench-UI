@@ -6,7 +6,7 @@ import * as actions from './store-group-mgmt.actions';
 import * as selectors from './store-group-mgmt.selectors';
 import { of } from 'rxjs';
 import { IClusterGroup } from '@mpe/shared';
-import { ClusterGroupsService } from '@mpe/AsmtMgmtService';
+import { ClusterGroupService } from '@mpe/AsmtMgmtService';
 import { Store } from '@ngrx/store';
 import { IStoreGroupMgmtState } from './store-group-mgmt.reducer';
 import { actions as sharedActions } from '@mpe/shared';
@@ -14,7 +14,7 @@ import { IServerResponse } from 'libs/asmt-mgmt-service/src/lib/services/IServer
 import { IClusterGroupResponseDto } from 'libs/asmt-mgmt-service/src/lib/services/IClusterGroupResponseDto';
 @Injectable()
 export default class StoreGroupMgmtEffects {
-  constructor(private actions$: Actions, private store: Store<IStoreGroupMgmtState>, private clusterGroupsService: ClusterGroupsService) {}
+  constructor(private actions$: Actions, private store: Store<IStoreGroupMgmtState>, private clusterGroupsService: ClusterGroupService) {}
 
   private onGetClusterGroupSummaries = createEffect(() =>
     this.actions$.pipe(

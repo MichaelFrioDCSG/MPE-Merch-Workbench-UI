@@ -4,20 +4,20 @@ import { HttpClient } from '@angular/common/http';
 import { of } from 'rxjs';
 
 import { IClusterGroup, IStoreInformation, IStoreInformationListValue } from '@mpe/shared';
-import { ClusterGroupsService } from './cluster-groups.service';
+import { ClusterGroupService } from './cluster-group.service';
 import { environment } from '@mpe/home/src/environments/environment';
 import { IServerResponse } from './IServerResponse';
 import { IClusterGroupResponseDto } from './IClusterGroupResponseDto';
 
 describe('ClusterGroupsService', () => {
-  let service: ClusterGroupsService;
+  let service: ClusterGroupService;
   let httpClient: HttpClient;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
     });
-    service = TestBed.inject(ClusterGroupsService);
+    service = TestBed.inject(ClusterGroupService);
     httpClient = TestBed.inject(HttpClient);
   });
 
