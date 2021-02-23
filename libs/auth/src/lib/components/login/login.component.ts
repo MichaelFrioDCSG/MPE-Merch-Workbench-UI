@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { IUserProfile } from '../../store/models/IUserProfile';
+import { ITokenResponse } from '../../store/models/ITokenResponse';
 import { IAuthState } from '../../store/models/IAuthState';
 import * as AuthSections from '../../store/auth.state';
 import * as actions from '../../store/auth.actions';
@@ -9,6 +10,7 @@ import * as msal from '@azure/msal-browser';
 import { environment } from '@mpe/home/src/environments/environment';
 import { ActivatedRoute, Router } from '@angular/router';
 import { selectUserProfile } from '../../store/auth.state';
+import { MsalConfig } from '../../msal-config';
 
 
 @Component({
@@ -38,6 +40,10 @@ export class LoginComponent implements OnInit {
       .then(tokenResponse => {
         // If the tokenResponse !== null, then you are coming back from a successful authentication redirect.
         if (tokenResponse !== null) {
+          const msalToken: ITokenResponse = {
+            token: tokenResponse.idToken
+          }
+          this.store.dispatch(actions.setUserToken({ TokenResponse: msalToken }));
           //auth success - call login action
           var idTokenResponse = this.parseJwt(tokenResponse.idToken);
           var roles = idTokenResponse.roles;
@@ -81,6 +87,20 @@ export class LoginComponent implements OnInit {
         const breakHere = '';
       });
   }
+
+  // public getToken(): Promise<string | msal.AuthenticationResult> {
+  //   return this.msalInstance.acquireTokenSilent(this.config.graphScopes)
+  //     .then(token => {
+  //       return token;
+  //     }).catch(error => {
+  //       return this.msalInstance.acquireTokenPopup(this.config.graphScopes)
+  //         .then(token => {
+  //           return Promise.resolve(token);
+  //         }).catch(innererror => {
+  //           return Promise.resolve('');
+  //         });
+  //     });
+  // }
 
   public parseJwt(token) {
     var base64Url = token.split('.')[1];

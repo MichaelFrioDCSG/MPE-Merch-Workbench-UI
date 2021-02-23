@@ -5,8 +5,7 @@
         <div class="breadcrumb-dsg">
           Assortments Summary
         </div>
-        <button *ngIf="(userProfile | async)?.roles =='Admin' || (userProfile | async)?.roles =='AMWrite'"
-          mat-raised-button color="primary" class="agm-button import-button" (click)="openDialog()">
+        <button mat-raised-button color="primary" class="agm-button import-button" (click)="openDialog()">
           <mat-icon>arrow_upward</mat-icon>
           Import
         </button>
@@ -14,24 +13,20 @@
 
       <div class="Monochromatic grid-header">
         <div class="grid-header-totals">Data Results ({{ totalResults }})</div>
-        <button
-          *ngIf="(userProfile | async)?.roles =='Admin' || (userProfile | async)?.roles =='AMWrite' || (userProfile | async)?.roles =='AMRead'"
-          [disabled]="actionsDisabled" mat-raised-button color="primary" class="agm-button action-menu-button"
+        <button [disabled]="actionsDisabled" mat-raised-button color="primary" class="agm-button action-menu-button"
           [matMenuTriggerFor]="menu" (click)="actionMenuOpen = true">
           Actions
           <i class="material-icons">{{ actionMenuOpen ? 'expand_less' : 'expand_more' }}</i>
         </button>
 
         <mat-menu class="action-menu" #menu="matMenu" (closed)="onActionMenuClosed($event)">
-          <div *ngIf="(userProfile | async)?.roles =='AMRead'" mat-menu-item class="action-menu-item">
+          <div mat-menu-item class="action-menu-item">
             View
           </div>
-          <div *ngIf="(userProfile | async)?.roles =='Admin' || (userProfile | async)?.roles =='AMWrite'" mat-menu-item
-            class="action-menu-item">
+          <div mat-menu-item class="action-menu-item">
             View/Edit
           </div>
-          <div *ngIf="(userProfile | async)?.roles =='Admin' || (userProfile | async)?.roles =='AMWrite'" mat-menu-item
-            class="action-menu-item">
+          <div mat-menu-item class="action-menu-item">
             Delete
           </div>
         </mat-menu>
