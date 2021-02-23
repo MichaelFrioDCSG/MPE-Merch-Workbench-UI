@@ -1,0 +1,24 @@
+<h1 mat-dialog-title>Manage Cluster Groups</h1>
+<div mat-dialog-content>
+  <mat-tab-group mat-align-tabs="left" (selectedTabChange)="selectedTabChange($event)">
+    <mat-tab *ngFor="let clusterGroup of clusterGroups | async" label="{{clusterGroup.name}}">
+      <div style="display: flex;">
+        <div style="flex: auto; flex-wrap: wrap; max-width: 50%;">
+          <ng-container *ngIf="assortmentPeriodSubclassesLoading | async">
+            <mat-spinner></mat-spinner>
+          </ng-container>
+          <div style="display: inline; width: 15em; border: 1px solid green;"
+            *ngFor="let subclass of assortmentPeriodSubclasses | async">
+            {{subclass}} <mat-icon>add</mat-icon>
+          </div>
+        </div>
+        <div>
+          selected
+          <div *ngFor="let subclass of clusterGroup.clusterGroupAttributes">
+            <mat-icon>remove</mat-icon> {{subclass.subclassId}}
+          </div>
+        </div>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>

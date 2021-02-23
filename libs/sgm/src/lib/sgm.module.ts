@@ -12,12 +12,14 @@ import { MaterialModule } from '@mpe/material';
 import { ClusterGroupService } from '@mpe/AsmtMgmtService';
 import { InputSpinnerComponent, InputDropdownFilterComponent, InputMultiselectDropdownComponent } from '@mpe/shared';
 
-import StoreGroupMgmtEffects from './store/store-group-mgmt.effects';
-import * as fromStoreGroupMgmt from './store/store-group-mgmt.reducer';
+import { FEATURE_KEY } from './store/state';
+import { FEATURE_REDUCER_TOKEN, getReducers } from './store/reducer';
+import StoreGroupMgmtEffects from './store/effects';
 
 import { ImportClusterGroupDialogComponent } from './dialogs/import-cluster-group-dialog/import-cluster-group-dialog.component';
 import { DetailComponent } from './components/detail/detail.component';
 import { SummaryComponent } from './components/summary/summary.component';
+import { ManageClusterGroupDialogComponent } from './dialogs/manage-cluster-group-dialog/manage-cluster-group-dialog.component';
 
 export const sgmRoutes: Route[] = [
   { path: ':id', component: DetailComponent },
@@ -34,12 +36,13 @@ export const sgmRoutes: Route[] = [
     ReactiveFormsModule,
     MaterialModule,
     AgGridModule.withComponents([]),
-    StoreModule.forFeature(fromStoreGroupMgmt.storeGroupMgmtFeatureKey, fromStoreGroupMgmt.reducer),
-    EffectsModule.forFeature([StoreGroupMgmtEffects]),
+    StoreModule.forFeature(FEATURE_KEY, FEATURE_REDUCER_TOKEN),
+    EffectsModule.forFeature(StoreGroupMgmtEffects),
   ],
   declarations: [
     SummaryComponent,
     ImportClusterGroupDialogComponent,
+    ManageClusterGroupDialogComponent,
     InputSpinnerComponent,
     InputMultiselectDropdownComponent,
     InputDropdownFilterComponent,
@@ -47,6 +50,12 @@ export const sgmRoutes: Route[] = [
   ],
   exports: [SummaryComponent, DetailComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  providers: [{ provide: ClusterGroupService, useClass: ClusterGroupService }],
+  providers: [
+    {
+      provide: FEATURE_REDUCER_TOKEN,
+      useFactory: getReducers,
+    },
+    { provide: ClusterGroupService, useClass: ClusterGroupService },
+  ],
 })
 export class SgmModule {}

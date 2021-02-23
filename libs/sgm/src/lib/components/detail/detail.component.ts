@@ -4,17 +4,16 @@ import { Observable } from 'rxjs';
 import { AllCommunityModules, Module, GridOptions, GridApi, ColDef, ColGroupDef } from '@ag-grid-community/all-modules';
 
 import { Store } from '@ngrx/store';
-import { IStoreGroupMgmtState } from '../../store/store-group-mgmt.reducer';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 
-import * as selectors from '../../store/store-group-mgmt.selectors';
-import * as actions from '../../store/store-group-mgmt.actions';
+import { actions, selectors } from '../../store/details';
 import { IDetailRecord } from '../../models/IDetailRecord';
 import { IModifiedDetailRecord } from '../../models/IModifiedDetailRecord';
-import { BulkFillRenderer, IProductLocationAttribute } from '@mpe/shared';
+import { BulkFillRenderer, IProductLocationAttribute, numericComparator } from '@mpe/shared';
 import { DatePipe } from '@angular/common';
 import { getDetailRecordOpClusterMember } from '../../helpers/getClusterOpClusterMember';
+import IStoreGroupManagementState from '../../store/state';
 
 @Component({
   selector: 'mpe-detail',
@@ -32,7 +31,7 @@ export class DetailComponent implements OnInit {
     const queryStringParameter = this.route.snapshot.paramMap.get('id');
     return queryStringParameter.split(',').map(id => parseInt(id, 10));
   }
-  constructor(private store: Store<IStoreGroupMgmtState>, private titleService: Title, private route: ActivatedRoute) {}
+  constructor(private store: Store<IStoreGroupManagementState>, private titleService: Title, private route: ActivatedRoute) {}
   public shownRecords: number;
   public totalRecords: number;
 
@@ -51,15 +50,6 @@ export class DetailComponent implements OnInit {
   private datePipe: DatePipe = new DatePipe('en-US');
 
   public actionsDisabled = false;
-
-  private numericComparator(a, b) {
-    const valA = parseInt(a, 10);
-    const valB = parseInt(b, 10);
-
-    if (valA === valB) return 0;
-
-    return valA > valB ? 1 : -1;
-  }
 
   public tiers: string[] = ['ECOMM', 'Tier 1', 'Tier 2', 'Tier 3', 'Tier 4', 'Tier 5', 'Z'];
   public chains: string[] = ['DSG', 'GG', 'FS'];
@@ -197,7 +187,7 @@ export class DetailComponent implements OnInit {
       hide: false,
       field: 'warehouseNumber',
       filter: 'agSetColumnFilter',
-      filterParams: { comparator: this.numericComparator },
+      filterParams: { comparator: numericComparator },
     },
     {
       headerName: 'NOTES',
@@ -214,7 +204,7 @@ export class DetailComponent implements OnInit {
       headerName: 'STORE NUMBER',
       field: 'storeNumber',
       filter: 'agSetColumnFilter',
-      filterParams: { comparator: this.numericComparator },
+      filterParams: { comparator: numericComparator },
       hide: false,
       pinned: 'left',
     },
@@ -233,7 +223,7 @@ export class DetailComponent implements OnInit {
       headerName: 'SQUARE FEET',
       field: 'squareFeet',
       filter: 'agSetColumnFilter',
-      filterParams: { comparator: this.numericComparator },
+      filterParams: { comparator: numericComparator },
     },
     { headerName: 'STATE', field: 'state' },
     { headerName: 'STORE FORMAT', field: 'storeFormat' },
@@ -242,7 +232,7 @@ export class DetailComponent implements OnInit {
       headerName: 'TTL RUN RATE',
       field: 'ttlRunRate',
       filter: 'agSetColumnFilter',
-      filterParams: { comparator: this.numericComparator },
+      filterParams: { comparator: numericComparator },
     },
   ];
 
@@ -315,11 +305,11 @@ export class DetailComponent implements OnInit {
       this.shownRecords = this.gridApi.getDisplayedRowCount();
     });
 
-    this.store.select(selectors.selectDetailsEdited).subscribe(edited => {
+    this.store.select(selectors.getEdited).subscribe(edited => {
       this.actionsDisabled = !edited;
     });
 
-    this.store.select(selectors.selectProductLocationAttributes).subscribe(values => {
+    this.store.select(selectors.getProductLocationAttributes).subscribe(values => {
       this.pl_attributes = values;
     });
   }

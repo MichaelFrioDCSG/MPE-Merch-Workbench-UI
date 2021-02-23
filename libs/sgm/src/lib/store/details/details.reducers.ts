@@ -1,107 +1,63 @@
 import { createReducer, on, Action } from '@ngrx/store';
 import {
-  ICluster,
   IClusterGroup,
+  ICluster,
   IClusterLocation,
   IProductLocationAttribute,
   IClusterLocationProductLocationAttributeValue,
   IProductLocationAttributeValue,
 } from '@mpe/shared';
-import { IModifiedDetailRecord } from '../models/IModifiedDetailRecord';
-import * as actions from './store-group-mgmt.actions';
-import { getClusterOpClusterMember } from '../helpers/getClusterOpClusterMember';
 
-export interface IStoreGroupMgmtState {
-  clusterGroups: IClusterGroup[];
-  productLocationAttributes: IProductLocationAttribute[];
-  selectedClusterGroups: IClusterGroup[];
-  loading: boolean;
-  edited: boolean;
-  getSummaryErrorMessages: string[];
-  getDetailsErrorMessages: string[];
-}
+import * as actions from './details.actions';
+import IDetailsState, { initialState } from './details.state';
 
-export const initialState: IStoreGroupMgmtState = {
-  clusterGroups: [],
-  productLocationAttributes: [],
-  selectedClusterGroups: [],
-  loading: false,
-  edited: false,
-  getSummaryErrorMessages: [],
-  getDetailsErrorMessages: [],
-};
+import { getClusterOpClusterMember } from '../../helpers/getClusterOpClusterMember';
+import { IModifiedDetailRecord } from '../../models/IModifiedDetailRecord';
 
 const reducer$ = createReducer(
   initialState,
   on(
-    actions.sgmGetSummaries,
-    (state: IStoreGroupMgmtState): IStoreGroupMgmtState => ({
-      ...state,
-      clusterGroups: [],
-      loading: true,
-      getSummaryErrorMessages: [],
-    })
-  ),
-  on(
-    actions.sgmGetSummariesSuccess,
-    (state: IStoreGroupMgmtState, action): IStoreGroupMgmtState => ({
-      ...state,
-      clusterGroups: action.clusterGroups,
-      loading: false,
-      getSummaryErrorMessages: [],
-    })
-  ),
-  on(
-    actions.sgmGetSummariesFailure,
-    (state: IStoreGroupMgmtState, action): IStoreGroupMgmtState => ({
-      ...state,
-      clusterGroups: [],
-      loading: false,
-      getSummaryErrorMessages: action.errors,
-    })
-  ),
-  on(
     actions.sgmGetDetails,
-    (state: IStoreGroupMgmtState): IStoreGroupMgmtState => ({
+    (state: IDetailsState): IDetailsState => ({
       ...state,
-      selectedClusterGroups: null,
+      clusterGroups: null,
       productLocationAttributes: [],
       loading: true,
-      getDetailsErrorMessages: [],
+      errors: [],
     })
   ),
   on(
     actions.sgmGetDetailsSuccess,
-    (state: IStoreGroupMgmtState, action): IStoreGroupMgmtState => ({
+    (state: IDetailsState, action): IDetailsState => ({
       ...state,
-      selectedClusterGroups: action.clusterGroups,
+      clusterGroups: action.clusterGroups,
       productLocationAttributes: [...action.plAttributes].sort((a, b) => a.displaySequence - b.displaySequence),
       loading: false,
       edited: false,
-      getDetailsErrorMessages: [],
+      errors: [],
     })
   ),
   on(
     actions.sgmGetDetailsFailure,
-    (state: IStoreGroupMgmtState, action): IStoreGroupMgmtState => ({
+    (state: IDetailsState, action): IDetailsState => ({
       ...state,
-      selectedClusterGroups: null,
+      clusterGroups: null,
       loading: false,
-      getDetailsErrorMessages: action.errors,
+      errors: action.errors,
     })
   ),
   on(
     actions.setDetailValues,
-    (state: IStoreGroupMgmtState, action): IStoreGroupMgmtState => ({
+    (state: IDetailsState, action): IDetailsState => ({
       ...state,
       loading: false,
       edited: action.values.length > 0,
-      selectedClusterGroups: updateSelectedClusterGroupRecords(state, action.values),
+      clusterGroups: updateSelectedClusterGroupRecords(state, action.values),
     })
   ),
   on(
     actions.saveDetailsSuccess,
-    (state: IStoreGroupMgmtState, action): IStoreGroupMgmtState => ({
+    (state: IDetailsState, action): IDetailsState => ({
       ...state,
       loading: false,
       edited: false,
@@ -109,8 +65,7 @@ const reducer$ = createReducer(
   )
 );
 
-export const storeGroupMgmtFeatureKey = 'storeGroupMgmt';
-export function reducer(state: IStoreGroupMgmtState | undefined, action: Action) {
+export function reducer(state: IDetailsState | undefined, action: Action) {
   return reducer$(state, action);
 }
 
@@ -131,8 +86,8 @@ function cloneClusterGroup(clusterGroup: IClusterGroup): IClusterGroup {
   return cloneValue;
 }
 
-function updateSelectedClusterGroupRecords(state: IStoreGroupMgmtState, modifications: IModifiedDetailRecord[]): IClusterGroup[] {
-  const newSelectedClusterGroupsState: IClusterGroup[] = state.selectedClusterGroups.map(cg => cloneClusterGroup(cg));
+function updateSelectedClusterGroupRecords(state: IDetailsState, modifications: IModifiedDetailRecord[]): IClusterGroup[] {
+  const newSelectedClusterGroupsState: IClusterGroup[] = state.clusterGroups.map(cg => cloneClusterGroup(cg));
   const plAttributesFields = state.productLocationAttributes.map(x => x.oracleName);
 
   for (const mod of modifications) {

@@ -1,18 +1,29 @@
-import { IStoreGroupMgmtState, storeGroupMgmtFeatureKey } from './store-group-mgmt.reducer';
-import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { IClusterGroup, IProductLocationAttribute } from '@mpe/shared';
-import { IDetailRecord } from '../models/IDetailRecord';
+import { createFeatureSelector, createSelector } from '@ngrx/store';
+import { IDetailRecord } from '../../models/IDetailRecord';
+import { selectFeatureState } from '../selectors';
+import IStoreGroupManagementState from '../state';
+import IDetailsState from './details.state';
 
-export const selectAppState = createFeatureSelector<IStoreGroupMgmtState>(storeGroupMgmtFeatureKey);
-export const selectClusterGroups = createSelector(selectAppState, (state: IStoreGroupMgmtState): IClusterGroup[] => state.clusterGroups);
-export const selectSummaryDetails = createSelector(selectAppState, (state: IStoreGroupMgmtState): {
+export const selectDetailsState = createSelector(selectFeatureState, (state: IStoreGroupManagementState): IDetailsState => state.details);
+
+export const getClusterGroups = createSelector(selectDetailsState, (state: IDetailsState): IClusterGroup[] => state.clusterGroups);
+export const getProductLocationAttributes = createSelector(
+  selectDetailsState,
+  (state: IDetailsState): IProductLocationAttribute[] => state.productLocationAttributes
+);
+export const getLoading = createSelector(selectDetailsState, (state: IDetailsState): boolean => state.loading);
+export const getEdited = createSelector(selectDetailsState, (state: IDetailsState): boolean => state.edited);
+export const getErrors = createSelector(selectDetailsState, (state: IDetailsState): string[] => state.errors);
+
+export const selectSummaryDetails = createSelector(selectDetailsState, (state: IDetailsState): {
   gridData: IDetailRecord[];
   productLocationAttributes: IProductLocationAttribute[];
 } => {
   const details: IDetailRecord[] = [];
 
-  if (state.selectedClusterGroups && state.selectedClusterGroups.length > 0) {
-    for (const clusterGroup of state.selectedClusterGroups) {
+  if (state.clusterGroups && state.clusterGroups.length > 0) {
+    for (const clusterGroup of state.clusterGroups) {
       for (const cluster of clusterGroup.clusters) {
         for (const clusterLocation of cluster.clusterLocations) {
           const detail: IDetailRecord = {
@@ -63,7 +74,3 @@ export const selectSummaryDetails = createSelector(selectAppState, (state: IStor
   }
   return { gridData: details, productLocationAttributes: state.productLocationAttributes };
 });
-export const selectDetailsEdited = createSelector(selectAppState, (state: IStoreGroupMgmtState): boolean => state.edited);
-export const selectProductLocationAttributes = createSelector(selectAppState, (state: IStoreGroupMgmtState): IProductLocationAttribute[] =>
-  [...state.productLocationAttributes].sort((a, b) => a.displaySequence - b.displaySequence)
-);

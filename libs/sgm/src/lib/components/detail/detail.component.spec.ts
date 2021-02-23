@@ -8,7 +8,7 @@ import { FormsModule } from '@angular/forms';
 import { MaterialModule } from '@mpe/material';
 import { ClusterGroupService } from '@mpe/AsmtMgmtService';
 
-import { IStoreGroupMgmtState, initialState } from '../../store/store-group-mgmt.reducer';
+import IDetailsState, { initialState } from '../../store/details/details.state';
 
 import { DetailComponent } from './detail.component';
 
@@ -363,7 +363,7 @@ describe('DetailComponent', () => {
 
       // Update the state
       const newState = getMockState();
-      newState.selectedClusterGroups[0].clusters[0].clusterLocations[0].clusterLabel = 'test 123';
+      newState.clusterGroups[0].clusters[0].clusterLocations[0].clusterLabel = 'test 123';
       store.setState(newState);
       store.refreshState();
       fixture.detectChanges();
@@ -400,7 +400,7 @@ describe('DetailComponent', () => {
 
       // Update the state
       const newState = getMockState();
-      newState.selectedClusterGroups[0].clusters[0].clusterLocations[0].notes = 'test notes 123';
+      newState.clusterGroups[0].clusters[0].clusterLocations[0].notes = 'test notes 123';
       store.setState(newState);
       store.refreshState();
       fixture.detectChanges();
@@ -529,11 +529,11 @@ describe('DetailComponent', () => {
 });
 
 // Data Helper methods below
-function getMockState(): IStoreGroupMgmtState {
+function getMockState(): IDetailsState {
   return {
     ...initialState,
     edited: false,
-    selectedClusterGroups: [
+    clusterGroups: [
       {
         clusterGroupAttributes: [],
         createdAt: null,
