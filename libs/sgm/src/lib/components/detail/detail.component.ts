@@ -3,17 +3,15 @@ import { AgGridAngular } from 'ag-grid-angular';
 import { Observable } from 'rxjs';
 import { AllCommunityModules, Module, GridOptions, GridApi, ColDef, ColGroupDef } from '@ag-grid-community/all-modules';
 
-import { Store } from '@ngrx/store';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 
-import { actions, selectors } from '../../store/details';
+import { DetailsActions, DetailsSelectors } from '../../store/details';
 import { IDetailRecord } from '../../models/IDetailRecord';
 import { IModifiedDetailRecord } from '../../models/IModifiedDetailRecord';
 import { BulkFillRenderer, IProductLocationAttribute, numericComparator } from '@mpe/shared';
 import { DatePipe } from '@angular/common';
 import { getDetailRecordOpClusterMember } from '../../helpers/getClusterOpClusterMember';
-import IStoreGroupManagementState from '../../store/state';
 
 @Component({
   selector: 'mpe-detail',
@@ -31,7 +29,7 @@ export class DetailComponent implements OnInit {
     const queryStringParameter = this.route.snapshot.paramMap.get('id');
     return queryStringParameter.split(',').map(id => parseInt(id, 10));
   }
-  constructor(private store: Store<IStoreGroupManagementState>, private titleService: Title, private route: ActivatedRoute) {}
+  constructor(private actions: DetailsActions, private selectors: DetailsSelectors, private titleService: Title, private route: ActivatedRoute) {}
   public shownRecords: number;
   public totalRecords: number;
 
@@ -63,11 +61,7 @@ export class DetailComponent implements OnInit {
     const node = params.node;
     const values = this.getModifiedDetailRecords(node, colId, newValue);
 
-    this.store.dispatch(
-      actions.setDetailValues({
-        values,
-      })
-    );
+    this.actions.setDetailValues(values);
 
     params.api.hideOverlay();
     return true;
@@ -285,13 +279,13 @@ export class DetailComponent implements OnInit {
 
   public onGridReady(params: any) {
     this.gridApi = params.api;
-    this.store.dispatch(actions.sgmGetDetails({ clusterGroupIds: this.clusterGroupIds }));
+    this.actions.sgmGetDetails(this.clusterGroupIds);
 
     setTimeout(() => {
       params.api.showLoadingOverlay();
     }, 5);
 
-    this.store.select(selectors.selectSummaryDetails).subscribe(data => {
+    this.selectors.getSummaryDetails().subscribe(data => {
       const details: IDetailRecord[] = data.gridData;
 
       this.configureGridColumns(data.productLocationAttributes, details);
@@ -304,12 +298,11 @@ export class DetailComponent implements OnInit {
 
       this.shownRecords = this.gridApi.getDisplayedRowCount();
     });
-
-    this.store.select(selectors.getEdited).subscribe(edited => {
+    this.selectors.getEdited().subscribe(edited => {
       this.actionsDisabled = !edited;
     });
 
-    this.store.select(selectors.getProductLocationAttributes).subscribe(values => {
+    this.selectors.getProductLocationAttributes().subscribe(values => {
       this.pl_attributes = values;
     });
   }
@@ -336,7 +329,7 @@ export class DetailComponent implements OnInit {
     setTimeout(() => {
       this.gridApi.showLoadingOverlay();
     }, 5);
-    this.store.dispatch(actions.saveDetails());
+    this.actions.saveDetails();
   }
 
   public onCancelClick() {
@@ -344,6 +337,6 @@ export class DetailComponent implements OnInit {
     setTimeout(() => {
       this.gridApi.showLoadingOverlay();
     }, 5);
-    this.store.dispatch(actions.revertDetails());
+    this.actions.revertDetails();
   }
 }

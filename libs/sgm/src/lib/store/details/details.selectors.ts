@@ -1,22 +1,23 @@
+import { Injectable } from '@angular/core';
 import { IClusterGroup, IProductLocationAttribute } from '@mpe/shared';
-import { createFeatureSelector, createSelector } from '@ngrx/store';
+import { createSelector, Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
 import { IDetailRecord } from '../../models/IDetailRecord';
 import { selectFeatureState } from '../selectors';
 import IStoreGroupManagementState from '../state';
 import IDetailsState from './details.state';
 
-export const selectDetailsState = createSelector(selectFeatureState, (state: IStoreGroupManagementState): IDetailsState => state.details);
+export const selectDetailsStateFn = createSelector(selectFeatureState, (state: IStoreGroupManagementState): IDetailsState => state.details);
 
-export const getClusterGroups = createSelector(selectDetailsState, (state: IDetailsState): IClusterGroup[] => state.clusterGroups);
-export const getProductLocationAttributes = createSelector(
-  selectDetailsState,
+export const getClusterGroupsFn = createSelector(selectDetailsStateFn, (state: IDetailsState): IClusterGroup[] => state.clusterGroups);
+export const getProductLocationAttributesFn = createSelector(
+  selectDetailsStateFn,
   (state: IDetailsState): IProductLocationAttribute[] => state.productLocationAttributes
 );
-export const getLoading = createSelector(selectDetailsState, (state: IDetailsState): boolean => state.loading);
-export const getEdited = createSelector(selectDetailsState, (state: IDetailsState): boolean => state.edited);
-export const getErrors = createSelector(selectDetailsState, (state: IDetailsState): string[] => state.errors);
-
-export const selectSummaryDetails = createSelector(selectDetailsState, (state: IDetailsState): {
+export const getLoadingFn = createSelector(selectDetailsStateFn, (state: IDetailsState): boolean => state.loading);
+export const getEditedFn = createSelector(selectDetailsStateFn, (state: IDetailsState): boolean => state.edited);
+export const getErrorsFn = createSelector(selectDetailsStateFn, (state: IDetailsState): string[] => state.errors);
+export const selectSummaryDetailsFn = createSelector(selectDetailsStateFn, (state: IDetailsState): {
   gridData: IDetailRecord[];
   productLocationAttributes: IProductLocationAttribute[];
 } => {
@@ -74,3 +75,32 @@ export const selectSummaryDetails = createSelector(selectDetailsState, (state: I
   }
   return { gridData: details, productLocationAttributes: state.productLocationAttributes };
 });
+
+@Injectable({ providedIn: 'root' })
+export class DetailsSelectors {
+  constructor(private store: Store<IDetailsState>) {}
+
+  public getLoading(): Observable<boolean> {
+    return this.store.select(getLoadingFn);
+  }
+
+  public getEdited(): Observable<boolean> {
+    return this.store.select(getEditedFn);
+  }
+
+  public getErrors(): Observable<string[]> {
+    return this.store.select(getErrorsFn);
+  }
+
+  public getClusterGroups(): Observable<IClusterGroup[]> {
+    return this.store.select(getClusterGroupsFn);
+  }
+
+  public getProductLocationAttributes(): Observable<IProductLocationAttribute[]> {
+    return this.store.select(getProductLocationAttributesFn);
+  }
+
+  public getSummaryDetails(): Observable<{ gridData: IDetailRecord[]; productLocationAttributes: IProductLocationAttribute[] }> {
+    return this.store.select(selectSummaryDetailsFn);
+  }
+}

@@ -65,7 +65,7 @@ const reducer$ = createReducer(
   )
 );
 
-export function reducer(state: IDetailsState | undefined, action: Action) {
+export function DetailsReducers(state: IDetailsState | undefined, action: Action) {
   return reducer$(state, action);
 }
 

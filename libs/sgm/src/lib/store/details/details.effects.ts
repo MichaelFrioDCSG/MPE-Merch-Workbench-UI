@@ -1,24 +1,22 @@
 import { Injectable } from '@angular/core';
 import { of } from 'rxjs';
+import { Store } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { switchMap, catchError, map, mergeMap, withLatestFrom, concatMap, tap } from 'rxjs/operators';
 
-import { ClusterGroupService } from '@mpe/AsmtMgmtService';
+import { ClusterGroupService, IClusterGroupResponseDto } from '@mpe/AsmtMgmtService';
 
+import ISummaryState from '../summary/summary.state';
 import * as actions from './details.actions';
-import { SharedActions } from '@mpe/shared';
-
-import { IClusterGroupResponseDto } from 'libs/asmt-mgmt-service/src/lib/services/IClusterGroupResponseDto';
 import * as selectors from './details.selectors';
-import IStoreGroupManagementState from '../state';
-import { Store } from '@ngrx/store';
+import { SharedActions } from '@mpe/shared';
 
 @Injectable()
 export default class SummaryEffects {
   constructor(
     private actions$: Actions,
     private sharedActions: SharedActions,
-    private store: Store<IStoreGroupManagementState>,
+    private store: Store<ISummaryState>,
     private clusterGroupsService: ClusterGroupService
   ) {}
 
@@ -46,7 +44,7 @@ export default class SummaryEffects {
   private onSaveDetails = createEffect(() =>
     this.actions$.pipe(
       ofType(actions.saveDetails),
-      concatMap(action => of(action).pipe(withLatestFrom(this.store.select(selectors.getClusterGroups)))),
+      concatMap(action => of(action).pipe(withLatestFrom(this.store.select(selectors.getClusterGroupsFn)))),
       mergeMap(([action, clusterGroups]) =>
         this.clusterGroupsService.updateClusterGroups(clusterGroups).pipe(
           map(data => actions.saveDetailsSuccess()),
@@ -62,9 +60,7 @@ export default class SummaryEffects {
         ofType(actions.saveDetailsSuccess),
         tap(action => this.sharedActions.showNotificaion({ title: 'Cluster group was saved.', messages: [], isError: false }))
       ),
-    {
-      dispatch: false,
-    }
+    { dispatch: false }
   );
 
   private onSaveDetailsFailure = createEffect(
@@ -73,15 +69,13 @@ export default class SummaryEffects {
         ofType(actions.saveDetailsFailure, actions.sgmGetDetailsFailure),
         tap(action => this.sharedActions.showMessageDialog({ messages: action.errors }))
       ),
-    {
-      dispatch: false,
-    }
+    { dispatch: false }
   );
 
   private onRevertDetails = createEffect(() =>
     this.actions$.pipe(
       ofType(actions.revertDetails),
-      concatMap(action => of(action).pipe(withLatestFrom(this.store.select(selectors.getClusterGroups)))),
+      concatMap(action => of(action).pipe(withLatestFrom(this.store.select(selectors.getClusterGroupsFn)))),
       switchMap(([action, clusterGroups]) => of(actions.sgmGetDetails({ clusterGroupIds: clusterGroups.map(clusterGroup => clusterGroup.id) })))
     )
   );
