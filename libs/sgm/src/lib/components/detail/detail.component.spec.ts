@@ -6,7 +6,7 @@ import { By } from '@angular/platform-browser';
 import { AgGridModule } from 'ag-grid-angular';
 import { FormsModule } from '@angular/forms';
 import { MaterialModule } from '@mpe/material';
-import { ClusterGroupsService } from '@mpe/AsmtMgmtService';
+import { ClusterGroupService } from '@mpe/AsmtMgmtService';
 import { IAuthState } from '@mpe/auth';
 
 import { IStoreGroupMgmtState, initialState as sgmInitialState } from '../../store/store-group-mgmt.reducer';
@@ -27,7 +27,7 @@ describe('DetailComponent', () => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, RouterTestingModule, FormsModule, AgGridModule.withComponents([DetailComponent]), MaterialModule],
       declarations: [DetailComponent],
-      providers: [provideMockStore({ initialState }), { provides: ClusterGroupsService, useValue: {} }],
+      providers: [provideMockStore({ initialState }), { provides: ClusterGroupService, useValue: {} }],
     }).compileComponents();
 
     // Setup mock ngrx store & data for the init selector
