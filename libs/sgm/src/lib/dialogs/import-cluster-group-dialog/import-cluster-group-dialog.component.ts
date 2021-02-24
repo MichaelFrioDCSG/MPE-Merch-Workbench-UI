@@ -4,12 +4,9 @@ import { FormBuilder, Validators, FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Store } from '@ngrx/store';
 
 import { ClusterGroupService, AssortmentPeriodService, ProductHierarchyService } from '@mpe/AsmtMgmtService';
-
-import { fromSummary } from '../../store/actions';
-
+import { SummaryActions } from '../../store';
 import {
   IProductHierarchy,
   ILinkSubclass,
@@ -17,11 +14,10 @@ import {
   ICreateClusterGroupRequestDto,
   ICreateClusterGroupResponseDto,
   ToastMessageComponent,
-  actions as sharedActions,
+  SharedActions,
   IMessageDialogData,
   IWarningDialogData,
 } from '@mpe/shared';
-import IStoreGroupManagementState from '../../store/state';
 
 @Component({
   selector: 'app-import-cluster-group-dialog',
@@ -81,7 +77,8 @@ export class ImportClusterGroupDialogComponent implements OnInit {
     public productHierarchyService: ProductHierarchyService,
     public clusterGroupService: ClusterGroupService,
     private snackBar: MatSnackBar,
-    private store: Store<IStoreGroupManagementState>
+    private sharedActions: SharedActions,
+    private actions: SummaryActions
   ) {}
 
   public ngOnInit() {
@@ -374,7 +371,7 @@ export class ImportClusterGroupDialogComponent implements OnInit {
           };
 
           this.creatingClusterGroups = false;
-          this.store.dispatch(sharedActions.showWarningDialog(args));
+          this.sharedActions.showWarningDialog(args);
         }
       },
       ex => {
@@ -383,7 +380,7 @@ export class ImportClusterGroupDialogComponent implements OnInit {
           messages: [ex.error.errors],
         };
         this.creatingClusterGroups = false;
-        this.store.dispatch(sharedActions.showMessageDialog(args));
+        this.sharedActions.showMessageDialog(args);
       }
     );
   }
@@ -411,7 +408,7 @@ export class ImportClusterGroupDialogComponent implements OnInit {
         this.creatingClusterGroups = false;
         if (data.isSuccess) {
           this.showToastMessage('Cluster Import Success', [], false);
-          this.store.dispatch(fromSummary.getClusterGroups());
+          this.actions.getClusterGroups();
           this.dialogRef.close({ data: null });
         } else {
           this.showErrors = true;

@@ -1,6 +1,8 @@
+import { Injectable } from '@angular/core';
 import { IClusterGroup, IProductLocationAttribute } from '@mpe/shared';
-import { createAction, props } from '@ngrx/store';
+import { createAction, props, Store } from '@ngrx/store';
 import { IModifiedDetailRecord } from '../../models/IModifiedDetailRecord';
+import IDetailsState from './details.state';
 
 export const sgmGetDetails = createAction('[StoreGroupMgmt] Getting Details', props<{ clusterGroupIds: number[] }>());
 export const sgmGetDetailsSuccess = createAction(
@@ -16,3 +18,24 @@ export const saveDetailsSuccess = createAction('[StoreGroupMgmt - Details] Save 
 export const saveDetailsFailure = createAction('[StoreGroupMgmt - Details] Save Details Failure', props<{ errors: string[] }>());
 
 export const revertDetails = createAction('[StoreGroupMgmt - Details] Revert Details');
+
+@Injectable({ providedIn: 'root' })
+export class DetailsActions {
+  constructor(private store: Store<IDetailsState>) {}
+
+  public sgmGetDetails(clusterGroupIds: number[]): void {
+    this.store.dispatch(sgmGetDetails({ clusterGroupIds }));
+  }
+
+  public setDetailValues(values: IModifiedDetailRecord[]): void {
+    this.store.dispatch(setDetailValues({ values }));
+  }
+
+  public saveDetails(): void {
+    this.store.dispatch(saveDetails());
+  }
+
+  public revertDetails(): void {
+    this.store.dispatch(revertDetails());
+  }
+}

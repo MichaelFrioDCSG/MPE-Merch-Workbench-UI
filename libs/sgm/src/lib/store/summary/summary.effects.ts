@@ -3,12 +3,9 @@ import { of } from 'rxjs';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { switchMap, catchError, map, mergeMap } from 'rxjs/operators';
 
-import { ClusterGroupService } from '@mpe/AsmtMgmtService';
-
-import * as actions from './summary.actions';
+import { ClusterGroupService, IServerResponse } from '@mpe/AsmtMgmtService';
 import { IClusterGroup } from '@mpe/shared';
-
-import { IServerResponse } from 'libs/asmt-mgmt-service/src/lib/services/IServerResponse';
+import * as actions from './summary.actions';
 
 @Injectable()
 export default class SummaryEffects {
