@@ -33,6 +33,6 @@ const reducer$ = createReducer(
   )
 );
 
-export function reducer(state: ISummaryState | undefined, action: Action) {
+export function SummaryReducers(state: ISummaryState | undefined, action: Action) {
   return reducer$(state, action);
 }

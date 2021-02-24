@@ -2,17 +2,12 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { AgGridAngular } from 'ag-grid-angular';
 import { MatDialog } from '@angular/material/dialog';
 import { AllCommunityModules, Module, GridOptions, GridApi } from '@ag-grid-community/all-modules';
-import { Store, select } from '@ngrx/store';
-import { Observable } from 'rxjs';
 import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 
-import { actions as sharedActions, IClusterGroup } from '@mpe/shared';
-import { actions, selectors } from '../../store/summary';
-import { showManageClusterGroupDialog } from '../..//store/manage/manage.actions';
+import { SharedActions, IClusterGroup } from '@mpe/shared';
+import { SummaryActions, SummarySelectors, ManageClusterGroupsActions } from '../../store';
 import { ImportClusterGroupDialogComponent } from '../../dialogs/import-cluster-group-dialog/import-cluster-group-dialog.component';
-import { ManageClusterGroupDialogComponent } from '../../dialogs/manage-cluster-group-dialog/manage-cluster-group-dialog.component';
-import ISummaryState from '../../store/summary/summary.state';
 
 @Component({
   selector: 'mpe-landing',
@@ -21,9 +16,7 @@ import ISummaryState from '../../store/summary/summary.state';
 })
 export class SummaryComponent implements OnInit {
   @ViewChild('agGrid', { static: false }) public agGrid: AgGridAngular;
-  public loadingTemplate;
-  public clusterGroupsObs: Observable<IClusterGroup[]> = null;
-  public style: any;
+  public loadingTemplate = '<span class="ag-overlay-loading-center">Loading...</span>';
   public gridOptions: GridOptions = { suppressCellSelection: true };
   public gridColumnApi: any;
   public gridApi: GridApi;
@@ -36,7 +29,6 @@ export class SummaryComponent implements OnInit {
     return this.clusterGroups.length;
   }
   public actionMenuOpen: boolean;
-  public title = 'MPE-SGM';
   public clusterGroups: IClusterGroup[] = [];
   public defaultColDef: any = {
     resizable: true,
@@ -75,18 +67,20 @@ export class SummaryComponent implements OnInit {
   ];
   public statusBar: any = {};
 
-  constructor(private dialog: MatDialog, private store: Store<ISummaryState>, public titleService: Title, private router: Router) {}
+  constructor(
+    private dialog: MatDialog,
+    public titleService: Title,
+    private router: Router,
+    private actions: SummaryActions,
+    private sharedActions: SharedActions,
+    private manageActions: ManageClusterGroupsActions,
+    private selectors: SummarySelectors
+  ) {}
 
-  public ngOnInit() {
-    this.loadingTemplate = '<span class="ag-overlay-loading-center">Loading...</span>';
-  }
+  public ngOnInit() {}
 
   public onActionMenuClosed($event) {
     this.actionMenuOpen = false;
-  }
-  public getSelectedRows() {
-    const selectedNodes = this.agGrid.api.getSelectedNodes();
-    this.selectedData = JSON.stringify(selectedNodes.map(node => node.data));
   }
 
   public openDialog(): void {
@@ -98,7 +92,7 @@ export class SummaryComponent implements OnInit {
 
   public openManageDialog(): void {
     const clusterGroups: IClusterGroup[] = this.gridApi.getSelectedRows();
-    this.store.dispatch(showManageClusterGroupDialog({ clusterGroups }));
+    this.manageActions.showDialog(clusterGroups);
   }
 
   public openDeleteDialog(): void {
@@ -107,17 +101,15 @@ export class SummaryComponent implements OnInit {
     const clusterGroupCount: number = clusterGroupIds.length;
 
     const messages: string[] = ['Are you sure you want to delete ' + clusterGroupCount + ' cluster(s)?'];
-    this.store.dispatch(
-      sharedActions.showWarningDialog({
-        title: 'Confirm Deletion',
-        width: '600px',
-        messages: messages,
-        action: 'Confirm',
-        okAction: () => {
-          this.store.dispatch(actions.deleteClusterGroups({ clusterGroupIds }));
-        },
-      })
-    );
+    this.sharedActions.showWarningDialog({
+      title: 'Confirm Deletion',
+      width: '600px',
+      messages: messages,
+      action: 'Confirm',
+      okAction: () => {
+        this.actions.deleteClusterGroups(clusterGroupIds);
+      },
+    });
   }
 
   public goToDetail(): void {
@@ -134,9 +126,9 @@ export class SummaryComponent implements OnInit {
     setTimeout(() => {
       params.api.showLoadingOverlay();
     }, 5);
-    this.store.dispatch(actions.getClusterGroups());
+    this.actions.getClusterGroups();
 
-    this.store.pipe(select(selectors.getClusterGroups)).subscribe((clusterGroups: IClusterGroup[]) => {
+    this.selectors.getClusterGroups().subscribe((clusterGroups: IClusterGroup[]) => {
       this.clusterGroups = clusterGroups;
 
       if (this.gridApi.getSelectedRows.length > 0) {

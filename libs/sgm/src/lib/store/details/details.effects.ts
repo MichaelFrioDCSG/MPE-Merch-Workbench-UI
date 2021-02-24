@@ -1,14 +1,13 @@
 import { Injectable } from '@angular/core';
 import { of } from 'rxjs';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { switchMap, catchError, map, mergeMap, withLatestFrom, concatMap } from 'rxjs/operators';
+import { switchMap, catchError, map, mergeMap, withLatestFrom, concatMap, tap } from 'rxjs/operators';
 
 import { ClusterGroupService } from '@mpe/AsmtMgmtService';
 
 import * as actions from './details.actions';
-import { IClusterGroup, actions as sharedActions } from '@mpe/shared';
+import { SharedActions } from '@mpe/shared';
 
-import { IServerResponse } from 'libs/asmt-mgmt-service/src/lib/services/IServerResponse';
 import { IClusterGroupResponseDto } from 'libs/asmt-mgmt-service/src/lib/services/IClusterGroupResponseDto';
 import * as selectors from './details.selectors';
 import IStoreGroupManagementState from '../state';
@@ -16,7 +15,12 @@ import { Store } from '@ngrx/store';
 
 @Injectable()
 export default class SummaryEffects {
-  constructor(private actions$: Actions, private store: Store<IStoreGroupManagementState>, private clusterGroupsService: ClusterGroupService) {}
+  constructor(
+    private actions$: Actions,
+    private sharedActions: SharedActions,
+    private store: Store<IStoreGroupManagementState>,
+    private clusterGroupsService: ClusterGroupService
+  ) {}
 
   private onGetClusterGroupDetails = createEffect(() =>
     this.actions$.pipe(
@@ -52,17 +56,26 @@ export default class SummaryEffects {
     )
   );
 
-  private onSaveDetailsSuccess = createEffect(() =>
-    this.actions$.pipe(
-      ofType(actions.saveDetailsSuccess),
-      map(action => sharedActions.showNotificaion({ title: 'Cluster group was saved.', messages: [], isError: false }))
-    )
+  private onSaveDetailsSuccess = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(actions.saveDetailsSuccess),
+        tap(action => this.sharedActions.showNotificaion({ title: 'Cluster group was saved.', messages: [], isError: false }))
+      ),
+    {
+      dispatch: false,
+    }
   );
-  private onSaveDetailsFailure = createEffect(() =>
-    this.actions$.pipe(
-      ofType(actions.saveDetailsFailure, actions.sgmGetDetailsFailure),
-      map(action => sharedActions.showMessageDialog({ messages: action.errors }))
-    )
+
+  private onSaveDetailsFailure = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(actions.saveDetailsFailure, actions.sgmGetDetailsFailure),
+        tap(action => this.sharedActions.showMessageDialog({ messages: action.errors }))
+      ),
+    {
+      dispatch: false,
+    }
   );
 
   private onRevertDetails = createEffect(() =>
