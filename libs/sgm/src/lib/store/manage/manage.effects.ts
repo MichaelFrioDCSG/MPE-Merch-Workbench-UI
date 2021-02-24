@@ -1,26 +1,18 @@
 import { Injectable } from '@angular/core';
-import { Store } from '@ngrx/store';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
-import { catchError, map, mergeMap, switchMap, tap } from 'rxjs/operators';
+import { catchError, map, mergeMap, tap } from 'rxjs/operators';
 
 import { IProductHierarchy } from '@mpe/shared';
 import { ProductHierarchyService } from '@mpe/AsmtMgmtService';
 
 import * as actions from './manage.actions';
-import { actions as sharedActions } from '@mpe/shared';
-import IStoreGroupManagementState from '../state';
 import { ManageClusterGroupDialogComponent } from '../../dialogs/manage-cluster-group-dialog/manage-cluster-group-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 
 @Injectable()
-export default class StoreGroupMgmtEffects {
-  constructor(
-    private actions$: Actions,
-    private store: Store<IStoreGroupManagementState>,
-    private dialog: MatDialog,
-    private productHierarchyService: ProductHierarchyService
-  ) {}
+export default class ManageClusterGroupsEffects {
+  constructor(private actions$: Actions, private dialog: MatDialog, private productHierarchyService: ProductHierarchyService) {}
 
   private showManageClusterGroupDialog = createEffect(
     () =>

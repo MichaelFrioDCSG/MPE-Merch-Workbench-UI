@@ -1,12 +1,12 @@
 import { createReducer, on, Action } from '@ngrx/store';
 import * as actions from './manage.actions';
-import IManageState, { initialState } from './manage.state';
+import IManageClusterGroupsState, { initialState } from './manage.state';
 
 const reducer$ = createReducer(
   initialState,
   on(
     actions.showManageClusterGroupDialog,
-    (state: IManageState, action): IManageState => ({
+    (state: IManageClusterGroupsState, action): IManageClusterGroupsState => ({
       ...state,
       clusterGroups: action.clusterGroups,
       selected: action.clusterGroups.length > 0 ? action.clusterGroups[0] : null,
@@ -14,14 +14,14 @@ const reducer$ = createReducer(
   ),
   on(
     actions.manageClusterGroup,
-    (state: IManageState, action): IManageState => ({
+    (state: IManageClusterGroupsState, action): IManageClusterGroupsState => ({
       ...state,
       selected: state.clusterGroups[action.index],
     })
   ),
   on(
     actions.getAssortmentPeriodSubclasses,
-    (state: IManageState, action): IManageState => ({
+    (state: IManageClusterGroupsState, action): IManageClusterGroupsState => ({
       ...state,
       loading: true,
       assortmentPeriodSubclasses: [],
@@ -30,7 +30,7 @@ const reducer$ = createReducer(
   ),
   on(
     actions.getAssortmentPeriodSubclassesSuccess,
-    (state: IManageState, action): IManageState => ({
+    (state: IManageClusterGroupsState, action): IManageClusterGroupsState => ({
       ...state,
       loading: false,
       assortmentPeriodSubclasses: action.subclasses,
@@ -39,7 +39,7 @@ const reducer$ = createReducer(
   ),
   on(
     actions.getAssortmentPeriodSubclassesFailure,
-    (state: IManageState, action): IManageState => ({
+    (state: IManageClusterGroupsState, action): IManageClusterGroupsState => ({
       ...state,
       loading: false,
       assortmentPeriodSubclasses: action.errors,
@@ -48,6 +48,6 @@ const reducer$ = createReducer(
   )
 );
 
-export function reducer(state: IManageState | undefined, action: Action) {
+export function ManageClusterGroupsReducers(state: IManageClusterGroupsState | undefined, action: Action) {
   return reducer$(state, action);
 }

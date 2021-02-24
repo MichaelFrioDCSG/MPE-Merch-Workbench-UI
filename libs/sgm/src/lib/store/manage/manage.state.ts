@@ -1,6 +1,6 @@
 import { IClusterGroup } from '@mpe/shared';
 
-export default interface IManageState {
+export default interface IManageClusterGroupsState {
   loading: boolean;
   clusterGroups: IClusterGroup[];
   assortmentPeriodSubclassesLoading: boolean;
@@ -9,7 +9,7 @@ export default interface IManageState {
   errors: string[];
 }
 
-export const initialState: IManageState = {
+export const initialState: IManageClusterGroupsState = {
   loading: false,
   clusterGroups: [],
   assortmentPeriodSubclassesLoading: false,
