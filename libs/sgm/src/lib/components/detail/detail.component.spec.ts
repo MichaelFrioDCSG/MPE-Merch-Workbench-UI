@@ -6,10 +6,11 @@ import { By } from '@angular/platform-browser';
 import { AgGridModule } from 'ag-grid-angular';
 import { FormsModule } from '@angular/forms';
 import { MaterialModule } from '@mpe/material';
-import { ClusterGroupService } from '@mpe/AsmtMgmtService';
+import { ClusterGroupService as ClusterGroupService } from '@mpe/AsmtMgmtService';
 import { IAuthState } from '@mpe/auth';
 
-import { IStoreGroupMgmtState, initialState as sgmInitialState } from '../../store/store-group-mgmt.reducer';
+import { initialState as sgmInitialState } from '../../store/details/details.state';
+import IDetailsState from '../../store/details/details.state';
 import { initialState as authnitialstate } from 'libs/auth/src/lib/store/auth.reducers';
 
 import { DetailComponent } from './detail.component';
@@ -633,7 +634,7 @@ describe('DetailComponent', () => {
 
       // Update the state
       const newState = getSGMMockState();
-      newState.selectedClusterGroups[0].clusters[0].clusterLocations[0].clusterLabel = 'test 123';
+      newState.clusterGroups[0].clusters[0].clusterLocations[0].clusterLabel = 'test 123';
       store.setState(newState);
       store.refreshState();
       fixture.detectChanges();
@@ -670,7 +671,7 @@ describe('DetailComponent', () => {
 
       // Update the state
       const newState = getSGMMockState();
-      newState.selectedClusterGroups[0].clusters[0].clusterLocations[0].notes = 'test notes 123';
+      newState.clusterGroups[0].clusters[0].clusterLocations[0].notes = 'test notes 123';
       store.setState(newState);
       store.refreshState();
       fixture.detectChanges();
@@ -799,11 +800,11 @@ describe('DetailComponent', () => {
 });
 
 // Data Helper methods below
-function getSGMMockState(): IStoreGroupMgmtState {
+function getSGMMockState(): IDetailsState {
   return {
     ...sgmInitialState,
     edited: false,
-    selectedClusterGroups: [
+    clusterGroups: [
       {
         clusterGroupAttributes: [],
         createdAt: null,

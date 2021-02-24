@@ -9,11 +9,11 @@ import { Router } from '@angular/router';
 import { selectUserProfile, IUserProfile } from '@mpe/auth';
 
 import { actions as sharedActions, IClusterGroup } from '@mpe/shared';
-
-import { selectClusterGroups } from '../../store/store-group-mgmt.selectors';
-import { IStoreGroupMgmtState } from '../../store/store-group-mgmt.reducer';
-import * as actions from '../../store/store-group-mgmt.actions';
+import { actions, selectors } from '../../store/summary';
+import { showManageClusterGroupDialog } from '../..//store/manage/manage.actions';
 import { ImportClusterGroupDialogComponent } from '../../dialogs/import-cluster-group-dialog/import-cluster-group-dialog.component';
+import { ManageClusterGroupDialogComponent } from '../../dialogs/manage-cluster-group-dialog/manage-cluster-group-dialog.component';
+import ISummaryState from '../../store/summary/summary.state';
 
 @Component({
   selector: 'mpe-landing',
@@ -77,7 +77,7 @@ export class SummaryComponent implements OnInit {
   ];
   public statusBar: any = {};
 
-  constructor(private dialog: MatDialog, private store: Store<IStoreGroupMgmtState>, public titleService: Title, private router: Router) {}
+  constructor(private dialog: MatDialog, private store: Store<ISummaryState>, public titleService: Title, private router: Router) {}
 
   public ngOnInit() {
     this.loadingTemplate = '<span class="ag-overlay-loading-center">Loading...</span>';
@@ -100,6 +100,11 @@ export class SummaryComponent implements OnInit {
       width: '100rem',
       data: {},
     });
+  }
+
+  public openManageDialog(): void {
+    const clusterGroups: IClusterGroup[] = this.gridApi.getSelectedRows();
+    this.store.dispatch(showManageClusterGroupDialog({ clusterGroups }));
   }
 
   public openDeleteDialog(): void {
@@ -135,9 +140,9 @@ export class SummaryComponent implements OnInit {
     setTimeout(() => {
       params.api.showLoadingOverlay();
     }, 5);
-    this.store.dispatch(actions.sgmGetSummaries());
+    this.store.dispatch(actions.getClusterGroups());
 
-    this.store.pipe(select(selectClusterGroups)).subscribe((clusterGroups: IClusterGroup[]) => {
+    this.store.pipe(select(selectors.getClusterGroups)).subscribe((clusterGroups: IClusterGroup[]) => {
       this.clusterGroups = clusterGroups;
 
       if (this.gridApi.getSelectedRows.length > 0) {

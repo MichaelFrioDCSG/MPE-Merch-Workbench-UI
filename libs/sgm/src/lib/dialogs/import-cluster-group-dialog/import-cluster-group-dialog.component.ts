@@ -8,8 +8,7 @@ import { Store } from '@ngrx/store';
 
 import { ClusterGroupService, AssortmentPeriodService, ProductHierarchyService } from '@mpe/AsmtMgmtService';
 
-import * as actions from '../../store/store-group-mgmt.actions';
-import { IStoreGroupMgmtState } from '../../store/store-group-mgmt.reducer';
+import { fromSummary } from '../../store/actions';
 
 import {
   IProductHierarchy,
@@ -22,6 +21,7 @@ import {
   IMessageDialogData,
   IWarningDialogData,
 } from '@mpe/shared';
+import IStoreGroupManagementState from '../../store/state';
 
 @Component({
   selector: 'app-import-cluster-group-dialog',
@@ -81,7 +81,7 @@ export class ImportClusterGroupDialogComponent implements OnInit {
     public productHierarchyService: ProductHierarchyService,
     public clusterGroupService: ClusterGroupService,
     private snackBar: MatSnackBar,
-    private store: Store<IStoreGroupMgmtState>
+    private store: Store<IStoreGroupManagementState>
   ) {}
 
   public ngOnInit() {
@@ -411,7 +411,7 @@ export class ImportClusterGroupDialogComponent implements OnInit {
         this.creatingClusterGroups = false;
         if (data.isSuccess) {
           this.showToastMessage('Cluster Import Success', [], false);
-          this.store.dispatch(actions.sgmGetSummaries());
+          this.store.dispatch(fromSummary.getClusterGroups());
           this.dialogRef.close({ data: null });
         } else {
           this.showErrors = true;
