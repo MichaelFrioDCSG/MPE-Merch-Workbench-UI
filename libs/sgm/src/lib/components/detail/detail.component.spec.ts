@@ -21,7 +21,7 @@ describe('DetailComponent', () => {
   let component: DetailComponent;
   let fixture: ComponentFixture<DetailComponent>;
   let store: MockStore;
-  let initialState: IAuthState = authnitialstate;
+  const initialState: IAuthState = authnitialstate;
 
   beforeEach(async () => {
 
@@ -122,7 +122,7 @@ describe('DetailComponent', () => {
 
   it('Cluster Label Column configured correctly Editable for Admin', async () => {
     component.userProfile.roles = ['Admin'];
-    let canBeEdited = component.isEditable();
+    const canBeEdited = component.isEditable();
 
     waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
       const columnDef = component.agGrid.gridOptions.api.getColumnDef('clusterLabel');
@@ -139,7 +139,7 @@ describe('DetailComponent', () => {
 
   it('Cluster Label Column configured correctly Editable for SGMWrite', async () => {
     component.userProfile.roles = ['SGMWrite'];
-    let canBeEdited = component.isEditable();
+    const canBeEdited = component.isEditable();
 
     waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
       const columnDef = component.agGrid.gridOptions.api.getColumnDef('clusterLabel');
@@ -156,7 +156,7 @@ describe('DetailComponent', () => {
 
   it('Cluster Label Column configured correctly not Editable for non-accepted role', async () => {
     component.userProfile.roles = ['AMWrite'];
-    let canBeEdited = component.isEditable();
+    const canBeEdited = component.isEditable();
 
     waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
       const columnDef = component.agGrid.gridOptions.api.getColumnDef('clusterLabel');
@@ -173,7 +173,7 @@ describe('DetailComponent', () => {
   });
 
   it('Cluster Label Column configured correctly not Editable for no role', async () => {
-    let canBeEdited = component.isEditable();
+    const canBeEdited = component.isEditable();
 
     waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
       const columnDef = component.agGrid.gridOptions.api.getColumnDef('clusterLabel');
@@ -197,7 +197,7 @@ describe('DetailComponent', () => {
 
   it('Notes Column configured correctly Editable for Admin', async () => {
     component.userProfile.roles = ['Admin'];
-    let canBeEdited = component.isEditable();
+    const canBeEdited = component.isEditable();
 
     waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
       const columnDef = component.agGrid.gridOptions.api.getColumnDef('notes');
@@ -214,7 +214,7 @@ describe('DetailComponent', () => {
 
   it('Notes Column configured correctly Editable for SGMWrite', async () => {
     component.userProfile.roles = ['SGMWrite'];
-    let canBeEdited = component.isEditable();
+    const canBeEdited = component.isEditable();
 
     waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
       const columnDef = component.agGrid.gridOptions.api.getColumnDef('notes');
@@ -232,7 +232,7 @@ describe('DetailComponent', () => {
 
   it('Notes Column configured correctly not Editable for non-accepted role', async () => {
     component.userProfile.roles = ['AMWrite'];
-    let canBeEdited = component.isEditable();
+    const canBeEdited = component.isEditable();
 
     waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
       const columnDef = component.agGrid.gridOptions.api.getColumnDef('notes');
@@ -249,7 +249,7 @@ describe('DetailComponent', () => {
   });
 
   it('Notes Column configured correctly not Editable for no role', async () => {
-    let canBeEdited = component.isEditable();
+    const canBeEdited = component.isEditable();
 
     waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
       const columnDef = component.agGrid.gridOptions.api.getColumnDef('notes');
@@ -292,7 +292,7 @@ describe('DetailComponent', () => {
 
   it('Tier Column configured correctly Editable for Admin', async () => {
     component.userProfile.roles = ['Admin'];
-    let canBeEdited = component.isEditable();
+    const canBeEdited = component.isEditable();
 
     waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
       const columnDef = component.agGrid.gridOptions.api.getColumnDef('tier');
@@ -317,7 +317,7 @@ describe('DetailComponent', () => {
 
   it('Tier Column configured correctly Editable for SGMWrite', async () => {
     component.userProfile.roles = ['SGMWrite'];
-    let canBeEdited = component.isEditable();
+    const canBeEdited = component.isEditable();
 
     waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
       const columnDef = component.agGrid.gridOptions.api.getColumnDef('tier');
@@ -342,7 +342,7 @@ describe('DetailComponent', () => {
 
   it('Tier Column configured correctly not Editable for non-accepted role', async () => {
     component.userProfile.roles = ['AMRead'];
-    let canBeEdited = component.isEditable();
+    const canBeEdited = component.isEditable();
 
     waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
       const columnDef = component.agGrid.gridOptions.api.getColumnDef('tier');
@@ -366,7 +366,7 @@ describe('DetailComponent', () => {
   });
 
   it('Tier Column configured correctly not Editable for no role', async () => {
-    let canBeEdited = component.isEditable();
+    const canBeEdited = component.isEditable();
 
     waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
       const columnDef = component.agGrid.gridOptions.api.getColumnDef('tier');
@@ -391,7 +391,7 @@ describe('DetailComponent', () => {
 
   it('Chain Column configured correctly Editable for Admin', async () => {
     component.userProfile.roles = ['Admin'];
-    let canBeEdited = component.isEditable();
+    const canBeEdited = component.isEditable();
 
     waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
       const columnDef = component.agGrid.gridOptions.api.getColumnDef('chain');
@@ -413,7 +413,7 @@ describe('DetailComponent', () => {
 
   it('Chain Column configured correctly Editable for SGMWrite', async () => {
     component.userProfile.roles = ['SGMWrite'];
-    let canBeEdited = component.isEditable();
+    const canBeEdited = component.isEditable();
 
     waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
       const columnDef = component.agGrid.gridOptions.api.getColumnDef('chain');
@@ -435,7 +435,7 @@ describe('DetailComponent', () => {
 
   it('Chain Column configured correctly not Editable for non-accepted role', async () => {
     component.userProfile.roles = ['AMRead'];
-    let canBeEdited = component.isEditable();
+    const canBeEdited = component.isEditable();
 
     waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
       const columnDef = component.agGrid.gridOptions.api.getColumnDef('chain');
@@ -456,7 +456,7 @@ describe('DetailComponent', () => {
   });
 
   it('Chain Column configured correctly not Editable for no role', async () => {
-    let canBeEdited = component.isEditable();
+    const canBeEdited = component.isEditable();
 
     waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
       const columnDef = component.agGrid.gridOptions.api.getColumnDef('chain');
@@ -746,37 +746,64 @@ describe('DetailComponent', () => {
   it('Commit button should be disabled when no modificaions', async () => {
     // TODO: This needs to later interact with state
     component.actionsDisabled = true;
+    let btn;
     store.refreshState();
     fixture.detectChanges();
-
-    const btn = query('[data-test="commit-button"]');
-    expect(btn.disabled).toEqual(true);
+    if (component.isEditable()) {
+      btn = query('[data-test="commit-button"]');
+      expect(btn).toBeTruthy();
+      expect(btn.disabled).toEqual(true);
+    }
+    else {
+      expect(btn).toBeFalsy();
+    }
   });
 
   it('Revert button should be disabled when no modificaions', async () => {
     // TODO: This needs to later interact with state
     component.actionsDisabled = true;
     store.refreshState();
+    let btn;
     fixture.detectChanges();
-
-    const btn = query('[data-test="revert-button"]');
-    expect(btn.disabled).toEqual(true);
+    if (component.isEditable()) {
+      btn = query('[data-test="revert-button"]');
+      expect(btn).toBeTruthy();
+      expect(btn.disabled).toEqual(true);
+    }
+    else {
+      expect(btn).toBeFalsy();
+    }
   });
 
   it('Commit button should be enabled when there are modificaions', async () => {
     store.refreshState();
     fixture.detectChanges();
+    let btn;
 
-    const btn = query('[data-test="commit-button"]');
-    expect(btn.disabled).toEqual(false);
+    if (component.isEditable()) {
+      btn = query('[data-test="commit-button"]');
+      expect(btn).toBeTruthy();
+      expect(btn.disabled).toEqual(false);
+    }
+    else {
+      expect(btn).toBeFalsy();
+    }
+
   });
 
   it('Revert button should be enabled when there are modificaions', async () => {
     store.refreshState();
+    let btn;
     fixture.detectChanges();
+    if (component.isEditable()) {
+      btn = query('[data-test="revert-button"]');
+      expect(btn).toBeTruthy();
+      expect(btn.disabled).toEqual(false);
+    }
+    else {
+      expect(btn).toBeFalsy();
+    }
 
-    const btn = query('[data-test="revert-button"]');
-    expect(btn.disabled).toEqual(false);
   });
 
   it('Shown records should be shown correctly', async () => {

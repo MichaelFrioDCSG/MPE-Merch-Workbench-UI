@@ -56,6 +56,9 @@ describe('HeaderComponent', () => {
         roles: ['Tester'],
         username: 'test.dcsg.com',
       },
+      TokenResponse: {
+        token: 'testtoken'
+      }
     };
   }
 });

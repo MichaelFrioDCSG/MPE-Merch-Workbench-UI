@@ -14,7 +14,7 @@ import { IAssortment } from '@mpe/shared';
 import { selectAssortments } from '../../store/assortment-mgmt.selectors';
 import { AgGridAngular } from 'ag-grid-angular';
 import { GridApi, GridOptions } from 'ag-grid-community';
-import { selectUserProfile, IUserProfile } from '@mpe/auth';
+import { selectUserProfile, IAuthState, IUserProfile } from '@mpe/auth';
 
 @Component({
   selector: 'mpe-summary',
@@ -22,7 +22,7 @@ import { selectUserProfile, IUserProfile } from '@mpe/auth';
   styleUrls: ['./summary.component.scss'],
 })
 export class SummaryComponent implements OnInit {
-  constructor(private dialog: MatDialog, private snackBar: MatSnackBar, private titleService: Title, private store: Store<IAssortmentMgmtState>) { }
+  constructor(private dialog: MatDialog, private snackBar: MatSnackBar, private titleService: Title, private store: Store<IAssortmentMgmtState>, private authStore: Store<IAuthState>) { }
 
   public agGrid: AgGridAngular;
   public gridOptions: GridOptions = { suppressCellSelection: true };
@@ -31,11 +31,12 @@ export class SummaryComponent implements OnInit {
   public selectedData: any;
   public actionMenuOpen: boolean;
   public gridApi: GridApi;
+  public userRoles: any[];
   public assortments: IAssortment[] = [];
   public get totalResults(): number {
     return this.assortments.length;
   }
-  public userProfile: Observable<IUserProfile>;
+  public userProfile: IUserProfile;
   public rowCount: number;
   public rowData: any[];
   public defaultColDef: any = {
@@ -71,7 +72,9 @@ export class SummaryComponent implements OnInit {
 
   public ngOnInit(): void {
     this.titleService.setTitle('Assortment Management');
-    this.userProfile = this.store.pipe(select(selectUserProfile));
+    this.authStore.pipe(select(selectUserProfile)).subscribe(profile =>
+      this.userProfile = profile
+    );
   }
 
   public getSelectedRows() {
@@ -88,6 +91,15 @@ export class SummaryComponent implements OnInit {
       this.assortments = assortments;
     });
   }
+
+  public isEditable() {
+    return this.userProfile.roles.includes('Admin') || this.userProfile.roles.includes('AMWrite');
+  }
+
+  public isViewable() {
+    return this.userProfile.roles.includes('AMRead');
+  }
+
   public onRowSelected($event): void {
     if ($event.node.selected) {
       this.actionsDisabled = false;

@@ -16,7 +16,7 @@ export class MSALInterceptor implements HttpInterceptor {
   public tokenResponse: ITokenResponse;
 
   constructor(private injector: Injector, private store: Store<IAuthState>) { };
-  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+  public intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     this.store.select(selectTokenResponse).subscribe(msaltoken =>
       this.tokenResponse = msaltoken
     );

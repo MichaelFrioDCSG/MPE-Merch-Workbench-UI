@@ -5,7 +5,8 @@
         <div class="breadcrumb-dsg">
           Assortments Summary
         </div>
-        <button mat-raised-button color="primary" class="agm-button import-button" (click)="openDialog()">
+        <button *ngIf="isEditable()" mat-raised-button color="primary" class="agm-button import-button"
+          (click)="openDialog()">
           <mat-icon>arrow_upward</mat-icon>
           Import
         </button>
@@ -13,20 +14,20 @@
 
       <div class="Monochromatic grid-header">
         <div class="grid-header-totals">Data Results ({{ totalResults }})</div>
-        <button [disabled]="actionsDisabled" mat-raised-button color="primary" class="agm-button action-menu-button"
-          [matMenuTriggerFor]="menu" (click)="actionMenuOpen = true">
+        <button *ngIf="isViewable() || isEditable()" [disabled]="actionsDisabled" mat-raised-button color="primary"
+          class="agm-button action-menu-button" [matMenuTriggerFor]="menu" (click)="actionMenuOpen = true">
           Actions
           <i class="material-icons">{{ actionMenuOpen ? 'expand_less' : 'expand_more' }}</i>
         </button>
 
         <mat-menu class="action-menu" #menu="matMenu" (closed)="onActionMenuClosed($event)">
-          <div mat-menu-item class="action-menu-item">
+          <div *ngIf="isViewable()" mat-menu-item class="action-menu-item">
             View
           </div>
-          <div mat-menu-item class="action-menu-item">
+          <div *ngIf="isEditable()" mat-menu-item class="action-menu-item">
             View/Edit
           </div>
-          <div mat-menu-item class="action-menu-item">
+          <div *ngIf="isEditable()" mat-menu-item class="action-menu-item">
             Delete
           </div>
         </mat-menu>

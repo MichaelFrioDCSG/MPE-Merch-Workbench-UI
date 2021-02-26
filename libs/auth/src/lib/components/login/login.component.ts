@@ -10,7 +10,6 @@ import * as msal from '@azure/msal-browser';
 import { environment } from '@mpe/home/src/environments/environment';
 import { ActivatedRoute, Router } from '@angular/router';
 import { selectUserProfile } from '../../store/auth.state';
-import { MsalConfig } from '../../msal-config';
 
 
 @Component({
@@ -45,8 +44,8 @@ export class LoginComponent implements OnInit {
           }
           this.store.dispatch(actions.setUserToken({ TokenResponse: msalToken }));
           //auth success - call login action
-          var idTokenResponse = this.parseJwt(tokenResponse.idToken);
-          var roles = idTokenResponse.roles;
+          const idTokenResponse = this.parseJwt(tokenResponse.idToken);
+          const roles = idTokenResponse.roles;
           const currentAccounts: msal.AccountInfo[] = this.msalInstance.getAllAccounts();
 
           if (currentAccounts === null) {
@@ -88,24 +87,10 @@ export class LoginComponent implements OnInit {
       });
   }
 
-  // public getToken(): Promise<string | msal.AuthenticationResult> {
-  //   return this.msalInstance.acquireTokenSilent(this.config.graphScopes)
-  //     .then(token => {
-  //       return token;
-  //     }).catch(error => {
-  //       return this.msalInstance.acquireTokenPopup(this.config.graphScopes)
-  //         .then(token => {
-  //           return Promise.resolve(token);
-  //         }).catch(innererror => {
-  //           return Promise.resolve('');
-  //         });
-  //     });
-  // }
-
   public parseJwt(token) {
-    var base64Url = token.split('.')[1];
-    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    var jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
       return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
     }).join(''));
 

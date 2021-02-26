@@ -4,10 +4,12 @@ import { MatDialog } from '@angular/material/dialog';
 import { AllCommunityModules, Module, GridOptions, GridApi } from '@ag-grid-community/all-modules';
 import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
+import { Store, select } from '@ngrx/store';
 
 import { SharedActions, IClusterGroup } from '@mpe/shared';
 import { SummaryActions, SummarySelectors, ManageClusterGroupsActions } from '../../store';
 import { ImportClusterGroupDialogComponent } from '../../dialogs/import-cluster-group-dialog/import-cluster-group-dialog.component';
+import { selectUserProfile, IAuthState, IUserProfile } from '@mpe/auth';
 
 @Component({
   selector: 'mpe-landing',
@@ -21,6 +23,7 @@ export class SummaryComponent implements OnInit {
   public gridColumnApi: any;
   public gridApi: GridApi;
   public actionsDisabled: boolean;
+  public userProfile: IUserProfile;
 
   public modules: Module[] = AllCommunityModules;
   public selectedData: any;
@@ -74,13 +77,26 @@ export class SummaryComponent implements OnInit {
     private actions: SummaryActions,
     private sharedActions: SharedActions,
     private manageActions: ManageClusterGroupsActions,
-    private selectors: SummarySelectors
+    private selectors: SummarySelectors,
+    private authStore: Store<IAuthState>
   ) { }
 
-  public ngOnInit() { }
+  public ngOnInit() {
+    this.authStore.pipe(select(selectUserProfile)).subscribe(profile =>
+      this.userProfile = profile
+    );
+  }
 
   public onActionMenuClosed($event) {
     this.actionMenuOpen = false;
+  }
+
+  public isEditable() {
+    return this.userProfile.roles.includes('Admin') || this.userProfile.roles.includes('SGMWrite');
+  }
+
+  public isViewable() {
+    return this.userProfile.roles.includes('SGMRead');
   }
 
   public openDialog(): void {
