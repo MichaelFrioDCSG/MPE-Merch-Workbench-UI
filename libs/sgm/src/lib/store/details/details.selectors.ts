@@ -60,8 +60,8 @@ export const selectSummaryDetailsFn = createSelector(selectDetailsStateFn, (stat
           };
 
           // Get PL Attribute values if needed
-          if (clusterLocation.productLocationAttributes && clusterLocation.productLocationAttributes.length > 0) {
-            for (const plAttr of clusterLocation.productLocationAttributes) {
+          if (clusterLocation.clusterLocationAttributes && clusterLocation.clusterLocationAttributes.length > 0) {
+            for (const plAttr of clusterLocation.clusterLocationAttributes) {
               const attr = state.productLocationAttributes.find(x => x.values.map(y => y.id).includes(plAttr.productLocationAttributeValueId));
               const val = attr.values.find(x => x.id === plAttr.productLocationAttributeValueId);
               detail[attr.oracleName] = val.value;

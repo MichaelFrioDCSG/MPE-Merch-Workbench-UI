@@ -600,7 +600,7 @@ function getMockState(): IDetailsState {
                 },
                 notes: 'Test Note',
                 clusterLabel: 'Green Tier',
-                productLocationAttributes: [],
+                clusterLocationAttributes: [],
               },
             ],
           },

@@ -8,5 +8,5 @@ export interface IClusterLocation {
   notes: string;
   clusterLabel: string;
   location: ILocation;
-  productLocationAttributes: IClusterLocationProductLocationAttributeValue[];
+  clusterLocationAttributes: IClusterLocationProductLocationAttributeValue[];
 }

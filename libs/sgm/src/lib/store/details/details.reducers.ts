@@ -78,7 +78,7 @@ function cloneClusterGroup(clusterGroup: IClusterGroup): IClusterGroup {
       ...cluster,
       clusterLocations: cluster.clusterLocations.map(clusterlocation => ({
         ...clusterlocation,
-        productLocationAttributes: clusterlocation?.productLocationAttributes?.map(attr => ({ ...attr })) || null,
+        clusterLocationAttributes: clusterlocation?.clusterLocationAttributes?.map(attr => ({ ...attr })) || null,
       })),
     })),
   };
@@ -103,7 +103,7 @@ function updateSelectedClusterGroupRecords(state: IDetailsState, modifications: 
         state.productLocationAttributes,
         sourceCluster.chain,
         mod.value,
-        sourceClusterLocation?.productLocationAttributes
+        sourceClusterLocation?.clusterLocationAttributes
       );
       targetCluster = sourceClusterGroup.clusters.find(cluster => cluster.name === opClusterMember);
       moveLocation(state.productLocationAttributes, sourceClusterGroup, sourceCluster, targetCluster, sourceClusterLocation, mod);
@@ -112,7 +112,7 @@ function updateSelectedClusterGroupRecords(state: IDetailsState, modifications: 
         state.productLocationAttributes,
         mod.value,
         sourceCluster.tier,
-        sourceClusterLocation.productLocationAttributes
+        sourceClusterLocation.clusterLocationAttributes
       );
       targetCluster = sourceClusterGroup.clusters.find(cluster => cluster.name === opClusterMember);
       moveLocation(state.productLocationAttributes, sourceClusterGroup, sourceCluster, targetCluster, sourceClusterLocation, mod);
@@ -153,7 +153,7 @@ function updateProductLocationAttributeValue(
 
   // Get product location attribute
   const sourceAttribute: IProductLocationAttribute = plAttributes.find(attribute => attribute.oracleName === mod.field);
-  let targetAttribute: IClusterLocationProductLocationAttributeValue = clusterLocation.productLocationAttributes.find(
+  let targetAttribute: IClusterLocationProductLocationAttributeValue = clusterLocation.clusterLocationAttributes.find(
     attr => attr.productLocationAttributeId === sourceAttribute.id
   );
 
@@ -167,8 +167,8 @@ function updateProductLocationAttributeValue(
 
   // CLEAR PRODUCT LOCATION VALUE
   if (`${mod.value}` === '') {
-    const deleteIndex = clusterLocation.productLocationAttributes.indexOf(targetAttribute);
-    clusterLocation.productLocationAttributes.splice(deleteIndex, 1);
+    const deleteIndex = clusterLocation.clusterLocationAttributes.indexOf(targetAttribute);
+    clusterLocation.clusterLocationAttributes.splice(deleteIndex, 1);
   }
   // UPDATE PRODUCT LOCATION VALUE ID
   else if (targetAttribute) {
@@ -182,11 +182,11 @@ function updateProductLocationAttributeValue(
       productLocationAttributeId: sourceAttribute.id,
       productLocationAttributeValueId: targetAttributeValue.id,
     };
-    clusterLocation.productLocationAttributes.push(targetAttribute);
+    clusterLocation.clusterLocationAttributes.push(targetAttribute);
   }
 
   // Get the new Op Cluster Member
-  const targetOpClusterMember = getClusterOpClusterMember(plAttributes, cluster.chain, cluster.tier, clusterLocation.productLocationAttributes);
+  const targetOpClusterMember = getClusterOpClusterMember(plAttributes, cluster.chain, cluster.tier, clusterLocation.clusterLocationAttributes);
 
   // Get the target cluster based on the new Op Cluster Member to move the location to
   const targetCluster = clusterGroup.clusters.find(c => c.name === targetOpClusterMember);
@@ -222,7 +222,7 @@ function moveLocation(
     }
 
     // Update the name after creating to make sure chain/tier mods are taken into account
-    targetCluster.name = getClusterOpClusterMember(attributes, targetCluster.chain, targetCluster.tier, location.productLocationAttributes);
+    targetCluster.name = getClusterOpClusterMember(attributes, targetCluster.chain, targetCluster.tier, location.clusterLocationAttributes);
     sourceClusterGroup.clusters.push(targetCluster);
   }
 
