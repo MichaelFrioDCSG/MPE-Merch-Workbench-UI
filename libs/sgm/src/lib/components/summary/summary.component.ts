@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { SharedActions, IClusterGroup } from '@mpe/shared';
 import { SummaryActions, SummarySelectors, ManageClusterGroupsActions } from '../../store';
 import { ImportClusterGroupDialogComponent } from '../../dialogs/import-cluster-group-dialog/import-cluster-group-dialog.component';
+import { RumRunnerService } from '@mpe/rum-runner-service';
 
 @Component({
   selector: 'mpe-landing',
@@ -74,7 +75,8 @@ export class SummaryComponent implements OnInit {
     private actions: SummaryActions,
     private sharedActions: SharedActions,
     private manageActions: ManageClusterGroupsActions,
-    private selectors: SummarySelectors
+    private selectors: SummarySelectors,
+    private rumRunnerService: RumRunnerService
   ) {}
 
   public ngOnInit() {}
@@ -84,6 +86,7 @@ export class SummaryComponent implements OnInit {
   }
 
   public openDialog(): void {
+    this.rumRunnerService.setCustom('USER_OPENED_IMPORT_DIALOG');
     const dialogRef = this.dialog.open(ImportClusterGroupDialogComponent, {
       width: '100rem',
       data: {},
