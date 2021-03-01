@@ -19,6 +19,7 @@ import { HeaderComponent } from './components/header/header.component';
 import { SgmModule } from '@mpe/sgm';
 import { AuthModule } from '@mpe/auth';
 import { MaterialModule } from '@mpe/material';
+import { RumRunnerServiceModule } from '@mpe/rum-runner-service';
 
 import { LicenseManager } from 'ag-grid-enterprise';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -34,6 +35,7 @@ LicenseManager.setLicenseKey(environment.agGridLicense);
     HttpClientModule,
     SharedModule,
     MaterialModule,
+    RumRunnerServiceModule,
     AssortmentManagementModule,
     AgGridModule.withComponents([]),
     StoreModule.forRoot(

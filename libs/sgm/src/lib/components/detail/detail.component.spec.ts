@@ -898,7 +898,7 @@ function getSGMMockState(): IDetailsState {
                 },
                 notes: 'Test Note',
                 clusterLabel: 'Green Tier',
-                productLocationAttributes: [],
+                clusterLocationAttributes: [],
               },
             ],
           },

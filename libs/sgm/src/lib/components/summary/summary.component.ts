@@ -10,6 +10,7 @@ import { SharedActions, IClusterGroup } from '@mpe/shared';
 import { SummaryActions, SummarySelectors, ManageClusterGroupsActions } from '../../store';
 import { ImportClusterGroupDialogComponent } from '../../dialogs/import-cluster-group-dialog/import-cluster-group-dialog.component';
 import { selectUserProfile, IAuthState, IUserProfile } from '@mpe/auth';
+import { RumRunnerService } from '@mpe/rum-runner-service';
 
 @Component({
   selector: 'mpe-landing',
@@ -78,7 +79,8 @@ export class SummaryComponent implements OnInit {
     private sharedActions: SharedActions,
     private manageActions: ManageClusterGroupsActions,
     private selectors: SummarySelectors,
-    private authStore: Store<IAuthState>
+    private authStore: Store<IAuthState>,
+    private rumRunnerService: RumRunnerService
   ) { }
 
   public ngOnInit() {
@@ -100,6 +102,7 @@ export class SummaryComponent implements OnInit {
   }
 
   public openDialog(): void {
+    this.rumRunnerService.setCustom('USER_OPENED_IMPORT_DIALOG');
     const dialogRef = this.dialog.open(ImportClusterGroupDialogComponent, {
       width: '100rem',
       data: {},

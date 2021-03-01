@@ -8,10 +8,10 @@ import { AgGridModule } from 'ag-grid-angular';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { MaterialModule } from '@mpe/material';
+import { RumRunnerServiceModule } from '@mpe/rum-runner-service';
 
 import { ClusterGroupService } from '@mpe/AsmtMgmtService';
 import { InputSpinnerComponent, InputDropdownFilterComponent, InputMultiselectDropdownComponent } from '@mpe/shared';
-
 import { FEATURE_KEY } from './store/state';
 import { FEATURE_REDUCER_TOKEN, getReducers } from './store/reducer';
 import StoreGroupMgmtEffects from './store/effects';
@@ -35,6 +35,7 @@ export const sgmRoutes: Route[] = [
     FormsModule,
     ReactiveFormsModule,
     MaterialModule,
+    RumRunnerServiceModule,
     AgGridModule.withComponents([]),
     StoreModule.forFeature(FEATURE_KEY, FEATURE_REDUCER_TOKEN),
     EffectsModule.forFeature(StoreGroupMgmtEffects),
