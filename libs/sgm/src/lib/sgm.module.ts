@@ -18,6 +18,7 @@ import * as fromStoreGroupMgmt from './store/store-group-mgmt.reducer';
 import { ImportClusterGroupDialogComponent } from './dialogs/import-cluster-group-dialog/import-cluster-group-dialog.component';
 import { DetailComponent } from './components/detail/detail.component';
 import { SummaryComponent } from './components/summary/summary.component';
+import { RenderPage } from './components/summary/render-page';
 
 export const sgmRoutes: Route[] = [
   { path: ':id', component: DetailComponent },
@@ -44,6 +45,7 @@ export const sgmRoutes: Route[] = [
     InputMultiselectDropdownComponent,
     InputDropdownFilterComponent,
     DetailComponent,
+    RenderPage,
   ],
   exports: [SummaryComponent, DetailComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
