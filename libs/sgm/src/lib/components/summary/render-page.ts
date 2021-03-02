@@ -6,15 +6,15 @@ import { AgRendererComponent } from 'ag-grid-angular';
   template: `<a [routerLink]="[params.inRouterLink, params.data.id]">{{ params.value }}</a>`,
 })
 export class RenderPage implements AgRendererComponent {
-  params: any;
+  public params: any;
 
   constructor(public summary: SummaryComponent) {}
 
-  agInit(params: any): void {
+  public agInit(params: any): void {
     this.params = params;
   }
 
-  refresh(params: any): boolean {
+  public refresh(params: any): boolean {
     return false;
   }
 }
