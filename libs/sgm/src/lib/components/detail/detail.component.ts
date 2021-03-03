@@ -3,16 +3,13 @@ import { AgGridAngular } from 'ag-grid-angular';
 import { Observable } from 'rxjs';
 import { AllCommunityModules, Module, GridOptions, GridApi, ColDef, ColGroupDef } from '@ag-grid-community/all-modules';
 
-import { Store } from '@ngrx/store';
-import { IStoreGroupMgmtState } from '../../store/store-group-mgmt.reducer';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 
-import * as selectors from '../../store/store-group-mgmt.selectors';
-import * as actions from '../../store/store-group-mgmt.actions';
+import { DetailsActions, DetailsSelectors } from '../../store/details';
 import { IDetailRecord } from '../../models/IDetailRecord';
 import { IModifiedDetailRecord } from '../../models/IModifiedDetailRecord';
-import { BulkFillRenderer, IProductLocationAttribute } from '@mpe/shared';
+import { BulkFillRenderer, IProductLocationAttribute, numericComparator } from '@mpe/shared';
 import { DatePipe } from '@angular/common';
 import { getDetailRecordOpClusterMember } from '../../helpers/getClusterOpClusterMember';
 
@@ -24,7 +21,7 @@ import { getDetailRecordOpClusterMember } from '../../helpers/getClusterOpCluste
 export class DetailComponent implements OnInit {
   @ViewChild('agGrid', { static: false }) public agGrid: AgGridAngular;
   public loadingTemplate;
-  public gridOptions: GridOptions;
+  public gridOptions: GridOptions = { suppressCellSelection: true };
   public gridApi: GridApi;
   public details$: Observable<IDetailRecord[]>;
   public modules: Module[] = AllCommunityModules;
@@ -32,8 +29,10 @@ export class DetailComponent implements OnInit {
     const queryStringParameter = this.route.snapshot.paramMap.get('id');
     return queryStringParameter.split(',').map(id => parseInt(id, 10));
   }
+  constructor(private actions: DetailsActions, private selectors: DetailsSelectors, private titleService: Title, private route: ActivatedRoute) {}
   public shownRecords: number;
   public totalRecords: number;
+
   public defaultColDef: any = {
     resizable: true,
     sortable: true,
@@ -42,19 +41,13 @@ export class DetailComponent implements OnInit {
     hide: true,
     enableRowGroup: true,
     editable: false,
+    singleClickEdit: true,
+    suppressNavigable: true,
+    cellClass: 'no-border',
   };
   private datePipe: DatePipe = new DatePipe('en-US');
 
   public actionsDisabled = false;
-
-  private numericComparator(a, b) {
-    const valA = parseInt(a, 10);
-    const valB = parseInt(b, 10);
-
-    if (valA === valB) return 0;
-
-    return valA > valB ? 1 : -1;
-  }
 
   public tiers: string[] = ['ECOMM', 'Tier 1', 'Tier 2', 'Tier 3', 'Tier 4', 'Tier 5', 'Z'];
   public chains: string[] = ['DSG', 'GG', 'FS'];
@@ -68,11 +61,7 @@ export class DetailComponent implements OnInit {
     const node = params.node;
     const values = this.getModifiedDetailRecords(node, colId, newValue);
 
-    this.store.dispatch(
-      actions.setDetailValues({
-        values,
-      })
-    );
+    this.actions.setDetailValues(values);
 
     params.api.hideOverlay();
     return true;
@@ -192,7 +181,7 @@ export class DetailComponent implements OnInit {
       hide: false,
       field: 'warehouseNumber',
       filter: 'agSetColumnFilter',
-      filterParams: { comparator: this.numericComparator },
+      filterParams: { comparator: numericComparator },
     },
     {
       headerName: 'NOTES',
@@ -209,7 +198,7 @@ export class DetailComponent implements OnInit {
       headerName: 'STORE NUMBER',
       field: 'storeNumber',
       filter: 'agSetColumnFilter',
-      filterParams: { comparator: this.numericComparator },
+      filterParams: { comparator: numericComparator },
       hide: false,
       pinned: 'left',
     },
@@ -228,7 +217,7 @@ export class DetailComponent implements OnInit {
       headerName: 'SQUARE FEET',
       field: 'squareFeet',
       filter: 'agSetColumnFilter',
-      filterParams: { comparator: this.numericComparator },
+      filterParams: { comparator: numericComparator },
     },
     { headerName: 'STATE', field: 'state' },
     { headerName: 'STORE FORMAT', field: 'storeFormat' },
@@ -237,7 +226,7 @@ export class DetailComponent implements OnInit {
       headerName: 'TTL RUN RATE',
       field: 'ttlRunRate',
       filter: 'agSetColumnFilter',
-      filterParams: { comparator: this.numericComparator },
+      filterParams: { comparator: numericComparator },
     },
   ];
 
@@ -283,8 +272,6 @@ export class DetailComponent implements OnInit {
     defaultToolPanel: 'columns',
   };
 
-  constructor(private store: Store<IStoreGroupMgmtState>, private titleService: Title, private route: ActivatedRoute) {}
-
   public ngOnInit() {
     this.titleService.setTitle('Store Group Management');
     this.loadingTemplate = '<span class="ag-overlay-loading-center">Loading...</span>';
@@ -292,13 +279,13 @@ export class DetailComponent implements OnInit {
 
   public onGridReady(params: any) {
     this.gridApi = params.api;
-    this.store.dispatch(actions.sgmGetDetails({ clusterGroupIds: this.clusterGroupIds }));
+    this.actions.sgmGetDetails(this.clusterGroupIds);
 
     setTimeout(() => {
       params.api.showLoadingOverlay();
     }, 5);
 
-    this.store.select(selectors.selectSummaryDetails).subscribe(data => {
+    this.selectors.getSummaryDetails().subscribe(data => {
       const details: IDetailRecord[] = data.gridData;
 
       this.configureGridColumns(data.productLocationAttributes, details);
@@ -311,12 +298,11 @@ export class DetailComponent implements OnInit {
 
       this.shownRecords = this.gridApi.getDisplayedRowCount();
     });
-
-    this.store.select(selectors.selectDetailsEdited).subscribe(edited => {
+    this.selectors.getEdited().subscribe(edited => {
       this.actionsDisabled = !edited;
     });
 
-    this.store.select(selectors.selectProductLocationAttributes).subscribe(values => {
+    this.selectors.getProductLocationAttributes().subscribe(values => {
       this.pl_attributes = values;
     });
   }
@@ -343,7 +329,7 @@ export class DetailComponent implements OnInit {
     setTimeout(() => {
       this.gridApi.showLoadingOverlay();
     }, 5);
-    this.store.dispatch(actions.saveDetails());
+    this.actions.saveDetails();
   }
 
   public onCancelClick() {
@@ -351,6 +337,6 @@ export class DetailComponent implements OnInit {
     setTimeout(() => {
       this.gridApi.showLoadingOverlay();
     }, 5);
-    this.store.dispatch(actions.revertDetails());
+    this.actions.revertDetails();
   }
 }

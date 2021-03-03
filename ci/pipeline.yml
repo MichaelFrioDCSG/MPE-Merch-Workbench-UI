@@ -1,27 +1,60 @@
----
 resources:
-  - name: MerchWorkBenchMaster
+  - name: git-master
     type: git
     source:
+      branch: master
       uri: git@github.com:dsg-tech/MPE-Merch-Workbench-UI.git
-      branch: { { project_resource_branch } }
       private_key: ((MPE-Merch-Workbench-UI-deploykey.private))
 
-  - name: { { mpe-pcf-env } }
+  - name: git-stage
+    type: git
+    source:
+      branch: master
+      uri: git@github.com:dsg-tech/MPE-Merch-Workbench-UI.git
+      private_key: ((MPE-Merch-Workbench-UI-deploykey.private))
+
+  - name: git-dev
+    type: git
+    source:
+      branch: develop
+      uri: git@github.com:dsg-tech/MPE-Merch-Workbench-UI.git
+      private_key: ((MPE-Merch-Workbench-UI-deploykey.private))
+
+  - name: pcf-vp01-prod
     type: cf
     source:
-      api: { { cf_resource_api } }
-      username: { { cf_resource_username } }
-      password: { { cf_resource_password } }
+      api: https://api.sys.vp01.pcf.dcsg.com
+      username: ((cf_user_prod))
+      password: ((cf_password_prod))
       organization: merchandise-planning-and-execution
-      space: { { cf_resource_space } }
+      space: prod
+      skip_cert_check: true
+
+  - name: pcf-vn01-stage
+    type: cf
+    source:
+      api: https://api.sys.vn01.pcf.dcsg.com
+      username: ((cf_user_nonprod))
+      password: ((cf_password_nonprod))
+      organization: merchandise-planning-and-execution
+      space: stage
+      skip_cert_check: true
+
+  - name: pcf-vn01-dev
+    type: cf
+    source:
+      api: https://api.sys.vn01.pcf.dcsg.com
+      username: ((cf_user_nonprod))
+      password: ((cf_password_nonprod))
+      organization: merchandise-planning-and-execution
+      space: dev
       skip_cert_check: true
 
 jobs:
-  - name: Lint
+  - name: prod-lint
     public: true
     plan:
-      - get: MerchWorkBenchMaster
+      - get: git-master
         trigger: true
       - task: ng-lint
         config:
@@ -32,7 +65,7 @@ jobs:
               repository: node
               tag: latest
           inputs:
-            - name: MerchWorkBenchMaster
+            - name: git-master
           run:
             path: sh
             args:
@@ -41,14 +74,13 @@ jobs:
                 set -xe
                 export NG_CLI_ANALYTICS="false"
                 echo "NG_CLI_ANALYTICS="$NG_CLI_ANALYTICS
-                cd MerchWorkBenchMaster
+                cd git-master
                 npm install --unsafe-perm --quiet
-                npx nx run-many --all --target=lint
-
-  - name: Unit-Test
+                npm run lint:all
+  - name: prod-unit-test
     public: true
     plan:
-      - get: MerchWorkBenchMaster
+      - get: git-master
         trigger: true
       - task: ng-test
         config:
@@ -59,7 +91,7 @@ jobs:
               repository: weboaks/node-karma-protractor-chrome
               tag: latest
           inputs:
-            - name: MerchWorkBenchMaster
+            - name: git-master
           run:
             path: sh
             args:
@@ -68,17 +100,15 @@ jobs:
                 set -xe
                 export NG_CLI_ANALYTICS="false"
                 echo "NG_CLI_ANALYTICS="$NG_CLI_ANALYTICS
-                cd MerchWorkBenchMaster
+                cd git-master
                 npm install --unsafe-perm --quiet
-                npx nx run-many --projects=home,shared,sgm,assortment-management,auth,asmt-mgmt-service --target=test --karma-config=karma-ci.conf.js --no-progress
-
-  - name: Publish-and-Deploy
+                npm run test:all
+  - name: prod-publish-and-deploy
     plan:
-      - get: MerchWorkBenchMaster
-        trigger: true
+      - get: git-master
         passed:
-          - Lint
-          - Unit-Test
+          - prod-lint
+          - prod-unit-test
       - task: ng-publish
         config:
           platform: linux
@@ -88,7 +118,7 @@ jobs:
               repository: node
               tag: latest
           inputs:
-            - name: MerchWorkBenchMaster
+            - name: git-master
           outputs:
             - name: build-output
           run:
@@ -101,18 +131,215 @@ jobs:
                 # be able to use ci as value - https://github.com/angular/angular-cli/blob/master/docs/design/analytics.md4
                 export NG_CLI_ANALYTICS="false"
                 echo "NG_CLI_ANALYTICS="$NG_CLI_ANALYTICS
-                cd MerchWorkBenchMaster
+                cd git-master
                 npm install --unsafe-perm --quiet
                 #./node_modules/@angular/cli/bin/ng build --output-hashing=bundles --index=${INDEX_ARGUMENT}
-                npx nx build
+                npx nx build --c=production
                 cp -r dist/apps/home/* ../build-output
                 cp ci/Staticfile ../build-output
                 cp ci/manifest.yml ../build-output
-
       - put: cf-push-prod
-        resource: PCF-VP01-Prod
+        resource: pcf-vp01-prod
         params:
           command: push
           path: build-output
           manifest: build-output/manifest.yml
-          current_app_name: mpe-merch-workbench
+          current_app_name: merch-workbench-ui
+
+##########################################################
+## STAGE
+##########################################################
+  - name: stage-lint
+    public: true
+    plan:
+      - get: git-stage
+        trigger: true
+      - task: ng-lint
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: node
+              tag: latest
+          inputs:
+            - name: git-stage
+          run:
+            path: sh
+            args:
+              - -exc
+              - |
+                set -xe
+                export NG_CLI_ANALYTICS="false"
+                echo "NG_CLI_ANALYTICS="$NG_CLI_ANALYTICS
+                cd git-stage
+                npm install --unsafe-perm --quiet
+                npm run lint:all
+  - name: stage-unit-test
+    public: true
+    plan:
+      - get: git-stage
+        trigger: true
+      - task: ng-test
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: weboaks/node-karma-protractor-chrome
+              tag: latest
+          inputs:
+            - name: git-stage
+          run:
+            path: sh
+            args:
+              - -exc
+              - |
+                set -xe
+                export NG_CLI_ANALYTICS="false"
+                echo "NG_CLI_ANALYTICS="$NG_CLI_ANALYTICS
+                cd git-stage
+                npm install --unsafe-perm --quiet
+                npm run test:all
+  - name: stage-publish-and-deploy
+    plan:
+      - get: git-stage
+        trigger: true
+        passed:
+          - stage-lint
+          - stage-unit-test
+      - task: ng-publish
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: node
+              tag: latest
+          inputs:
+            - name: git-stage
+          outputs:
+            - name: build-output
+          run:
+            path: sh
+            args:
+              - -exc
+              - |
+                set -xe
+                # There is still an issue/bug with this. Should
+                # be able to use ci as value - https://github.com/angular/angular-cli/blob/master/docs/design/analytics.md4
+                export NG_CLI_ANALYTICS="false"
+                echo "NG_CLI_ANALYTICS="$NG_CLI_ANALYTICS
+                cd git-stage
+                npm install --unsafe-perm --quiet
+                #./node_modules/@angular/cli/bin/ng build --output-hashing=bundles --index=${INDEX_ARGUMENT}
+                npx nx build --c=qa
+                cp -r dist/apps/home/* ../build-output
+                cp ci/Staticfile ../build-output
+                cp ci/manifest.yml ../build-output
+      - put: cf-push-stage
+        resource: pcf-vn01-stage
+        params:
+          command: push
+          path: build-output
+          manifest: build-output/manifest.yml
+          current_app_name: merch-workbench-ui-stage
+
+##########################################################
+## DEV
+##########################################################
+  - name: dev-lint
+    public: true
+    plan:
+      - get: git-dev
+        trigger: true
+      - task: ng-lint
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: node
+              tag: latest
+          inputs:
+            - name: git-dev
+          run:
+            path: sh
+            args:
+              - -exc
+              - |
+                set -xe
+                export NG_CLI_ANALYTICS="false"
+                echo "NG_CLI_ANALYTICS="$NG_CLI_ANALYTICS
+                cd git-dev
+                npm install --unsafe-perm --quiet
+                npm run lint:all
+  - name: dev-unit-test
+    public: true
+    plan:
+      - get: git-dev
+        trigger: true
+      - task: ng-test
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: weboaks/node-karma-protractor-chrome
+              tag: latest
+          inputs:
+            - name: git-dev
+          run:
+            path: sh
+            args:
+              - -exc
+              - |
+                set -xe
+                export NG_CLI_ANALYTICS="false"
+                echo "NG_CLI_ANALYTICS="$NG_CLI_ANALYTICS
+                cd git-dev
+                npm install --unsafe-perm --quiet
+                npm run test:all
+  - name: dev-publish-and-deploy
+    plan:
+      - get: git-dev
+        trigger: true
+        passed:
+          - dev-lint
+          - dev-unit-test
+      - task: ng-publish
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: node
+              tag: latest
+          inputs:
+            - name: git-dev
+          outputs:
+            - name: build-output
+          run:
+            path: sh
+            args:
+              - -exc
+              - |
+                set -xe
+                # There is still an issue/bug with this. Should
+                # be able to use ci as value - https://github.com/angular/angular-cli/blob/master/docs/design/analytics.md4
+                export NG_CLI_ANALYTICS="false"
+                echo "NG_CLI_ANALYTICS="$NG_CLI_ANALYTICS
+                cd git-dev
+                npm install --unsafe-perm --quiet
+                #./node_modules/@angular/cli/bin/ng build --output-hashing=bundles --index=${INDEX_ARGUMENT}
+                npx nx build --c=dev
+                cp -r dist/apps/home/* ../build-output
+                cp ci/Staticfile ../build-output
+                cp ci/manifest.yml ../build-output
+      - put: cf-push-dev
+        resource: pcf-vn01-dev
+        params:
+          command: push
+          path: build-output
+          manifest: build-output/manifest.yml
+          current_app_name: merch-workbench-ui-dev

@@ -1,4 +1,4 @@
-export interface ICreateStoreGroupResponse {
+export interface ICreateClusterGroupResponseDto {
   errorMessages: string[];
   isSuccess: boolean;
 }

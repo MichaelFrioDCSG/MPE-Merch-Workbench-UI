@@ -1,15 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
+import * as msal from '@azure/msal-browser';
+import { ActivatedRoute, Router } from '@angular/router';
+
+import { RumRunnerService } from '@mpe/rum-runner-service';
+
 import { IUserProfile } from '../../store/models/IUserProfile';
 import { IAuthState } from '../../store/models/IAuthState';
+import { selectUserProfile } from '../../store/auth.state';
 import * as AuthSections from '../../store/auth.state';
 import * as actions from '../../store/auth.actions';
 
-import * as msal from '@azure/msal-browser';
 import { environment } from '@mpe/home/src/environments/environment';
-import { ActivatedRoute, Router } from '@angular/router';
-import { selectUserProfile } from '../../store/auth.state';
 
 @Component({
   selector: 'mpe-login',
@@ -20,7 +23,7 @@ export class LoginComponent implements OnInit {
   public userProfile: Observable<IUserProfile> = this.store.pipe(select(AuthSections.selectUserProfile));
   private msalInstance: msal.PublicClientApplication;
 
-  constructor(private router: Router, private route: ActivatedRoute, private store: Store<IAuthState>) {}
+  constructor(private router: Router, private route: ActivatedRoute, private store: Store<IAuthState>, private rumRunnerService: RumRunnerService) {}
 
   public ngOnInit(): void {
     const msalConfig = {
@@ -49,6 +52,10 @@ export class LoginComponent implements OnInit {
               username: currentAccounts[0].username,
               roles: [],
             };
+
+            // Log the user login event
+            this.rumRunnerService.setCustom('USER_LOGIN', userProfile);
+
             //async call to set user profile in store
             this.store.dispatch(actions.setUserProfile({ UserProfile: userProfile }));
             const retUrl = this.route.snapshot.queryParams.retUrl;

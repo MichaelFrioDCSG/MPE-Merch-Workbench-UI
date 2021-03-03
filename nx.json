@@ -46,6 +46,9 @@
     },
     "auth": {
       "tags": []
+    },
+    "rum-runner-service": {
+      "tags": []
     }
   }
 }

@@ -6,9 +6,9 @@ import { By } from '@angular/platform-browser';
 import { AgGridModule } from 'ag-grid-angular';
 import { FormsModule } from '@angular/forms';
 import { MaterialModule } from '@mpe/material';
-import { ClusterGroupsService } from '@mpe/AsmtMgmtService';
+import { ClusterGroupService } from '@mpe/AsmtMgmtService';
 
-import { IStoreGroupMgmtState, initialState } from '../../store/store-group-mgmt.reducer';
+import IDetailsState, { initialState } from '../../store/details/details.state';
 
 import { DetailComponent } from './detail.component';
 
@@ -23,7 +23,7 @@ describe('DetailComponent', () => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, RouterTestingModule, FormsModule, AgGridModule.withComponents([DetailComponent]), MaterialModule],
       declarations: [DetailComponent],
-      providers: [provideMockStore({ initialState }), { provides: ClusterGroupsService, useValue: {} }],
+      providers: [provideMockStore({ initialState }), { provides: ClusterGroupService, useValue: {} }],
     }).compileComponents();
 
     // Setup mock ngrx store & data for the init selector
@@ -119,6 +119,11 @@ describe('DetailComponent', () => {
       expect(columnDef.sortable).toEqual(true);
       expect(columnDef.filter).toEqual(true);
       expect(columnDef.width).toEqual(200);
+    });
+  });
+  it('Check Grid Options configured correctly', async () => {
+    waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
+      expect(component.gridOptions.suppressCellSelection).toEqual(true);
     });
   });
 
@@ -358,7 +363,7 @@ describe('DetailComponent', () => {
 
       // Update the state
       const newState = getMockState();
-      newState.selectedClusterGroups[0].clusters[0].clusterLocations[0].clusterLabel = 'test 123';
+      newState.clusterGroups[0].clusters[0].clusterLocations[0].clusterLabel = 'test 123';
       store.setState(newState);
       store.refreshState();
       fixture.detectChanges();
@@ -395,7 +400,7 @@ describe('DetailComponent', () => {
 
       // Update the state
       const newState = getMockState();
-      newState.selectedClusterGroups[0].clusters[0].clusterLocations[0].notes = 'test notes 123';
+      newState.clusterGroups[0].clusters[0].clusterLocations[0].notes = 'test notes 123';
       store.setState(newState);
       store.refreshState();
       fixture.detectChanges();
@@ -524,11 +529,11 @@ describe('DetailComponent', () => {
 });
 
 // Data Helper methods below
-function getMockState(): IStoreGroupMgmtState {
+function getMockState(): IDetailsState {
   return {
     ...initialState,
     edited: false,
-    selectedClusterGroups: [
+    clusterGroups: [
       {
         clusterGroupAttributes: [],
         createdAt: null,
@@ -595,7 +600,7 @@ function getMockState(): IStoreGroupMgmtState {
                 },
                 notes: 'Test Note',
                 clusterLabel: 'Green Tier',
-                productLocationAttributes: [],
+                clusterLocationAttributes: [],
               },
             ],
           },
