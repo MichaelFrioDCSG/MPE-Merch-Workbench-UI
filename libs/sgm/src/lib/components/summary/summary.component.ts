@@ -7,14 +7,12 @@ import { Observable } from 'rxjs';
 import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 
-import { actions as sharedActions, IClusterGroup } from '@mpe/shared';
+import { actions as sharedActions, IClusterGroup, LinkRendererComponent } from '@mpe/shared';
 
 import { selectClusterGroups } from '../../store/store-group-mgmt.selectors';
 import { IStoreGroupMgmtState } from '../../store/store-group-mgmt.reducer';
 import * as actions from '../../store/store-group-mgmt.actions';
 import { ImportClusterGroupDialogComponent } from '../../dialogs/import-cluster-group-dialog/import-cluster-group-dialog.component';
-import { RenderPage } from '../summary/render-page';
-import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'mpe-landing',
@@ -30,7 +28,6 @@ export class SummaryComponent implements OnInit {
   public gridColumnApi: any;
   public gridApi: GridApi;
   public actionsDisabled: boolean;
-  public sel_id: number;
   public modules: Module[] = AllCommunityModules;
   public selectedData: any;
   public rowCount: number;
@@ -65,10 +62,10 @@ export class SummaryComponent implements OnInit {
       sortable: true,
       filter: true,
       minWidth: 275,
-      cellRendererFramework: RenderPage,
-      cellRendererParams: {
-        inRouterLink: '/sgm/',
-      },
+      cellRendererFramework: LinkRendererComponent,
+      cellRendererParams: params => ({
+        inRouterLink: `/sgm/${params.data.id}`,
+      }),
     },
     { headerName: 'CLUSTER GROUP DESCRIPTION', field: 'description', sortable: true, filter: true, minWidth: 300 },
     { headerName: 'ASSORTMENT PERIOD', field: 'asmtPeriod.asmtPeriodLabel', sortable: true, filter: true, minWidth: 232 },
