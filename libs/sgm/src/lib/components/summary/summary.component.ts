@@ -4,11 +4,15 @@ import { MatDialog } from '@angular/material/dialog';
 import { AllCommunityModules, Module, GridOptions, GridApi } from '@ag-grid-community/all-modules';
 import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
+import { Store, select } from '@ngrx/store';
+import { AuthSelectors } from '../../../../../auth/src/lib/store/auth.selectors'
 
 import { SharedActions, IClusterGroup } from '@mpe/shared';
 import { SummaryActions, SummarySelectors, ManageClusterGroupsActions } from '../../store';
 import { ImportClusterGroupDialogComponent } from '../../dialogs/import-cluster-group-dialog/import-cluster-group-dialog.component';
+import { selectUserProfile, IAuthState, IUserProfile } from '@mpe/auth';
 import { RumRunnerService } from '@mpe/rum-runner-service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'mpe-landing',
@@ -22,6 +26,9 @@ export class SummaryComponent implements OnInit {
   public gridColumnApi: any;
   public gridApi: GridApi;
   public actionsDisabled: boolean;
+  public userProfile: IUserProfile;
+  public canEdit$: Observable<boolean>;
+  public canView$: Observable<boolean>;
 
   public modules: Module[] = AllCommunityModules;
   public selectedData: any;
@@ -76,10 +83,18 @@ export class SummaryComponent implements OnInit {
     private sharedActions: SharedActions,
     private manageActions: ManageClusterGroupsActions,
     private selectors: SummarySelectors,
+    private authSelectors: AuthSelectors,
+    private authStore: Store<IAuthState>,
     private rumRunnerService: RumRunnerService
-  ) {}
+  ) { }
 
-  public ngOnInit() {}
+  public ngOnInit() {
+    this.authStore.pipe(select(selectUserProfile)).subscribe(profile =>
+      this.userProfile = profile
+    );
+    this.canEdit$ = this.authSelectors.userCanEditSGM();
+    this.canView$ = this.authSelectors.userCanViewSGM();
+  }
 
   public onActionMenuClosed($event) {
     this.actionMenuOpen = false;

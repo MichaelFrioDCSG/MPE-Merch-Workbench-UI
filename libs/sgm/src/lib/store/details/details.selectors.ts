@@ -78,7 +78,7 @@ export const selectSummaryDetailsFn = createSelector(selectDetailsStateFn, (stat
 
 @Injectable({ providedIn: 'root' })
 export class DetailsSelectors {
-  constructor(private store: Store<IDetailsState>) {}
+  constructor(private store: Store<IDetailsState>) { }
 
   public getLoading(): Observable<boolean> {
     return this.store.select(getLoadingFn);

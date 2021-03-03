@@ -22,6 +22,8 @@ import { MaterialModule } from '@mpe/material';
 import { RumRunnerServiceModule } from '@mpe/rum-runner-service';
 
 import { LicenseManager } from 'ag-grid-enterprise';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { MSALInterceptor } from 'libs/auth/src/lib/interceptors/msal.interceptor';
 LicenseManager.setLicenseKey(environment.agGridLicense);
 
 @NgModule({
@@ -53,5 +55,12 @@ LicenseManager.setLicenseKey(environment.agGridLicense);
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: MSALInterceptor,
+      multi: true
+    },
+  ]
 })
-export class AppModule {}
+export class AppModule { }

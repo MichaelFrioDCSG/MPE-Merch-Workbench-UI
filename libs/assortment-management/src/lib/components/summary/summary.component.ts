@@ -9,11 +9,13 @@ import { AlertDialogComponent } from '../dialogs/alert-dialog/alert-dialog.compo
 import { Title } from '@angular/platform-browser';
 import { select, Store } from '@ngrx/store';
 import { IAssortmentMgmtState } from '../../store/assortment-mgmt.reducer';
+import { AuthSelectors } from '../../../../../auth/src/lib/store/auth.selectors'
 import * as actions from '../../store/assortment-mgmt.actions';
 import { IAssortment } from '@mpe/shared';
 import { selectAssortments } from '../../store/assortment-mgmt.selectors';
 import { AgGridAngular } from 'ag-grid-angular';
 import { GridApi, GridOptions } from 'ag-grid-community';
+import { selectUserProfile, IAuthState, IUserProfile } from '@mpe/auth';
 
 @Component({
   selector: 'mpe-summary',
@@ -21,7 +23,7 @@ import { GridApi, GridOptions } from 'ag-grid-community';
   styleUrls: ['./summary.component.scss'],
 })
 export class SummaryComponent implements OnInit {
-  constructor(private dialog: MatDialog, private snackBar: MatSnackBar, private titleService: Title, private store: Store<IAssortmentMgmtState>) {}
+  constructor(private dialog: MatDialog, private authSelectors: AuthSelectors, private snackBar: MatSnackBar, private titleService: Title, private store: Store) { }
 
   public agGrid: AgGridAngular;
   public gridOptions: GridOptions = { suppressCellSelection: true };
@@ -34,7 +36,9 @@ export class SummaryComponent implements OnInit {
   public get totalResults(): number {
     return this.assortments.length;
   }
-
+  public canEdit$: Observable<boolean>;
+  public canView$: Observable<boolean>;
+  public userProfile: IUserProfile;
   public rowCount: number;
   public rowData: any[];
   public defaultColDef: any = {
@@ -70,6 +74,12 @@ export class SummaryComponent implements OnInit {
 
   public ngOnInit(): void {
     this.titleService.setTitle('Assortment Management');
+    this.canEdit$ = this.authSelectors.userCanEditAM();
+    this.canView$ = this.authSelectors.userCanViewAM();
+    this.store.pipe(select(selectUserProfile)).subscribe(profile => {
+      this.userProfile = profile
+    }
+    );
   }
 
   public getSelectedRows() {
@@ -86,6 +96,7 @@ export class SummaryComponent implements OnInit {
       this.assortments = assortments;
     });
   }
+
   public onRowSelected($event): void {
     if ($event.node.selected) {
       this.actionsDisabled = false;

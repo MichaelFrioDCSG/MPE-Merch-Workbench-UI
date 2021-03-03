@@ -97,7 +97,6 @@ const fakeAssortments = [
       deptDesc: 'WOMENS ATHLETIC APPAREL',
       deptLabel: '700 - WOMENS ATHLETIC APPAREL',
     },
-    // assortmentProducts: [],
     createdBy: null,
     createdAt: new Date('2021-01-13T11:29:55.2414649'),
     updatedBy: 'DKS0195607',
@@ -115,13 +114,22 @@ describe('Assortment Management - SummaryComponent', () => {
   let dispatchSpy;
   let el: DebugElement;
 
-  const initialState: IAssortmentMgmtState = {
-    assortments: [],
-    selectedAssortments: [],
-    loading: false,
-    edited: false,
-    getSummaryErrorMessages: [],
-    getDetailsErrorMessages: [],
+  const initialState: any = {
+    auth: {
+      UserProfile: {
+        roles: [],
+        username: "Test Username",
+        name: "Test Name",
+      }
+    },
+    assortmentMgmt: {
+      assortments: [],
+      selectedAssortments: [],
+      loading: false,
+      edited: false,
+      getSummaryErrorMessages: [],
+      getDetailsErrorMessages: [],
+    }
   };
 
   beforeEach(async(() => {
@@ -150,9 +158,10 @@ describe('Assortment Management - SummaryComponent', () => {
       });
   }));
 
-  it('should create', () => {
+  it('should create', fakeAsync(() => {
+    flushMicrotasks();
     expect(component).toBeTruthy();
-  });
+  }));
 
   it('should set the correct page title', () => {
     expect(titleServiceSpy.setTitle).toHaveBeenCalledWith('Assortment Management');

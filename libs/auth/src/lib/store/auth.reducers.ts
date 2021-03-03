@@ -8,6 +8,9 @@ export const initialState: IAuthState = {
     roles: [],
     username: null,
   },
+  TokenResponse: {
+    token: null
+  }
 };
 
 const reducer$ = createReducer(
@@ -15,6 +18,10 @@ const reducer$ = createReducer(
   on(actions.setUserProfile, (state: IAuthState, action) => ({
     ...state,
     UserProfile: action.UserProfile,
+  })),
+  on(actions.setUserToken, (state: IAuthState, action) => ({
+    ...state,
+    TokenResponse: action.TokenResponse,
   }))
 );
 
