@@ -25,11 +25,11 @@ import { IStoreGroupMgmtState } from '../../store/store-group-mgmt.reducer';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
-  selector: 'app-import-store-group-dialog',
-  templateUrl: './import-store-group-dialog.component.html',
-  styleUrls: ['./import-store-group-dialog.component.scss'],
+  selector: 'app-import-cluster-group-dialog',
+  templateUrl: './import-cluster-group-dialog.component.html',
+  styleUrls: ['./import-cluster-group-dialog.component.scss'],
 })
-export class ImportStoreGroupDialogComponent implements OnInit, AfterViewInit {
+export class ImportClusterGroupDialogComponent implements OnInit, AfterViewInit {
   @ViewChild('tabGroup') public tabGroup: MatTabGroup;
   @ViewChild('excelDocument', { static: false })
   public excelDocumentRef: ElementRef;
@@ -86,7 +86,7 @@ export class ImportStoreGroupDialogComponent implements OnInit, AfterViewInit {
   public addedProductHierarchies: IProductHierarchy[] = [];
 
   constructor(
-    public dialogRef: MatDialogRef<ImportStoreGroupDialogComponent>,
+    public dialogRef: MatDialogRef<ImportClusterGroupDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     public formBuilder: FormBuilder,
     public assortmentPeriodService: AssortmentPeriodService,

@@ -15,7 +15,7 @@ import { ClusterGroupsService } from '@mpe/AsmtMgmtService';
 import StoreGroupMgmtEffects from './store/store-group-mgmt.effects';
 import * as fromStoreGroupMgmt from './store/store-group-mgmt.reducer';
 
-import { ImportStoreGroupDialogComponent } from './dialogs/import-store-group-dialog/import-store-group-dialog.component';
+import { ImportClusterGroupDialogComponent } from './dialogs/import-cluster-group-dialog/import-cluster-group-dialog.component';
 import { InputSpinnerComponent } from 'libs/shared/src/lib/components/inputs/input-spinner/input-spinner.component';
 import { InputDropdownFilterComponent } from 'libs/shared/src/lib/components/inputs/input-dropdown-filter/input-dropdown-filter.component';
 import { InputMultiselectDropdownComponent } from 'libs/shared/src/lib/components/inputs/input-multiselect-dropdown/input-multiselect-dropdown.component';
@@ -45,7 +45,7 @@ export const sgmRoutes: Route[] = [
   ],
   declarations: [
     SummaryComponent,
-    ImportStoreGroupDialogComponent,
+    ImportClusterGroupDialogComponent,
     InputSpinnerComponent,
     InputMultiselectDropdownComponent,
     InputDropdownFilterComponent,

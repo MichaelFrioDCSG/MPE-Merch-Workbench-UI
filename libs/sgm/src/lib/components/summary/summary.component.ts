@@ -9,7 +9,7 @@ import { IStoreGroupMgmtState } from '../../store/store-group-mgmt.reducer';
 import { Observable } from 'rxjs';
 import * as actions from '../../store/store-group-mgmt.actions';
 import { actions as sharedActions } from '@mpe/shared';
-import { ImportStoreGroupDialogComponent } from '../../dialogs/import-store-group-dialog/import-store-group-dialog.component';
+import { ImportClusterGroupDialogComponent } from '../../dialogs/import-cluster-group-dialog/import-cluster-group-dialog.component';
 import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 
@@ -88,7 +88,7 @@ export class SummaryComponent implements OnInit {
   }
 
   public openDialog(): void {
-    const dialogRef = this.dialog.open(ImportStoreGroupDialogComponent, {
+    const dialogRef = this.dialog.open(ImportClusterGroupDialogComponent, {
       width: '100rem',
       data: {},
     });

@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ImportStoreGroupDialogComponent } from './import-store-group-dialog.component';
+import { ImportClusterGroupDialogComponent } from './import-cluster-group-dialog.component';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
@@ -82,9 +82,9 @@ const mockLinkSubclassData: ILinkSubclass[] = [
   },
 ];
 
-describe('ImportStoreGroupDialogComponent', () => {
-  let component: ImportStoreGroupDialogComponent;
-  let fixture: ComponentFixture<ImportStoreGroupDialogComponent>;
+describe('ImportClusterGroupDialogComponent', () => {
+  let component: ImportClusterGroupDialogComponent;
+  let fixture: ComponentFixture<ImportClusterGroupDialogComponent>;
   const mockAssortmentPeriodService: any = { getAssortmentPeriods: (a, b) => of([]) };
   const mockProductHierarchyService: any = {
     GetLinkSubclasses: (assortmentPeriodId, copyfromsubclassId) => of(mockLinkSubclassData),
@@ -94,7 +94,7 @@ describe('ImportStoreGroupDialogComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ImportStoreGroupDialogComponent],
+      declarations: [ImportClusterGroupDialogComponent],
       imports: [FormsModule, ReactiveFormsModule, HttpClientModule, MaterialModule],
       providers: [
         { provide: MAT_DIALOG_DATA, useValue: {} },
@@ -106,7 +106,7 @@ describe('ImportStoreGroupDialogComponent', () => {
     }).compileComponents();
 
     store = TestBed.inject(MockStore);
-    fixture = TestBed.createComponent(ImportStoreGroupDialogComponent);
+    fixture = TestBed.createComponent(ImportClusterGroupDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
