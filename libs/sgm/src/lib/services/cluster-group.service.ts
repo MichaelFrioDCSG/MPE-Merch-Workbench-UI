@@ -6,15 +6,24 @@ import { ICreateStoreGroupRequest } from '../../../../shared/src/lib/models/dto/
 import { Observable } from 'rxjs';
 import { ICreateStoreGroupResponse } from '../../../../shared/src/lib/models/dto/ICreateStoreGroupResponse';
 import { IStoreInformationExcelImport } from '../../../../shared/src/lib/models/dto/IStoreInformationExcelImport';
+import { IStoreGroupCreateRequestExcel } from 'libs/shared/src/lib/models/dto/IStoreGroupCreateRequestExcel';
 
 @Injectable({
   providedIn: 'root',
 })
-export class StoreGroupService {
+export class ClusterGroupService {
   constructor(public http: HttpClient) {}
 
-  public createStoreGroup(body: ICreateStoreGroupRequest): Observable<ICreateStoreGroupResponse> {
-    return this.http.post(`${environment.mpe_api}/api/storegroup/create`, body).pipe(
+  public createClusterGroup(body: ICreateStoreGroupRequest): Observable<ICreateStoreGroupResponse> {
+    return this.http.post(`${environment.mpe_api}/api/clustergroups/create`, body).pipe(
+      map((data: ICreateStoreGroupResponse) => {
+        return data;
+      })
+    );
+  }
+
+  public createClusterGroupExcel(body: IStoreGroupCreateRequestExcel): Observable<ICreateStoreGroupResponse> {
+    return this.http.post(`${environment.mpe_api}/api/clustergroups/create/excel`, body).pipe(
       map((data: ICreateStoreGroupResponse) => {
         return data;
       })

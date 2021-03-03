@@ -9,9 +9,10 @@ import { AssortmentPeriodService } from 'libs/sgm/src/lib/services/assortment-pe
 import { IAssortmentPeriod } from '../../../../../shared/src/lib/models/IAssortmentPeriod';
 import { ProductHierarchyService } from 'libs/sgm/src/lib/services/product-hierarchy.service';
 import { IStoreGroup } from '../../../../../shared/src/lib/models/IStoreGroup';
-import { StoreGroupService } from 'libs/sgm/src/lib/services/store-group.service';
+import { ClusterGroupService } from 'libs/sgm/src/lib/services/cluster-group.service';
 import { ICreateStoreGroupResponse } from '../../../../../shared/src/lib/models/dto/ICreateStoreGroupResponse';
 import { ICreateStoreGroupRequest } from '../../../../../shared/src/lib/models/dto/ICreateStoreGroupRequest';
+import { IStoreGroupCreateRequestExcel } from '../../../../../shared/src/lib/models/dto/IStoreGroupCreateRequestExcel';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ToastMessageComponent } from 'libs/shared/src/lib/components/toast-message/toast-message.component';
 import { ConvertActionBindingResult } from '@angular/compiler/src/compiler_util/expression_converter';
@@ -21,6 +22,7 @@ import { IExcelConvertSGM, IExcelStoreInformation } from '@mpe/shared';
 import { Store } from '@ngrx/store';
 import * as actions from '../../store/store-group-mgmt.actions';
 import { IStoreGroupMgmtState } from '../../store/store-group-mgmt.reducer';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-import-store-group-dialog',
@@ -89,7 +91,7 @@ export class ImportStoreGroupDialogComponent implements OnInit, AfterViewInit {
     public formBuilder: FormBuilder,
     public assortmentPeriodService: AssortmentPeriodService,
     public productHierarchyService: ProductHierarchyService,
-    public storeGroupService: StoreGroupService,
+    public clusterGroupService: ClusterGroupService,
     public excelConvertService: ExcelConvertService,
     private store: Store<IStoreGroupMgmtState>,
     private snackBar: MatSnackBar
@@ -431,8 +433,8 @@ export class ImportStoreGroupDialogComponent implements OnInit, AfterViewInit {
     this.combinedLinkSubclasses = [...new Set([leadSubclassId, ...this.populatedLinkSubclasses, ...this.selectedLinkSubclasses])];
 
     const body: ICreateStoreGroupRequest = {
-      storeGroupName: this.storeGroupName.value,
-      storeGroupDescription: this.storeGroupDescription.value,
+      clusterGroupName: this.storeGroupName.value,
+      clusterGroupDescription: this.storeGroupDescription.value,
       assortmentPeriodId: this.assortmentPeriod.value.assortmentPeriodId,
       sourceSubclassId: leadSubclassId,
       targetSubclassIds: this.combinedLinkSubclasses,
@@ -442,7 +444,7 @@ export class ImportStoreGroupDialogComponent implements OnInit, AfterViewInit {
     this.showErrors = false;
     this.createStoreGroupErrors = [];
 
-    this.storeGroupService.createStoreGroup(body).subscribe((data: ICreateStoreGroupResponse) => {
+    this.clusterGroupService.createClusterGroup(body).subscribe((data: ICreateStoreGroupResponse) => {
       this.creatingStoreGroups = false;
       if (data.isSuccess) {
         this.showToastMessage('Cluster Import Success', [], false);
@@ -461,6 +463,9 @@ export class ImportStoreGroupDialogComponent implements OnInit, AfterViewInit {
     this.convertedExcelData = null;
     this.excelStoreInformation = null;
     this.showErrors = false;
+    this.creatingStoreGroups = true;
+    this.showErrors = false;
+    this.createStoreGroupErrors = [];
     formData.append('file', this.excelFile, this.excelFile.name);
     Promise.resolve(formData)
       // Convert the Excel and set variable
@@ -470,20 +475,45 @@ export class ImportStoreGroupDialogComponent implements OnInit, AfterViewInit {
         this.convertedExcelData = excelData[Object.keys(excelData)[0]];
       })
       // Go get Store Information from DB and set variable
-      .then(() => this.storeGroupService.getStoreInformationExcelImportPromise())
+      .then(() => this.clusterGroupService.getStoreInformationExcelImportPromise())
       .then((storeInfo: IExcelStoreInformation[]) => (this.excelStoreInformation = storeInfo))
       // Add stores that do not exist in excel but exist in DB
       // Also thows error if there are stores that exist in excel but do not exist in DB
       .then(() => {
         // Stores that exist in Excel but not in DB, show error and stop execution
-        if (this.checkForStoresNotInDBExcel()) {
+        if (this.storesNotInDBExcel()) {
+          this.creatingStoreGroups = false;
+          this.excelFile = null;
+          this.excelDocumentRef.nativeElement.value = '';
           return;
         }
         // Add stores that do not exist in excel but exist in DB
         this.addStoresToExcel();
         // Add default values if Chain/Tier does not exist
         this.setChainTierDefaultsToExcel();
-        console.log('Final Excel Data: ', this.convertedExcelData);
+        const excelImportRequest: IStoreGroupCreateRequestExcel = this.setExcelRequest();
+
+        this.clusterGroupService
+          .createClusterGroupExcel(excelImportRequest)
+          .subscribe(
+            (data: ICreateStoreGroupResponse) => {
+              this.showToastMessage('Cluster Import Success', [], false);
+              this.store.dispatch(actions.sgmGetSummaries());
+              this.dialogRef.close({ data: null });
+            },
+            (err: HttpErrorResponse) => {
+              this.showErrors = true;
+              this.createStoreGroupErrors = err.error.errors;
+              this.createStoreGroupErrors.slice(0, 10);
+              this.showToastMessage('Error when Importing Clusters', [], true);
+            }
+          )
+          // Will execute at the end of the subscribe
+          .add(() => {
+            this.creatingStoreGroups = false;
+            this.excelFile = null;
+            this.excelDocumentRef.nativeElement.value = '';
+          });
       });
   }
 
@@ -509,10 +539,10 @@ export class ImportStoreGroupDialogComponent implements OnInit, AfterViewInit {
     this.resetFormAndValues();
   }
 
-  private checkForStoresNotInDBExcel(): boolean {
+  private storesNotInDBExcel(): boolean {
     const storesNotInDB = this.convertedExcelData.filter(x => !this.excelStoreInformation.some(y => x.Location === y.storeNumber));
-    console.log(storesNotInDB);
-    if (storesNotInDB) {
+    console.log(storesNotInDB.map(store => store.Location));
+    if (storesNotInDB.length > 0) {
       storesNotInDB.map(store =>
         this.createStoreGroupErrors.push(
           `Store Number: ${store.Location} does not exist. Please make sure that ${store.Location} is a valid location.`
@@ -572,6 +602,39 @@ export class ImportStoreGroupDialogComponent implements OnInit, AfterViewInit {
         );
       }
     });
+  }
+
+  private setExcelRequest() {
+    const excelImportRequest: IStoreGroupCreateRequestExcel = {
+      clusterGroupName: this.storeGroupName.value,
+      clusterGroupDescription: this.storeGroupDescription.value,
+      assortmentPeriodId: this.assortmentPeriod.value.assortmentPeriodId,
+      subclassIds: this.selectedLinkSubclasses,
+      excelLocations: [],
+    };
+    this.convertedExcelData.map(excelLocation => {
+      excelImportRequest.excelLocations.push({
+        locationId: excelLocation.Location,
+        chain: excelLocation.Chain,
+        tier: excelLocation.Tier,
+        plAttributes: {
+          PLBrandshop: excelLocation.BRANDSHOP,
+          PLClimate: excelLocation.CLIMATE,
+          PLCompetitor: excelLocation.COMPETITOR,
+          PLFixturing: excelLocation.FIXTURING,
+          PLNumFloors: excelLocation['NUMBER OF FLOORS'],
+          PLOpen1: excelLocation.OPEN1,
+          PLOpen2: excelLocation.OPEN2,
+          PLOpen3: excelLocation.OPEN3,
+          PLRegion: excelLocation.REGION,
+          PLRestrictions: excelLocation.RESTRICTIONS,
+          PLSetTime: excelLocation['SET TIME'],
+          PLSpecialEvents: excelLocation['SPECIAL EVENTS'],
+          PLSpecies: excelLocation.SPECIES,
+        },
+      });
+    });
+    return excelImportRequest;
   }
 
   private showToastMessage(title: string, messages: string[], isError: boolean = false): void {

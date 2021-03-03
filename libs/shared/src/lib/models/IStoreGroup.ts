@@ -1,6 +1,6 @@
 export interface IStoreGroup {
-  storeGroupName: string;
-  storeGroupDescription: string;
+  clusterGroupName: string;
+  clusterGroupDescription: string;
   assortmentPeriodId: string;
   // assortmentPeriodLabel: string;
   sourceSubclassId: string;
