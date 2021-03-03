@@ -30,7 +30,7 @@ import { HttpErrorResponse } from '@angular/common/http';
   styleUrls: ['./import-store-group-dialog.component.scss'],
 })
 export class ImportStoreGroupDialogComponent implements OnInit, AfterViewInit {
-  @ViewChild('tabGroup') tabGroup: MatTabGroup;
+  @ViewChild('tabGroup') public tabGroup: MatTabGroup;
   @ViewChild('excelDocument', { static: false })
   public excelDocumentRef: ElementRef;
 
@@ -121,7 +121,7 @@ export class ImportStoreGroupDialogComponent implements OnInit, AfterViewInit {
     this.assortmentPeriod.setValue(value);
     this.leadSubclass.reset();
     this.resetLinkValues();
-    if (this.selectedTabText == 'Oracle') {
+    if (this.selectedTabText === 'Oracle') {
       this.loadingLeadSubClasses = true;
     } else {
       this.loadingProductHierarchy = true;
@@ -182,7 +182,7 @@ export class ImportStoreGroupDialogComponent implements OnInit, AfterViewInit {
         this.filteredProductHierarchySubclasses = this.productHierarchiesInterface;
         this.formatProductHierarchies();
         this.loadingProductHierarchy = false;
-        if (this.selectedTabText == 'Oracle') {
+        if (this.selectedTabText === 'Oracle') {
           this.leadSubclass.enable({ emitEvent: false });
           this.loadingLeadSubClasses = false;
         } else {
@@ -192,7 +192,7 @@ export class ImportStoreGroupDialogComponent implements OnInit, AfterViewInit {
   }
 
   public formatProductHierarchies() {
-    if (this.selectedTabText == 'Oracle') {
+    if (this.selectedTabText === 'Oracle') {
       this.productDepartmentsDropdownItems = this.filteredLinkSubclasses
         .map((product: IProductHierarchy) => {
           return product.departmentDisplay;
@@ -205,7 +205,7 @@ export class ImportStoreGroupDialogComponent implements OnInit, AfterViewInit {
     }
     this.productDepartmentsDropdownItems = [...new Set(this.productDepartmentsDropdownItems)];
     this.loadingProductHierarchy = false;
-    if (this.selectedTabText == 'Oracle') {
+    if (this.selectedTabText === 'Oracle') {
       this.loadingLeadSubClasses = false;
       this.productLeadSubclasses = this.productHierarchiesInterface
         .map((product: IProductHierarchy) => {
@@ -268,7 +268,7 @@ export class ImportStoreGroupDialogComponent implements OnInit, AfterViewInit {
       this.formControlProductDepartments.value.length
         ? this.formControlSubDepartments.enable({ emitEvent: false })
         : this.formControlSubDepartments.disable({ emitEvent: true });
-      if (this.selectedTabText == 'Oracle') {
+      if (this.selectedTabText === 'Oracle') {
         this.productSubDepartmentsDropdownItems = this.filteredLinkSubclasses
           .filter(product => department.includes(product.departmentDisplay))
           .map(product => product.subDepartmentDisplay)
@@ -280,7 +280,7 @@ export class ImportStoreGroupDialogComponent implements OnInit, AfterViewInit {
           .sort();
       }
       this.productSubDepartmentsDropdownItems = [...new Set(this.productSubDepartmentsDropdownItems)];
-      if (this.selectedTabText == 'Oracle') {
+      if (this.selectedTabText === 'Oracle') {
         this.productClassesDropdownItems = this.filteredLinkSubclasses
           .filter(product =>
             product.classDisplay.startsWith(
@@ -309,7 +309,7 @@ export class ImportStoreGroupDialogComponent implements OnInit, AfterViewInit {
       }
       this.productClassesDropdownItems = [...new Set(this.productClassesDropdownItems)];
 
-      if (this.selectedTabText == 'Oracle') {
+      if (this.selectedTabText === 'Oracle') {
         this.productSubClassesDropdownItems = this.filteredLinkSubclasses
           .filter(product =>
             product.subClassDisplay.startsWith(
@@ -346,7 +346,7 @@ export class ImportStoreGroupDialogComponent implements OnInit, AfterViewInit {
       this.formControlSubDepartments.value.length
         ? this.formControlClasses.enable({ emitEvent: false })
         : this.formControlClasses.disable({ emitEvent: true });
-      if (this.selectedTabText == 'Oracle') {
+      if (this.selectedTabText === 'Oracle') {
         this.productClassesDropdownItems = this.filteredLinkSubclasses
           .filter(product => subDepartment.includes(product.subDepartmentDisplay))
           .map(product => product.classDisplay)
@@ -359,7 +359,7 @@ export class ImportStoreGroupDialogComponent implements OnInit, AfterViewInit {
       }
       this.productClassesDropdownItems = [...new Set(this.productClassesDropdownItems)];
 
-      if (this.selectedTabText == 'Oracle') {
+      if (this.selectedTabText === 'Oracle') {
         this.productSubClassesDropdownItems = this.filteredLinkSubclasses
           .filter(product =>
             product.subClassDisplay.startsWith(
@@ -396,7 +396,7 @@ export class ImportStoreGroupDialogComponent implements OnInit, AfterViewInit {
       this.formControlClasses.value.length
         ? this.formControlSubClasses.enable({ emitEvent: false })
         : this.formControlSubClasses.disable({ emitEvent: true });
-      if (this.selectedTabText == 'Oracle') {
+      if (this.selectedTabText === 'Oracle') {
         this.productSubClassesDropdownItems = this.filteredLinkSubclasses
           .filter(product => classes.includes(product.classDisplay))
           .filter(product => product.subClassDisplay !== this.leadSubclass.value)
@@ -420,7 +420,7 @@ export class ImportStoreGroupDialogComponent implements OnInit, AfterViewInit {
 
   public createStoreGroups() {
     this.createStoreGroupErrors = [];
-    if (this.selectedTabText == 'Oracle') {
+    if (this.selectedTabText === 'Oracle') {
       this.createStoreGroupOracle();
     } else {
       this.createStoreGroupExcel();
@@ -459,7 +459,7 @@ export class ImportStoreGroupDialogComponent implements OnInit, AfterViewInit {
   }
 
   public createStoreGroupExcel() {
-    let formData: FormData = new FormData();
+    const formData: FormData = new FormData();
     this.convertedExcelData = null;
     this.excelStoreInformation = null;
     this.showErrors = false;
@@ -469,10 +469,10 @@ export class ImportStoreGroupDialogComponent implements OnInit, AfterViewInit {
     formData.append('file', this.excelFile, this.excelFile.name);
     Promise.resolve(formData)
       // Convert the Excel and set variable
-      .then(formData => this.excelConvertService.convertExcelToJsonPromise(formData))
-      .then((excelData: IExcelConvertSGM[]) => {
+      .then(excelData => this.excelConvertService.convertExcelToJsonPromise(excelData))
+      .then((excelJSONData: IExcelConvertSGM[]) => {
         // This will get the first sheet in the Excel regardless of the sheet name
-        this.convertedExcelData = excelData[Object.keys(excelData)[0]];
+        this.convertedExcelData = excelJSONData[Object.keys(excelJSONData)[0]];
       })
       // Go get Store Information from DB and set variable
       .then(() => this.clusterGroupService.getStoreInformationExcelImportPromise())
@@ -560,7 +560,7 @@ export class ImportStoreGroupDialogComponent implements OnInit, AfterViewInit {
     const storesNotInExcel: IExcelStoreInformation[] = this.excelStoreInformation.filter(
       storeLocation => !this.convertedExcelData.some(excelLocation => excelLocation.Location === storeLocation.storeNumber)
     );
-    for (let storeNotInExcel of storesNotInExcel) {
+    for (const storeNotInExcel of storesNotInExcel) {
       const newStore: IExcelConvertSGM = {
         Location: storeNotInExcel.storeNumber,
         Chain: storeNotInExcel.chain,
