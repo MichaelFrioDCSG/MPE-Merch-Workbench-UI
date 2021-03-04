@@ -4,24 +4,16 @@ import { FormBuilder, Validators, FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { IProductHierarchy } from '../../../../../shared/src/lib/models/IProductHierarchy';
-import { ILinkSubclass } from '../../../../../sgm/src/lib/models/ILinkSubclass';
-import { AssortmentPeriodService } from 'libs/sgm/src/lib/services/assortment-period.service';
 import { IAssortmentPeriod } from '../../../../../shared/src/lib/models/IAssortmentPeriod';
-import { ProductHierarchyService } from 'libs/sgm/src/lib/services/product-hierarchy.service';
-import { IStoreGroup } from '../../../../../shared/src/lib/models/IStoreGroup';
 import { ClusterGroupService } from 'libs/sgm/src/lib/services/cluster-group.service';
-import { ICreateStoreGroupResponse } from '../../../../../shared/src/lib/models/dto/ICreateStoreGroupResponse';
-import { ICreateStoreGroupRequest } from '../../../../../shared/src/lib/models/dto/ICreateStoreGroupRequest';
 import { IStoreGroupCreateRequestExcel } from '../../../../../shared/src/lib/models/dto/IStoreGroupCreateRequestExcel';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ToastMessageComponent } from 'libs/shared/src/lib/components/toast-message/toast-message.component';
-import { ConvertActionBindingResult } from '@angular/compiler/src/compiler_util/expression_converter';
 import { MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
 import { ExcelConvertService } from '../../services/excel-convert.service';
-import { IExcelConvertSGM, IExcelStoreInformation } from '@mpe/shared';
-import { Store } from '@ngrx/store';
-import * as actions from '../../store/store-group-mgmt.actions';
-import { IStoreGroupMgmtState } from '../../store/store-group-mgmt.reducer';
+import { IExcelConvertSGM, IExcelStoreInformation, ILinkSubclass, ICreateClusterGroupRequestDto, ICreateClusterGroupResponseDto } from '@mpe/shared';
+import { AssortmentPeriodService, ProductHierarchyService } from '@mpe/AsmtMgmtService';
+import { SummaryActions } from '../../store';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
@@ -73,7 +65,6 @@ export class ImportClusterGroupDialogComponent implements OnInit, AfterViewInit 
 
   public productLeadSubclasses: string[] = [];
   public productLinkSubclasses: string[] = [];
-  public storeGroups: IStoreGroup[] = [];
 
   public departmentHasBeenModified = false;
   public loadingAssortmentPeriods = false;
@@ -93,8 +84,8 @@ export class ImportClusterGroupDialogComponent implements OnInit, AfterViewInit 
     public productHierarchyService: ProductHierarchyService,
     public clusterGroupService: ClusterGroupService,
     public excelConvertService: ExcelConvertService,
-    private store: Store<IStoreGroupMgmtState>,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    public summaryActions: SummaryActions
   ) {}
 
   public ngOnInit() {
@@ -432,23 +423,24 @@ export class ImportClusterGroupDialogComponent implements OnInit, AfterViewInit 
 
     this.combinedLinkSubclasses = [...new Set([leadSubclassId, ...this.populatedLinkSubclasses, ...this.selectedLinkSubclasses])];
 
-    const body: ICreateStoreGroupRequest = {
+    const body: ICreateClusterGroupRequestDto = {
       clusterGroupName: this.storeGroupName.value,
       clusterGroupDescription: this.storeGroupDescription.value,
       assortmentPeriodId: this.assortmentPeriod.value.assortmentPeriodId,
       sourceSubclassId: leadSubclassId,
       targetSubclassIds: this.combinedLinkSubclasses,
+      overwrite: false,
     };
 
     this.creatingStoreGroups = true;
     this.showErrors = false;
     this.createStoreGroupErrors = [];
 
-    this.clusterGroupService.createClusterGroup(body).subscribe((data: ICreateStoreGroupResponse) => {
+    this.clusterGroupService.createClusterGroup(body).subscribe((data: ICreateClusterGroupResponseDto) => {
       this.creatingStoreGroups = false;
       if (data.isSuccess) {
         this.showToastMessage('Cluster Import Success', [], false);
-        this.store.dispatch(actions.sgmGetSummaries());
+        this.summaryActions.getClusterGroups();
         this.dialogRef.close({ data: null });
       } else {
         this.showErrors = true;
@@ -496,9 +488,9 @@ export class ImportClusterGroupDialogComponent implements OnInit, AfterViewInit 
         this.clusterGroupService
           .createClusterGroupExcel(excelImportRequest)
           .subscribe(
-            (data: ICreateStoreGroupResponse) => {
+            (data: ICreateClusterGroupResponseDto) => {
               this.showToastMessage('Cluster Import Success', [], false);
-              this.store.dispatch(actions.sgmGetSummaries());
+              this.summaryActions.getClusterGroups();
               this.dialogRef.close({ data: null });
             },
             (err: HttpErrorResponse) => {
@@ -541,7 +533,6 @@ export class ImportClusterGroupDialogComponent implements OnInit, AfterViewInit 
 
   private storesNotInDBExcel(): boolean {
     const storesNotInDB = this.convertedExcelData.filter(x => !this.excelStoreInformation.some(y => x.Location === y.storeNumber));
-    console.log(storesNotInDB.map(store => store.Location));
     if (storesNotInDB.length > 0) {
       storesNotInDB.map(store =>
         this.createStoreGroupErrors.push(
@@ -611,6 +602,7 @@ export class ImportClusterGroupDialogComponent implements OnInit, AfterViewInit 
       assortmentPeriodId: this.assortmentPeriod.value.assortmentPeriodId,
       subclassIds: this.selectedLinkSubclasses,
       excelLocations: [],
+      overwrite: false,
     };
     this.convertedExcelData.map(excelLocation => {
       excelImportRequest.excelLocations.push({

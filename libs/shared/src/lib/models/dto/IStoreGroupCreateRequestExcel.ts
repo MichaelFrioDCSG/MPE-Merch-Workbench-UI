@@ -6,4 +6,5 @@ export interface IStoreGroupCreateRequestExcel {
   clusterGroupDescription: string;
   subclassIds: string[];
   excelLocations: IExcelLocation[];
+  overwrite: boolean;
 }
