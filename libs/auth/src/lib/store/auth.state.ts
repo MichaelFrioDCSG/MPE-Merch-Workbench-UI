@@ -3,3 +3,4 @@ import { IAuthState } from './models/IAuthState';
 
 export const selectAuthState = createFeatureSelector<IAuthState>('auth');
 export const selectUserProfile = createSelector(selectAuthState, (state: IAuthState) => state.UserProfile);
+export const selectTokenResponse = createSelector(selectAuthState, (state: IAuthState) => state.TokenResponse);

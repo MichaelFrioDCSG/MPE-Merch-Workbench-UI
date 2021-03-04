@@ -6,9 +6,12 @@ import { By } from '@angular/platform-browser';
 import { AgGridModule } from 'ag-grid-angular';
 import { FormsModule } from '@angular/forms';
 import { MaterialModule } from '@mpe/material';
-import { ClusterGroupService } from '@mpe/AsmtMgmtService';
+import { ClusterGroupService as ClusterGroupService } from '@mpe/AsmtMgmtService';
+import { IAuthState } from '@mpe/auth';
 
-import IDetailsState, { initialState } from '../../store/details/details.state';
+import { initialState as sgmInitialState } from '../../store/details/details.state';
+import IDetailsState from '../../store/details/details.state';
+import { initialState as authnitialstate } from 'libs/auth/src/lib/store/auth.reducers';
 
 import { DetailComponent } from './detail.component';
 
@@ -18,8 +21,10 @@ describe('DetailComponent', () => {
   let component: DetailComponent;
   let fixture: ComponentFixture<DetailComponent>;
   let store: MockStore;
+  const initialState: IAuthState = authnitialstate;
 
   beforeEach(async () => {
+
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, RouterTestingModule, FormsModule, AgGridModule.withComponents([DetailComponent]), MaterialModule],
       declarations: [DetailComponent],
@@ -31,8 +36,11 @@ describe('DetailComponent', () => {
     fixture = TestBed.createComponent(DetailComponent);
     component = fixture.componentInstance;
 
-    const thisState = getMockState();
-    store.setState(thisState);
+    component.userProfile = {
+      name: null,
+      roles: [],
+      username: null
+    };
 
     // Run component life cycle events
     store.refreshState();
@@ -48,7 +56,11 @@ describe('DetailComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have the expected number column headers', async () => {
+  it('should have the expected number column headers for sgmWriteColumnDefs', async () => {
+    expect(component.columnDefs.length).toEqual(26);
+  });
+
+  it('should have the expected number column headers for sgmReadColumnDefs', async () => {
     expect(component.columnDefs.length).toEqual(26);
   });
 
@@ -108,34 +120,146 @@ describe('DetailComponent', () => {
     });
   });
 
-  it('Cluster Label Column configured correctly', async () => {
+  it('Cluster Label Column configured correctly Editable for Admin', async () => {
+    component.userProfile.roles = ['Admin'];
+    const canBeEdited = component.isEditable();
+
     waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
       const columnDef = component.agGrid.gridOptions.api.getColumnDef('clusterLabel');
       expect(columnDef).toBeTruthy();
-
       expect(columnDef.headerName).toEqual('CLUSTER LABEL');
       expect(columnDef.resizable).toEqual(true);
-      expect(columnDef.editable).toEqual(true);
       expect(columnDef.sortable).toEqual(true);
+      expect(canBeEdited).toEqual(true);
+      expect(columnDef.editable).toBeTruthy();
       expect(columnDef.filter).toEqual(true);
       expect(columnDef.width).toEqual(200);
     });
   });
-  it('Check Grid Options configured correctly', async () => {
+
+  it('Cluster Label Column configured correctly Editable for SGMWrite', async () => {
+    component.userProfile.roles = ['SGMWrite'];
+    const canBeEdited = component.isEditable();
+
+    waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
+      const columnDef = component.agGrid.gridOptions.api.getColumnDef('clusterLabel');
+      expect(columnDef).toBeTruthy();
+      expect(columnDef.headerName).toEqual('CLUSTER LABEL');
+      expect(columnDef.resizable).toEqual(true);
+      expect(columnDef.sortable).toEqual(true);
+      expect(canBeEdited).toEqual(true);
+      expect(columnDef.editable).toBeTruthy();
+      expect(columnDef.filter).toEqual(true);
+      expect(columnDef.width).toEqual(200);
+    });
+  });
+
+  it('Cluster Label Column configured correctly not Editable for non-accepted role', async () => {
+    component.userProfile.roles = ['AMWrite'];
+    const canBeEdited = component.isEditable();
+
+    waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
+      const columnDef = component.agGrid.gridOptions.api.getColumnDef('clusterLabel');
+      expect(columnDef).toBeTruthy();
+      expect(columnDef.headerName).toEqual('CLUSTER LABEL');
+      expect(columnDef.resizable).toEqual(true);
+      expect(columnDef.sortable).toEqual(true);
+      expect(canBeEdited).toEqual(false);
+      expect(columnDef.editable).toBeTruthy();
+      expect(columnDef.filter).toEqual(true);
+      expect(columnDef.width).toEqual(200);
+    });
+
+  });
+
+  it('Cluster Label Column configured correctly not Editable for no role', async () => {
+    const canBeEdited = component.isEditable();
+
+    waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
+      const columnDef = component.agGrid.gridOptions.api.getColumnDef('clusterLabel');
+      expect(columnDef).toBeTruthy();
+      expect(columnDef.headerName).toEqual('CLUSTER LABEL');
+      expect(columnDef.resizable).toEqual(true);
+      expect(columnDef.sortable).toEqual(true);
+      expect(canBeEdited).toEqual(false);
+      expect(columnDef.editable).toBeTruthy();
+      expect(columnDef.filter).toEqual(true);
+      expect(columnDef.width).toEqual(200);
+    });
+
+  });
+
+  xit('Check Grid Options configured correctly', async () => {
     waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
       expect(component.gridOptions.suppressCellSelection).toEqual(true);
     });
   });
 
-  it('Notes Column configured correctly', async () => {
+  it('Notes Column configured correctly Editable for Admin', async () => {
+    component.userProfile.roles = ['Admin'];
+    const canBeEdited = component.isEditable();
+
+    waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
+      const columnDef = component.agGrid.gridOptions.api.getColumnDef('notes');
+      expect(columnDef).toBeTruthy();
+      expect(columnDef.headerName).toEqual('NOTES');
+      expect(columnDef.resizable).toEqual(true);
+      expect(columnDef.sortable).toEqual(true);
+      expect(canBeEdited).toEqual(true);
+      expect(columnDef.editable).toBeTruthy();
+      expect(columnDef.filter).toEqual(true);
+      expect(columnDef.width).toEqual(200);
+    });
+  });
+
+  it('Notes Column configured correctly Editable for SGMWrite', async () => {
+    component.userProfile.roles = ['SGMWrite'];
+    const canBeEdited = component.isEditable();
+
     waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
       const columnDef = component.agGrid.gridOptions.api.getColumnDef('notes');
       expect(columnDef).toBeTruthy();
 
       expect(columnDef.headerName).toEqual('NOTES');
       expect(columnDef.resizable).toEqual(true);
-      expect(columnDef.editable).toEqual(true);
       expect(columnDef.sortable).toEqual(true);
+      expect(canBeEdited).toEqual(true);
+      expect(columnDef.editable).toBeTruthy();
+      expect(columnDef.filter).toEqual(true);
+      expect(columnDef.width).toEqual(200);
+    });
+  });
+
+  it('Notes Column configured correctly not Editable for non-accepted role', async () => {
+    component.userProfile.roles = ['AMWrite'];
+    const canBeEdited = component.isEditable();
+
+    waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
+      const columnDef = component.agGrid.gridOptions.api.getColumnDef('notes');
+      expect(columnDef).toBeTruthy();
+
+      expect(columnDef.headerName).toEqual('NOTES');
+      expect(columnDef.resizable).toEqual(true);
+      expect(columnDef.sortable).toEqual(true);
+      expect(canBeEdited).toEqual(false);
+      expect(columnDef.editable).toBeTruthy();
+      expect(columnDef.filter).toEqual(true);
+      expect(columnDef.width).toEqual(200);
+    });
+  });
+
+  it('Notes Column configured correctly not Editable for no role', async () => {
+    const canBeEdited = component.isEditable();
+
+    waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
+      const columnDef = component.agGrid.gridOptions.api.getColumnDef('notes');
+      expect(columnDef).toBeTruthy();
+
+      expect(columnDef.headerName).toEqual('NOTES');
+      expect(columnDef.resizable).toEqual(true);
+      expect(columnDef.sortable).toEqual(true);
+      expect(canBeEdited).toEqual(false);
+      expect(columnDef.editable).toBeTruthy();
       expect(columnDef.filter).toEqual(true);
       expect(columnDef.width).toEqual(200);
     });
@@ -166,14 +290,18 @@ describe('DetailComponent', () => {
     });
   });
 
-  it('Tier Column configured correctly', async () => {
+  it('Tier Column configured correctly Editable for Admin', async () => {
+    component.userProfile.roles = ['Admin'];
+    const canBeEdited = component.isEditable();
+
     waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
       const columnDef = component.agGrid.gridOptions.api.getColumnDef('tier');
       expect(columnDef).toBeTruthy();
 
       expect(columnDef.headerName).toEqual('TIER');
       expect(columnDef.resizable).toEqual(true);
-      expect(columnDef.editable).toEqual(true);
+      expect(canBeEdited).toEqual(true);
+      expect(columnDef.editable).toBeTruthy();
       expect(columnDef.sortable).toEqual(true);
       expect(columnDef.filter).toEqual(true);
       expect(columnDef.width).toEqual(150);
@@ -187,15 +315,158 @@ describe('DetailComponent', () => {
     });
   });
 
-  it('Chain Column configured correctly', async () => {
+  it('Tier Column configured correctly Editable for SGMWrite', async () => {
+    component.userProfile.roles = ['SGMWrite'];
+    const canBeEdited = component.isEditable();
+
+    waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
+      const columnDef = component.agGrid.gridOptions.api.getColumnDef('tier');
+      expect(columnDef).toBeTruthy();
+
+      expect(columnDef.headerName).toEqual('TIER');
+      expect(columnDef.resizable).toEqual(true);
+      expect(canBeEdited).toEqual(true);
+      expect(columnDef.editable).toBeTruthy();
+      expect(columnDef.sortable).toEqual(true);
+      expect(columnDef.filter).toEqual(true);
+      expect(columnDef.width).toEqual(150);
+      //John add PUR-970
+      expect(columnDef.cellEditorParams.values).toContain('ECOMM');
+      expect(columnDef.cellEditorParams.values).toContain('Tier 1');
+      expect(columnDef.cellEditorParams.values).toContain('Tier 2');
+      expect(columnDef.cellEditorParams.values).toContain('Tier 3');
+      expect(columnDef.cellEditorParams.values).toContain('Tier 4');
+      expect(columnDef.cellEditorParams.values).toContain('Z');
+    });
+  });
+
+  it('Tier Column configured correctly not Editable for non-accepted role', async () => {
+    component.userProfile.roles = ['AMRead'];
+    const canBeEdited = component.isEditable();
+
+    waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
+      const columnDef = component.agGrid.gridOptions.api.getColumnDef('tier');
+      expect(columnDef).toBeTruthy();
+
+      expect(columnDef.headerName).toEqual('TIER');
+      expect(columnDef.resizable).toEqual(true);
+      expect(canBeEdited).toEqual(false);
+      expect(columnDef.editable).toBeTruthy();
+      expect(columnDef.sortable).toEqual(true);
+      expect(columnDef.filter).toEqual(true);
+      expect(columnDef.width).toEqual(150);
+      //John add PUR-970
+      expect(columnDef.cellEditorParams.values).toContain('ECOMM');
+      expect(columnDef.cellEditorParams.values).toContain('Tier 1');
+      expect(columnDef.cellEditorParams.values).toContain('Tier 2');
+      expect(columnDef.cellEditorParams.values).toContain('Tier 3');
+      expect(columnDef.cellEditorParams.values).toContain('Tier 4');
+      expect(columnDef.cellEditorParams.values).toContain('Z');
+    });
+  });
+
+  it('Tier Column configured correctly not Editable for no role', async () => {
+    const canBeEdited = component.isEditable();
+
+    waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
+      const columnDef = component.agGrid.gridOptions.api.getColumnDef('tier');
+      expect(columnDef).toBeTruthy();
+
+      expect(columnDef.headerName).toEqual('TIER');
+      expect(columnDef.resizable).toEqual(true);
+      expect(canBeEdited).toEqual(false);
+      expect(columnDef.editable).toBeTruthy();
+      expect(columnDef.sortable).toEqual(true);
+      expect(columnDef.filter).toEqual(true);
+      expect(columnDef.width).toEqual(150);
+      //John add PUR-970
+      expect(columnDef.cellEditorParams.values).toContain('ECOMM');
+      expect(columnDef.cellEditorParams.values).toContain('Tier 1');
+      expect(columnDef.cellEditorParams.values).toContain('Tier 2');
+      expect(columnDef.cellEditorParams.values).toContain('Tier 3');
+      expect(columnDef.cellEditorParams.values).toContain('Tier 4');
+      expect(columnDef.cellEditorParams.values).toContain('Z');
+    });
+  });
+
+  it('Chain Column configured correctly Editable for Admin', async () => {
+    component.userProfile.roles = ['Admin'];
+    const canBeEdited = component.isEditable();
+
     waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
       const columnDef = component.agGrid.gridOptions.api.getColumnDef('chain');
       expect(columnDef).toBeTruthy();
 
       expect(columnDef.headerName).toEqual('CHAIN');
       expect(columnDef.resizable).toEqual(true);
-      expect(columnDef.editable).toEqual(true);
       expect(columnDef.sortable).toEqual(true);
+      expect(canBeEdited).toEqual(true);
+      expect(columnDef.editable).toBeTruthy();
+      expect(columnDef.filter).toEqual(true);
+      expect(columnDef.width).toEqual(100);
+
+      expect(columnDef.cellEditorParams.values).toContain('DSG');
+      expect(columnDef.cellEditorParams.values).toContain('FS');
+      expect(columnDef.cellEditorParams.values).toContain('GG');
+    });
+  });
+
+  it('Chain Column configured correctly Editable for SGMWrite', async () => {
+    component.userProfile.roles = ['SGMWrite'];
+    const canBeEdited = component.isEditable();
+
+    waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
+      const columnDef = component.agGrid.gridOptions.api.getColumnDef('chain');
+      expect(columnDef).toBeTruthy();
+
+      expect(columnDef.headerName).toEqual('CHAIN');
+      expect(columnDef.resizable).toEqual(true);
+      expect(columnDef.sortable).toEqual(true);
+      expect(canBeEdited).toEqual(true);
+      expect(columnDef.editable).toBeTruthy();
+      expect(columnDef.filter).toEqual(true);
+      expect(columnDef.width).toEqual(100);
+
+      expect(columnDef.cellEditorParams.values).toContain('DSG');
+      expect(columnDef.cellEditorParams.values).toContain('FS');
+      expect(columnDef.cellEditorParams.values).toContain('GG');
+    });
+  });
+
+  it('Chain Column configured correctly not Editable for non-accepted role', async () => {
+    component.userProfile.roles = ['AMRead'];
+    const canBeEdited = component.isEditable();
+
+    waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
+      const columnDef = component.agGrid.gridOptions.api.getColumnDef('chain');
+      expect(columnDef).toBeTruthy();
+
+      expect(columnDef.headerName).toEqual('CHAIN');
+      expect(columnDef.resizable).toEqual(true);
+      expect(columnDef.sortable).toEqual(true);
+      expect(canBeEdited).toEqual(false);
+      expect(columnDef.editable).toBeTruthy();
+      expect(columnDef.filter).toEqual(true);
+      expect(columnDef.width).toEqual(100);
+
+      expect(columnDef.cellEditorParams.values).toContain('DSG');
+      expect(columnDef.cellEditorParams.values).toContain('FS');
+      expect(columnDef.cellEditorParams.values).toContain('GG');
+    });
+  });
+
+  it('Chain Column configured correctly not Editable for no role', async () => {
+    const canBeEdited = component.isEditable();
+
+    waitForGridApiToBeAvailable(component.agGrid.gridOptions, () => {
+      const columnDef = component.agGrid.gridOptions.api.getColumnDef('chain');
+      expect(columnDef).toBeTruthy();
+
+      expect(columnDef.headerName).toEqual('CHAIN');
+      expect(columnDef.resizable).toEqual(true);
+      expect(columnDef.sortable).toEqual(true);
+      expect(canBeEdited).toEqual(false);
+      expect(columnDef.editable).toBeTruthy();
       expect(columnDef.filter).toEqual(true);
       expect(columnDef.width).toEqual(100);
 
@@ -362,7 +633,7 @@ describe('DetailComponent', () => {
       component.agGrid.gridOptions.api.stopEditing();
 
       // Update the state
-      const newState = getMockState();
+      const newState = getSGMMockState();
       newState.clusterGroups[0].clusters[0].clusterLocations[0].clusterLabel = 'test 123';
       store.setState(newState);
       store.refreshState();
@@ -399,7 +670,7 @@ describe('DetailComponent', () => {
       component.agGrid.gridOptions.api.stopEditing();
 
       // Update the state
-      const newState = getMockState();
+      const newState = getSGMMockState();
       newState.clusterGroups[0].clusters[0].clusterLocations[0].notes = 'test notes 123';
       store.setState(newState);
       store.refreshState();
@@ -475,37 +746,64 @@ describe('DetailComponent', () => {
   it('Commit button should be disabled when no modificaions', async () => {
     // TODO: This needs to later interact with state
     component.actionsDisabled = true;
+    let btn;
     store.refreshState();
     fixture.detectChanges();
-
-    const btn = query('[data-test="commit-button"]');
-    expect(btn.disabled).toEqual(true);
+    if (component.isEditable()) {
+      btn = query('[data-test="commit-button"]');
+      expect(btn).toBeTruthy();
+      expect(btn.disabled).toEqual(true);
+    }
+    else {
+      expect(btn).toBeFalsy();
+    }
   });
 
   it('Revert button should be disabled when no modificaions', async () => {
     // TODO: This needs to later interact with state
     component.actionsDisabled = true;
     store.refreshState();
+    let btn;
     fixture.detectChanges();
-
-    const btn = query('[data-test="revert-button"]');
-    expect(btn.disabled).toEqual(true);
+    if (component.isEditable()) {
+      btn = query('[data-test="revert-button"]');
+      expect(btn).toBeTruthy();
+      expect(btn.disabled).toEqual(true);
+    }
+    else {
+      expect(btn).toBeFalsy();
+    }
   });
 
   it('Commit button should be enabled when there are modificaions', async () => {
     store.refreshState();
     fixture.detectChanges();
+    let btn;
 
-    const btn = query('[data-test="commit-button"]');
-    expect(btn.disabled).toEqual(false);
+    if (component.isEditable()) {
+      btn = query('[data-test="commit-button"]');
+      expect(btn).toBeTruthy();
+      expect(btn.disabled).toEqual(false);
+    }
+    else {
+      expect(btn).toBeFalsy();
+    }
+
   });
 
   it('Revert button should be enabled when there are modificaions', async () => {
     store.refreshState();
+    let btn;
     fixture.detectChanges();
+    if (component.isEditable()) {
+      btn = query('[data-test="revert-button"]');
+      expect(btn).toBeTruthy();
+      expect(btn.disabled).toEqual(false);
+    }
+    else {
+      expect(btn).toBeFalsy();
+    }
 
-    const btn = query('[data-test="revert-button"]');
-    expect(btn.disabled).toEqual(false);
   });
 
   it('Shown records should be shown correctly', async () => {
@@ -529,9 +827,9 @@ describe('DetailComponent', () => {
 });
 
 // Data Helper methods below
-function getMockState(): IDetailsState {
+function getSGMMockState(): IDetailsState {
   return {
-    ...initialState,
+    ...sgmInitialState,
     edited: false,
     clusterGroups: [
       {
@@ -613,6 +911,7 @@ function getMockState(): IDetailsState {
 function waitForGridApiToBeAvailable(gridOptions, success) {
   // recursive without a terminating condition,
   // but jasmines default test timeout will kill it (jasmine.DEFAULT_TIMEOUT_INTERVAL)
+
   if (gridOptions.api) {
     success();
   } else {

@@ -18,6 +18,8 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { MSALInterceptor } from 'libs/auth/src/lib/interceptors/msal.interceptor'
 
 const material_modules = [
   MatButtonModule,
@@ -43,9 +45,9 @@ const material_modules = [
   exports: [...material_modules],
   providers: [
     { provide: MAT_DIALOG_DATA, useValue: {} },
-    { provide: MAT_SNACK_BAR_DATA, useValue: {} },
+    { provide: MAT_SNACK_BAR_DATA, useValue: {} }
   ],
 })
-export class MaterialModule {}
+export class MaterialModule { }
 
 export { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';

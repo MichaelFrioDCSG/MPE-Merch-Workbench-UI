@@ -7,12 +7,14 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RumRunnerService } from '@mpe/rum-runner-service';
 
 import { IUserProfile } from '../../store/models/IUserProfile';
+import { ITokenResponse } from '../../store/models/ITokenResponse';
 import { IAuthState } from '../../store/models/IAuthState';
 import { selectUserProfile } from '../../store/auth.state';
 import * as AuthSections from '../../store/auth.state';
 import * as actions from '../../store/auth.actions';
 
 import { environment } from '@mpe/home/src/environments/environment';
+
 
 @Component({
   selector: 'mpe-login',
@@ -23,7 +25,7 @@ export class LoginComponent implements OnInit {
   public userProfile: Observable<IUserProfile> = this.store.pipe(select(AuthSections.selectUserProfile));
   private msalInstance: msal.PublicClientApplication;
 
-  constructor(private router: Router, private route: ActivatedRoute, private store: Store<IAuthState>, private rumRunnerService: RumRunnerService) {}
+  constructor(private router: Router, private route: ActivatedRoute, private store: Store<IAuthState>, private rumRunnerService: RumRunnerService) { }
 
   public ngOnInit(): void {
     const msalConfig = {
@@ -35,13 +37,22 @@ export class LoginComponent implements OnInit {
     };
 
     this.msalInstance = new msal.PublicClientApplication(msalConfig);
+
     this.msalInstance
       .handleRedirectPromise()
       .then(tokenResponse => {
         // If the tokenResponse !== null, then you are coming back from a successful authentication redirect.
         if (tokenResponse !== null) {
+          const msalToken: ITokenResponse = {
+            token: tokenResponse.idToken
+          }
+          this.store.dispatch(actions.setUserToken({ TokenResponse: msalToken }));
           //auth success - call login action
+          const idTokenResponse = this.parseJwt(tokenResponse.idToken);
+          localStorage.setItem("MSAL_ID_Token", tokenResponse.idToken);
+          const roles = idTokenResponse.roles;
           const currentAccounts: msal.AccountInfo[] = this.msalInstance.getAllAccounts();
+
           if (currentAccounts === null) {
             return;
           } else if (currentAccounts.length > 1) {
@@ -50,7 +61,7 @@ export class LoginComponent implements OnInit {
             const userProfile: IUserProfile = {
               name: currentAccounts[0].name,
               username: currentAccounts[0].username,
-              roles: [],
+              roles: roles || []
             };
 
             // Log the user login event
@@ -84,4 +95,14 @@ export class LoginComponent implements OnInit {
         const breakHere = '';
       });
   }
+
+  public parseJwt(token) {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    return JSON.parse(jsonPayload);
+  };
 }

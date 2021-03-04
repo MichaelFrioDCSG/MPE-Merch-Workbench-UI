@@ -1,17 +1,21 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { AgGridAngular } from 'ag-grid-angular';
 import { Observable } from 'rxjs';
-import { AllCommunityModules, Module, GridOptions, GridApi, ColDef, ColGroupDef } from '@ag-grid-community/all-modules';
+import { AllCommunityModules, Module, GridOptions, GridApi, ColDef, ColGroupDef, IsColumnFunc } from '@ag-grid-community/all-modules';
 
+import { Store, select } from '@ngrx/store';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 
-import { DetailsActions, DetailsSelectors } from '../../store/details';
+import { DetailsActions } from '../../store/details/details.actions';
+import { DetailsSelectors } from '../../store/details/details.selectors';
+import { AuthSelectors } from '../../../../../auth/src/lib/store/auth.selectors'
 import { IDetailRecord } from '../../models/IDetailRecord';
 import { IModifiedDetailRecord } from '../../models/IModifiedDetailRecord';
 import { BulkFillRenderer, IProductLocationAttribute, numericComparator } from '@mpe/shared';
 import { DatePipe } from '@angular/common';
 import { getDetailRecordOpClusterMember } from '../../helpers/getClusterOpClusterMember';
+import { selectUserProfile, IAuthState, IUserProfile } from '@mpe/auth';
 
 @Component({
   selector: 'mpe-detail',
@@ -21,15 +25,18 @@ import { getDetailRecordOpClusterMember } from '../../helpers/getClusterOpCluste
 export class DetailComponent implements OnInit {
   @ViewChild('agGrid', { static: false }) public agGrid: AgGridAngular;
   public loadingTemplate;
-  public gridOptions: GridOptions = { suppressCellSelection: true };
+  public userProfile: IUserProfile;
+  public areGridColumnsConfigured: boolean;
+  public userRoles: any[];
+  public gridOptions: GridOptions;
   public gridApi: GridApi;
+  public canEdit$: Observable<boolean>;
   public details$: Observable<IDetailRecord[]>;
   public modules: Module[] = AllCommunityModules;
   public get clusterGroupIds(): number[] {
     const queryStringParameter = this.route.snapshot.paramMap.get('id');
     return queryStringParameter.split(',').map(id => parseInt(id, 10));
   }
-  constructor(private actions: DetailsActions, private selectors: DetailsSelectors, private titleService: Title, private route: ActivatedRoute) {}
   public shownRecords: number;
   public totalRecords: number;
 
@@ -41,12 +48,10 @@ export class DetailComponent implements OnInit {
     hide: true,
     enableRowGroup: true,
     editable: false,
-    singleClickEdit: true,
     suppressNavigable: true,
     cellClass: 'no-border',
   };
   private datePipe: DatePipe = new DatePipe('en-US');
-
   public actionsDisabled = false;
 
   public tiers: string[] = ['ECOMM', 'Tier 1', 'Tier 2', 'Tier 3', 'Tier 4', 'Tier 5', 'Z'];
@@ -65,6 +70,10 @@ export class DetailComponent implements OnInit {
 
     params.api.hideOverlay();
     return true;
+  }
+
+  public isEditable() {
+    return this.userProfile.roles.includes('Admin') || this.userProfile.roles.includes('SGMWrite');
   }
 
   private getModifiedDetailRecords(node: any, colId: string, newValue: string): IModifiedDetailRecord[] {
@@ -86,11 +95,11 @@ export class DetailComponent implements OnInit {
         value: newValue,
       });
     }
-
     return results;
   }
 
   private configureGridColumns(attributes: IProductLocationAttribute[], records: IDetailRecord[]) {
+    this.areGridColumnsConfigured = false;
     let updateColumns = false;
     for (const attr of attributes) {
       const headerName = attr.name.toUpperCase();
@@ -101,7 +110,7 @@ export class DetailComponent implements OnInit {
           headerName: headerName,
           field: attr.oracleName,
           hide: hideColumn,
-          editable: true,
+          editable: params => this.isEditable(),
           cellEditor: 'agRichSelectCellEditor',
           cellEditorParams: {
             values: [].concat([''], attr.values.map(x => x.value).sort()),
@@ -119,6 +128,7 @@ export class DetailComponent implements OnInit {
       this.gridApi.refreshHeader();
       this.agGrid.api.setColumnDefs([]);
       this.gridApi.setColumnDefs(this.columnDefs);
+      this.areGridColumnsConfigured = true;
     }
   }
 
@@ -138,17 +148,17 @@ export class DetailComponent implements OnInit {
     {
       headerName: 'CLUSTER LABEL',
       field: 'clusterLabel',
-      editable: true,
       width: 200,
+      editable: params => this.isEditable(),
       hide: false,
       valueSetter: params => this.edit(params),
     },
     {
       headerName: 'CHAIN',
       field: 'chain',
-      editable: true,
       width: 100,
       hide: false,
+      editable: params => this.isEditable(),
       cellEditor: 'agRichSelectCellEditor',
       cellEditorParams: {
         values: this.chains,
@@ -159,9 +169,9 @@ export class DetailComponent implements OnInit {
     {
       headerName: 'TIER',
       field: 'tier',
-      editable: true,
       width: 150,
       hide: false,
+      editable: params => this.isEditable(),
       cellEditor: 'agRichSelectCellEditor',
       cellEditorParams: {
         values: this.tiers,
@@ -186,9 +196,9 @@ export class DetailComponent implements OnInit {
     {
       headerName: 'NOTES',
       field: 'notes',
-      editable: true,
       width: 200,
       hide: false,
+      editable: params => this.isEditable(),
       cellRendererFramework: BulkFillRenderer,
       valueSetter: params => this.edit(params),
     },
@@ -272,9 +282,15 @@ export class DetailComponent implements OnInit {
     defaultToolPanel: 'columns',
   };
 
+  constructor(private actions: DetailsActions, private authSelectors: AuthSelectors, private selectors: DetailsSelectors, private titleService: Title, private route: ActivatedRoute, private authStore: Store<IAuthState>) { }
+
   public ngOnInit() {
     this.titleService.setTitle('Store Group Management');
+    this.canEdit$ = this.authSelectors.userCanEditSGM();
     this.loadingTemplate = '<span class="ag-overlay-loading-center">Loading...</span>';
+    this.authStore.pipe(select(selectUserProfile)).subscribe(profile =>
+      this.userProfile = profile
+    );
   }
 
   public onGridReady(params: any) {
@@ -339,4 +355,5 @@ export class DetailComponent implements OnInit {
     }, 5);
     this.actions.revertDetails();
   }
+
 }

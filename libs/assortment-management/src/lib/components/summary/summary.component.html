@@ -5,7 +5,8 @@
         <div class="breadcrumb-dsg">
           Assortments Summary
         </div>
-        <button mat-raised-button color="primary" class="agm-button import-button" (click)="openDialog()">
+        <button *ngIf="canEdit$ | async" mat-raised-button color="primary" class="agm-button import-button"
+          (click)="openDialog()">
           <mat-icon>arrow_upward</mat-icon>
           Import
         </button>
@@ -13,23 +14,17 @@
 
       <div class="Monochromatic grid-header">
         <div class="grid-header-totals">Data Results ({{ totalResults }})</div>
-        <button
-          [disabled]="actionsDisabled"
-          mat-raised-button
-          color="primary"
-          class="agm-button action-menu-button"
-          [matMenuTriggerFor]="menu"
-          (click)="actionMenuOpen = true"
-        >
+        <button *ngIf="canView$ | async" [disabled]="actionsDisabled" mat-raised-button color="primary"
+          class="agm-button action-menu-button" [matMenuTriggerFor]="menu" (click)="actionMenuOpen = true">
           Actions
           <i class="material-icons">{{ actionMenuOpen ? 'expand_less' : 'expand_more' }}</i>
         </button>
 
         <mat-menu class="action-menu" #menu="matMenu" (closed)="onActionMenuClosed($event)">
           <div mat-menu-item class="action-menu-item">
-            View/Edit
+            View{{ (canEdit$ | async) ? '/Edit' : '' }}
           </div>
-          <div mat-menu-item class="action-menu-item">
+          <div *ngIf="canEdit$ | async" mat-menu-item class="action-menu-item">
             Delete
           </div>
         </mat-menu>
@@ -37,17 +32,8 @@
     </div>
   </div>
 
-  <ag-grid-angular
-    #agGrid
-    class="ag-theme-alpine"
-    [defaultColDef]="defaultColDef"
-    [columnDefs]="columnDefs"
-    rowSelection="multiple"
-    [gridOptions]="gridOptions"
-    [rowData]="assortments"
-    (gridReady)="onGridReady($event)"
-    (rowSelected)="onRowSelected($event)"
-    (selectionChanged)="onSelectionChanged($event)"
-  >
+  <ag-grid-angular #agGrid class="ag-theme-alpine" [defaultColDef]="defaultColDef" [columnDefs]="columnDefs"
+    rowSelection="multiple" [gridOptions]="gridOptions" [rowData]="assortments" (gridReady)="onGridReady($event)"
+    (rowSelected)="onRowSelected($event)" (selectionChanged)="onSelectionChanged($event)">
   </ag-grid-angular>
 </div>

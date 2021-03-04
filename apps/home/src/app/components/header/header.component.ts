@@ -15,7 +15,7 @@ export class HeaderComponent implements OnInit {
   public routes: Routes;
   public activeRoute: any;
   public userProfile: Observable<IUserProfile>;
-  constructor(public router: Router, private store: Store<IAuthState>) {}
+  constructor(public router: Router, private store: Store<IAuthState>) { }
 
   public ngOnInit(): void {
     this.userProfile = this.store.pipe(select(selectUserProfile));

@@ -7,6 +7,7 @@
     "ng": "nx",
     "nx": "nx",
     "start": "npm run serve:local",
+    "msal": "npm i msal --save",
     "start:full": "run-s format:fix lint:all test:all serve:local",
     "serve:local": "nx serve --c=local",
     "serve:qa": "nx serve --c=qa",
@@ -53,6 +54,7 @@
     "@angular/platform-browser": "10.0.0",
     "@angular/platform-browser-dynamic": "10.0.0",
     "@angular/router": "10.0.0",
+    "@azure/msal-angular": "^1.1.2",
     "@azure/msal-browser": "^2.5.2",
     "@ngrx/effects": "10.0.0",
     "@ngrx/entity": "10.0.0",
@@ -64,6 +66,7 @@
     "ag-grid-enterprise": "^23.2.1",
     "bootstrap": "^4.5.2",
     "hammerjs": "^2.0.8",
+    "msal": "^1.4.6",
     "rxjs": "6.5.5",
     "zone.js": "^0.10.2"
   },
