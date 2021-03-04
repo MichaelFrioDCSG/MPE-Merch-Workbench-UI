@@ -1,6 +1,6 @@
 import { IExcelLocation } from '../IExcelLocation';
 
-export interface IStoreGroupCreateRequestExcel {
+export interface IClusterGroupCreateRequestExcel {
   assortmentPeriodId: string;
   clusterGroupName: string;
   clusterGroupDescription: string;

@@ -5,7 +5,7 @@ import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { ICreateClusterGroupRequestDto, ICreateClusterGroupResponseDto } from '@mpe/shared';
 import { IStoreInformationExcelImport } from '../../../../shared/src/lib/models/dto/IStoreInformationExcelImport';
-import { IStoreGroupCreateRequestExcel } from 'libs/shared/src/lib/models/dto/IStoreGroupCreateRequestExcel';
+import { IClusterGroupCreateRequestExcel } from 'libs/shared/src/lib/models/dto/IClusterGroupCreateRequestExcel';
 
 @Injectable({
   providedIn: 'root',
@@ -21,7 +21,7 @@ export class ClusterGroupService {
     );
   }
 
-  public createClusterGroupExcel(body: IStoreGroupCreateRequestExcel): Observable<ICreateClusterGroupResponseDto> {
+  public createClusterGroupExcel(body: IClusterGroupCreateRequestExcel): Observable<ICreateClusterGroupResponseDto> {
     return this.http.post(`${environment.mpe_api}/api/clustergroups/create/excel`, body).pipe(
       map((data: ICreateClusterGroupResponseDto) => {
         return data;

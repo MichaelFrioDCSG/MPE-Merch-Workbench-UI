@@ -6,7 +6,7 @@ import { map, startWith } from 'rxjs/operators';
 import { IProductHierarchy } from '../../../../../shared/src/lib/models/IProductHierarchy';
 import { IAssortmentPeriod } from '../../../../../shared/src/lib/models/IAssortmentPeriod';
 import { ClusterGroupService } from 'libs/sgm/src/lib/services/cluster-group.service';
-import { IStoreGroupCreateRequestExcel } from '../../../../../shared/src/lib/models/dto/IStoreGroupCreateRequestExcel';
+import { IClusterGroupCreateRequestExcel } from '../../../../../shared/src/lib/models/dto/IClusterGroupCreateRequestExcel';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ToastMessageComponent } from 'libs/shared/src/lib/components/toast-message/toast-message.component';
 import { MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
@@ -40,8 +40,8 @@ export class ImportClusterGroupDialogComponent implements OnInit, AfterViewInit 
   public productClassesDropdownItems: any[] = [];
   public productSubClassesDropdownItems: any[] = [];
 
-  public storeGroupName = new FormControl('', [Validators.required]);
-  public storeGroupDescription = new FormControl('');
+  public clusterGroupName = new FormControl('', [Validators.required]);
+  public clusterGroupDescription = new FormControl('');
   public assortmentPeriod = new FormControl('', [Validators.required]);
   public leadSubclass = new FormControl({ value: '', disabled: true }, [Validators.required]);
   public formControlProductDepartments = new FormControl({ value: [], disabled: true });
@@ -70,8 +70,8 @@ export class ImportClusterGroupDialogComponent implements OnInit, AfterViewInit 
   public loadingAssortmentPeriods = false;
   public loadingProductHierarchy = false;
   public loadingLeadSubClasses = false;
-  public creatingStoreGroups = false;
-  public createStoreGroupErrors: string[] = [];
+  public creatingClusterGroups = false;
+  public createClusterGroupErrors: string[] = [];
   public showErrors = false;
 
   public addedProductHierarchies: IProductHierarchy[] = [];
@@ -409,55 +409,55 @@ export class ImportClusterGroupDialogComponent implements OnInit, AfterViewInit 
     });
   }
 
-  public createStoreGroups() {
-    this.createStoreGroupErrors = [];
+  public createClusterGroups() {
+    this.createClusterGroupErrors = [];
     if (this.selectedTabText === 'Oracle') {
-      this.createStoreGroupOracle();
+      this.createClusterGroupOracle();
     } else {
-      this.createStoreGroupExcel();
+      this.createClusterGroupExcel();
     }
   }
 
-  public createStoreGroupOracle() {
+  public createClusterGroupOracle() {
     const leadSubclassId = this.productHierarchiesInterface.find(hierarchy => hierarchy.subClassDisplay === this.leadSubclass.value).subClassId;
 
     this.combinedLinkSubclasses = [...new Set([leadSubclassId, ...this.populatedLinkSubclasses, ...this.selectedLinkSubclasses])];
 
     const body: ICreateClusterGroupRequestDto = {
-      clusterGroupName: this.storeGroupName.value,
-      clusterGroupDescription: this.storeGroupDescription.value,
+      clusterGroupName: this.clusterGroupName.value,
+      clusterGroupDescription: this.clusterGroupDescription.value,
       assortmentPeriodId: this.assortmentPeriod.value.assortmentPeriodId,
       sourceSubclassId: leadSubclassId,
       targetSubclassIds: this.combinedLinkSubclasses,
       overwrite: false,
     };
 
-    this.creatingStoreGroups = true;
+    this.creatingClusterGroups = true;
     this.showErrors = false;
-    this.createStoreGroupErrors = [];
+    this.createClusterGroupErrors = [];
 
     this.clusterGroupService.createClusterGroup(body).subscribe((data: ICreateClusterGroupResponseDto) => {
-      this.creatingStoreGroups = false;
+      this.creatingClusterGroups = false;
       if (data.isSuccess) {
         this.showToastMessage('Cluster Import Success', [], false);
         this.summaryActions.getClusterGroups();
         this.dialogRef.close({ data: null });
       } else {
         this.showErrors = true;
-        this.createStoreGroupErrors = data.errorMessages;
+        this.createClusterGroupErrors = data.errorMessages;
         this.showToastMessage('Error when Importing Clusters', [], true);
       }
     });
   }
 
-  public createStoreGroupExcel() {
+  public createClusterGroupExcel() {
     const formData: FormData = new FormData();
     this.convertedExcelData = null;
     this.excelStoreInformation = null;
     this.showErrors = false;
-    this.creatingStoreGroups = true;
+    this.creatingClusterGroups = true;
     this.showErrors = false;
-    this.createStoreGroupErrors = [];
+    this.createClusterGroupErrors = [];
     formData.append('file', this.excelFile, this.excelFile.name);
     Promise.resolve(formData)
       // Convert the Excel and set variable
@@ -474,7 +474,7 @@ export class ImportClusterGroupDialogComponent implements OnInit, AfterViewInit 
       .then(() => {
         // Stores that exist in Excel but not in DB, show error and stop execution
         if (this.storesNotInDBExcel()) {
-          this.creatingStoreGroups = false;
+          this.creatingClusterGroups = false;
           this.excelFile = null;
           this.excelDocumentRef.nativeElement.value = '';
           return;
@@ -483,7 +483,7 @@ export class ImportClusterGroupDialogComponent implements OnInit, AfterViewInit 
         this.addStoresToExcel();
         // Add default values if Chain/Tier does not exist
         this.setChainTierDefaultsToExcel();
-        const excelImportRequest: IStoreGroupCreateRequestExcel = this.setExcelRequest();
+        const excelImportRequest: IClusterGroupCreateRequestExcel = this.setExcelRequest();
 
         this.clusterGroupService
           .createClusterGroupExcel(excelImportRequest)
@@ -495,14 +495,14 @@ export class ImportClusterGroupDialogComponent implements OnInit, AfterViewInit 
             },
             (err: HttpErrorResponse) => {
               this.showErrors = true;
-              this.createStoreGroupErrors = err.error.errors;
-              this.createStoreGroupErrors.slice(0, 10);
+              this.createClusterGroupErrors = err.error.errors;
+              this.createClusterGroupErrors.slice(0, 10);
               this.showToastMessage('Error when Importing Clusters', [], true);
             }
           )
           // Will execute at the end of the subscribe
           .add(() => {
-            this.creatingStoreGroups = false;
+            this.creatingClusterGroups = false;
             this.excelFile = null;
             this.excelDocumentRef.nativeElement.value = '';
           });
@@ -523,7 +523,7 @@ export class ImportClusterGroupDialogComponent implements OnInit, AfterViewInit 
   }
 
   public validForm() {
-    return this.storeGroupName.valid && this.assortmentPeriod.valid && this.leadSubclass.valid;
+    return this.clusterGroupName.valid && this.assortmentPeriod.valid && this.leadSubclass.valid;
   }
 
   public tabChanged(tabChangeEvent: MatTabChangeEvent): void {
@@ -535,12 +535,12 @@ export class ImportClusterGroupDialogComponent implements OnInit, AfterViewInit 
     const storesNotInDB = this.convertedExcelData.filter(x => !this.excelStoreInformation.some(y => x.Location === y.storeNumber));
     if (storesNotInDB.length > 0) {
       storesNotInDB.map(store =>
-        this.createStoreGroupErrors.push(
+        this.createClusterGroupErrors.push(
           `Store Number: ${store.Location} does not exist. Please make sure that ${store.Location} is a valid location.`
         )
       );
       // Only going to show a maximum of 5 messages at a time
-      this.createStoreGroupErrors = this.createStoreGroupErrors.slice(0, 5);
+      this.createClusterGroupErrors = this.createClusterGroupErrors.slice(0, 5);
       this.showErrors = true;
       return true;
     }
@@ -596,9 +596,9 @@ export class ImportClusterGroupDialogComponent implements OnInit, AfterViewInit 
   }
 
   private setExcelRequest() {
-    const excelImportRequest: IStoreGroupCreateRequestExcel = {
-      clusterGroupName: this.storeGroupName.value,
-      clusterGroupDescription: this.storeGroupDescription.value,
+    const excelImportRequest: IClusterGroupCreateRequestExcel = {
+      clusterGroupName: this.clusterGroupName.value,
+      clusterGroupDescription: this.clusterGroupDescription.value,
       assortmentPeriodId: this.assortmentPeriod.value.assortmentPeriodId,
       subclassIds: this.selectedLinkSubclasses,
       excelLocations: [],
@@ -648,8 +648,8 @@ export class ImportClusterGroupDialogComponent implements OnInit, AfterViewInit 
   }
 
   private resetFormAndValues() {
-    this.storeGroupName.reset('', { emitEvent: false });
-    this.storeGroupDescription.reset('', { emitEvent: false });
+    this.clusterGroupName.reset('', { emitEvent: false });
+    this.clusterGroupDescription.reset('', { emitEvent: false });
     this.assortmentPeriod.reset('', { emitEvent: false });
 
     this.leadSubclass.reset('', { emitEvent: false });
