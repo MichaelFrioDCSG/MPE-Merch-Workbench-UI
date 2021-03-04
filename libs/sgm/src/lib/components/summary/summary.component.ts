@@ -5,9 +5,9 @@ import { AllCommunityModules, Module, GridOptions, GridApi } from '@ag-grid-comm
 import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
-import { AuthSelectors } from '../../../../../auth/src/lib/store/auth.selectors'
+import { AuthSelectors } from '../../../../../auth/src/lib/store/auth.selectors';
 
-import { SharedActions, IClusterGroup } from '@mpe/shared';
+import { SharedActions, IClusterGroup, LinkRendererComponent } from '@mpe/shared';
 import { SummaryActions, SummarySelectors, ManageClusterGroupsActions } from '../../store';
 import { ImportClusterGroupDialogComponent } from '../../dialogs/import-cluster-group-dialog/import-cluster-group-dialog.component';
 import { selectUserProfile, IAuthState, IUserProfile } from '@mpe/auth';
@@ -57,7 +57,17 @@ export class SummaryComponent implements OnInit {
       suppressSizeToFit: true,
       resizable: false,
     },
-    { headerName: 'CLUSTER GROUP', field: 'name', sortable: true, filter: true, minWidth: 275 },
+    {
+      headerName: 'CLUSTER GROUP',
+      field: 'name',
+      sortable: true,
+      filter: true,
+      minWidth: 275,
+      cellRendererFramework: LinkRendererComponent,
+      cellRendererParams: params => ({
+        inRouterLink: `/sgm/${params.data.id}`,
+      }),
+    },
     { headerName: 'CLUSTER GROUP DESCRIPTION', field: 'description', sortable: true, filter: true, minWidth: 300 },
     { headerName: 'ASSORTMENT PERIOD', field: 'asmtPeriod.asmtPeriodLabel', sortable: true, filter: true, minWidth: 232 },
 
@@ -86,12 +96,10 @@ export class SummaryComponent implements OnInit {
     private authSelectors: AuthSelectors,
     private authStore: Store<IAuthState>,
     private rumRunnerService: RumRunnerService
-  ) { }
+  ) {}
 
   public ngOnInit() {
-    this.authStore.pipe(select(selectUserProfile)).subscribe(profile =>
-      this.userProfile = profile
-    );
+    this.authStore.pipe(select(selectUserProfile)).subscribe(profile => (this.userProfile = profile));
     this.canEdit$ = this.authSelectors.userCanEditSGM();
     this.canView$ = this.authSelectors.userCanViewSGM();
   }

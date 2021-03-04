@@ -23,8 +23,8 @@ button:hover {
   margin-bottom: 1rem;
 
   .breadcrumb-dsg {
-    font-size: 20px;
-    font-weight: bold;
+    font-size: 14px;
+    font-weight: normal;
     line-height: 10px;
     letter-spacing: 0.297825px;
     justify-content: flex-start;
@@ -79,14 +79,26 @@ button.btn-secondary:hover {
 .breadcrumb-dsg {
   font-family: Archivo;
   font-weight: bold;
-  font-size: 14px;
+  font-size: 5px;
   line-height: 15px;
   letter-spacing: 0.297825px;
   display: inline;
+  text-decoration: underline;
 
   color: #000000;
 }
+.cluster-button {
+  font-family: Archivo;
+  font-weight: bold;
+  font-size: 20px;
+  top: 30px;
+  line-height: 22px;
+  letter-spacing: 0.297825px;
+  display: inline;
+  text-decoration: none;
 
+  color: #000000;
+}
 .grid-header {
   background: #c8c8c8;
   display: flex;
@@ -131,4 +143,14 @@ ag-grid-angular {
 .no-border.ag-cell:focus {
   border: none;
   outline: none;
+}
+
+.ag-theme-alpine {
+  --ag-alpine-active-color: #2e2e2e;
+  --ag-control-panel-background-color: #e5e5e5;
+}
+.mat-icon {
+  font-size: inherit;
+  height: inherit;
+  width: inherit;
 }
