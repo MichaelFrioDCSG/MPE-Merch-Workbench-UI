@@ -422,19 +422,3 @@ section {
 button {
   text-transform: uppercase;
 }
-a {
-  color: black;
-  text-decoration: underline;
-  &:hover,
-  &:focus {
-    color: black;
-
-    &.text-info {
-      &:hover,
-      &:focus {
-        color: black;
-        text-decoration: underline;
-      }
-    }
-  }
-}

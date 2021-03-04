@@ -11,7 +11,7 @@ import { MaterialModule } from '@mpe/material';
 import { RumRunnerServiceModule } from '@mpe/rum-runner-service';
 
 import { ClusterGroupService } from '@mpe/AsmtMgmtService';
-import { InputSpinnerComponent, InputDropdownFilterComponent, InputMultiselectDropdownComponent, LinkRendererComponent } from '@mpe/shared';
+import { InputSpinnerComponent, InputDropdownFilterComponent, InputMultiselectDropdownComponent } from '@mpe/shared';
 import { FEATURE_KEY } from './store/state';
 import { FEATURE_REDUCER_TOKEN, getReducers } from './store/reducer';
 import StoreGroupMgmtEffects from './store/effects';
@@ -48,7 +48,6 @@ export const sgmRoutes: Route[] = [
     InputMultiselectDropdownComponent,
     InputDropdownFilterComponent,
     DetailComponent,
-    LinkRendererComponent,
   ],
   exports: [SummaryComponent, DetailComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
