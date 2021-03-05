@@ -5,14 +5,22 @@ import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { IProductHierarchy } from '../../../../../shared/src/lib/models/IProductHierarchy';
 import { IAssortmentPeriod } from '../../../../../shared/src/lib/models/IAssortmentPeriod';
-import { ClusterGroupService } from 'libs/sgm/src/lib/services/cluster-group.service';
 import { IClusterGroupCreateRequestExcel } from '../../../../../shared/src/lib/models/dto/IClusterGroupCreateRequestExcel';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ToastMessageComponent } from 'libs/shared/src/lib/components/toast-message/toast-message.component';
 import { MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
 import { ExcelConvertService } from '../../services/excel-convert.service';
-import { IExcelConvertSGM, IExcelStoreInformation, ILinkSubclass, ICreateClusterGroupRequestDto, ICreateClusterGroupResponseDto } from '@mpe/shared';
-import { AssortmentPeriodService, ProductHierarchyService } from '@mpe/AsmtMgmtService';
+import {
+  IExcelConvertSGM,
+  IExcelStoreInformation,
+  ILinkSubclass,
+  ICreateClusterGroupRequestDto,
+  ICreateClusterGroupResponseDto,
+  IWarningDialogData,
+  SharedActions,
+  IMessageDialogData,
+} from '@mpe/shared';
+import { AssortmentPeriodService, ProductHierarchyService, ClusterGroupService } from '@mpe/AsmtMgmtService';
 import { SummaryActions } from '../../store';
 import { HttpErrorResponse } from '@angular/common/http';
 
@@ -34,6 +42,7 @@ export class ImportClusterGroupDialogComponent implements OnInit, AfterViewInit 
 
   public productHierarchiesInterface: IProductHierarchy[] = [];
   public linkedSubclassesInterface: ILinkSubclass[] = [];
+  public systemicallyLinkedSubClassesDropdownItems: any[] = [];
   public productDepartmentsDropdownItems: string[] = [];
   public productLinkSubclassesDropdownItems: any[] = [];
   public productSubDepartmentsDropdownItems: string[] = [];
@@ -48,6 +57,7 @@ export class ImportClusterGroupDialogComponent implements OnInit, AfterViewInit 
   public formControlSubDepartments = new FormControl({ value: [], disabled: true });
   public formControlClasses = new FormControl({ value: [], disabled: true });
   public formControlSubClasses = new FormControl({ value: [], disabled: true });
+  public formControlSystemicallyLinkedSubClasses = new FormControl({ value: [], disabled: true });
 
   // Excel Import Only Variables
   public formControlExcelFile = new FormControl({ value: null }, [Validators.required]);
@@ -57,6 +67,7 @@ export class ImportClusterGroupDialogComponent implements OnInit, AfterViewInit 
 
   public selectedLinkSubclasses: string[] = [];
   public populatedLinkSubclasses: string[] = [];
+  public systemicallyLinkedSubclasses: string[] = [];
   private combinedLinkSubclasses: string[] = [];
   public filteredLinkSubclasses: IProductHierarchy[] = [];
   public filteredProductHierarchySubclasses: IProductHierarchy[] = [];
@@ -70,6 +81,7 @@ export class ImportClusterGroupDialogComponent implements OnInit, AfterViewInit 
   public loadingAssortmentPeriods = false;
   public loadingProductHierarchy = false;
   public loadingLeadSubClasses = false;
+  public loadingSystemicallyLinkedSubClasses = false;
   public creatingClusterGroups = false;
   public createClusterGroupErrors: string[] = [];
   public showErrors = false;
@@ -85,7 +97,8 @@ export class ImportClusterGroupDialogComponent implements OnInit, AfterViewInit 
     public clusterGroupService: ClusterGroupService,
     public excelConvertService: ExcelConvertService,
     private snackBar: MatSnackBar,
-    public summaryActions: SummaryActions
+    public summaryActions: SummaryActions,
+    private sharedActions: SharedActions
   ) {}
 
   public ngOnInit() {
@@ -99,13 +112,19 @@ export class ImportClusterGroupDialogComponent implements OnInit, AfterViewInit 
 
   public getAssortmentPeriod() {
     this.loadingAssortmentPeriods = true;
-    this.assortmentPeriodService.getAssortmentPeriods(false, true).subscribe((assortmentPeriods: IAssortmentPeriod[]) => {
-      this.assortmentPeriods = assortmentPeriods;
-      this.assortmentPeriods.sort();
-      this.filterAssortmentPeriods();
+    this.assortmentPeriodService.getAssortmentPeriods(false, true).subscribe(
+      (assortmentPeriods: IAssortmentPeriod[]) => {
+        this.assortmentPeriods = assortmentPeriods;
+        this.assortmentPeriods.sort();
+        this.filterAssortmentPeriods();
 
-      this.loadingAssortmentPeriods = false;
-    });
+        this.loadingAssortmentPeriods = false;
+      },
+      ex => {
+        this.loadingAssortmentPeriods = false;
+        this.showToastMessage('Error while retrieving Assortment Periods', [], true);
+      }
+    );
   }
 
   public onAssortmentPeriodChanged(value) {
@@ -128,18 +147,42 @@ export class ImportClusterGroupDialogComponent implements OnInit, AfterViewInit 
     !this.leadSubclass.value
       ? this.formControlProductDepartments.disable({ emitEvent: true })
       : this.formControlProductDepartments.enable({ emitEvent: false });
+    this.loadingSystemicallyLinkedSubClasses = true;
     this.productHierarchyService
       .GetLinkSubclasses(this.assortmentPeriod.value.assortmentPeriodId, leadSubclassId)
       .subscribe((linkedSubclasses: ILinkSubclass[]) => {
         this.linkedSubclassesInterface = linkedSubclasses;
         this.formatLinkSubclasses();
-
         this.filteredLinkSubclasses = this.productHierarchiesInterface
-          .filter(product => !this.populatedLinkSubclasses.includes(product.subClassId))
+          .filter(product => !this.systemicallyLinkedSubclasses.includes(product.subClassId))
           .filter(product => product.subClassDisplay !== this.leadSubclass.value);
 
+        this.systemicallyLinkedSubClassesDropdownItems = this.productHierarchiesInterface
+          .filter(product => this.systemicallyLinkedSubclasses.includes(product.subClassId))
+          .filter(product => product.subClassDisplay !== this.leadSubclass.value)
+          .map(product => product.subClassDisplay)
+          .sort();
+        this.systemicallyLinkedSubClassesDropdownItems = [...new Set(this.systemicallyLinkedSubClassesDropdownItems)];
+        this.loadingSystemicallyLinkedSubClasses = false;
+        if (this.systemicallyLinkedSubClassesDropdownItems.length === 0) {
+          this.formControlSystemicallyLinkedSubClasses.disable();
+        } else {
+          this.formControlSystemicallyLinkedSubClasses.enable();
+        }
+        this.formControlSystemicallyLinkedSubClasses.setValue(this.systemicallyLinkedSubClassesDropdownItems);
         this.formatProductHierarchies();
       });
+  }
+
+  public onSystemicallyLinkedSubClassChanged(value) {
+    this.formControlSystemicallyLinkedSubClasses.setValue(value);
+    this.systemicallyLinkedSubclasses = this.productHierarchiesInterface
+      .filter(
+        product =>
+          !this.formControlSystemicallyLinkedSubClasses.value.length ||
+          this.formControlSystemicallyLinkedSubClasses.value.includes(product.subClassDisplay)
+      )
+      .map(product => product.subClassId);
   }
 
   public onProductDepartmentChanged(value) {
@@ -208,12 +251,12 @@ export class ImportClusterGroupDialogComponent implements OnInit, AfterViewInit 
   }
 
   public formatLinkSubclasses() {
-    this.populatedLinkSubclasses = this.linkedSubclassesInterface
+    this.systemicallyLinkedSubclasses = this.linkedSubclassesInterface
       .map((linksubclass: ILinkSubclass) => {
         return linksubclass.subClassId;
       })
       .sort();
-    this.populatedLinkSubclasses = [...new Set(this.populatedLinkSubclasses)];
+    this.systemicallyLinkedSubclasses = [...new Set(this.systemicallyLinkedSubclasses)];
 
     this.populatedLinkDepartments = this.linkedSubclassesInterface
       .map((linksubclass: ILinkSubclass) => {
@@ -391,7 +434,7 @@ export class ImportClusterGroupDialogComponent implements OnInit, AfterViewInit 
         this.productSubClassesDropdownItems = this.filteredLinkSubclasses
           .filter(product => classes.includes(product.classDisplay))
           .filter(product => product.subClassDisplay !== this.leadSubclass.value)
-          .filter(product => !this.populatedLinkSubclasses.includes(product.subClassId))
+          .filter(product => !this.systemicallyLinkedSubclasses.includes(product.subClassId))
           .map(product => product.subClassDisplay)
           .sort();
       } else {
@@ -409,16 +452,86 @@ export class ImportClusterGroupDialogComponent implements OnInit, AfterViewInit 
     });
   }
 
-  public createClusterGroups() {
+  public createClusterGroups(overwrite: boolean = false) {
     this.createClusterGroupErrors = [];
     if (this.selectedTabText === 'Oracle') {
-      this.createClusterGroupOracle();
+      this.createClusterGroupOracle(overwrite);
     } else {
-      this.createClusterGroupExcel();
+      this.createClusterGroupExcel(overwrite);
     }
   }
 
-  public createClusterGroupOracle() {
+  public checkForExistingClusterGroupOracle() {
+    const clusterGroupName = this.clusterGroupName.value;
+    const assortmentPeriodId = this.assortmentPeriod.value.assortmentPeriodId;
+    const leadSubclassId = this.productHierarchiesInterface.find(hierarchy => hierarchy.subClassDisplay === this.leadSubclass.value).subClassId;
+    const combinedLinkSubclasses = [...new Set([leadSubclassId, ...this.systemicallyLinkedSubclasses, ...this.selectedLinkSubclasses])];
+
+    this.clusterGroupService.checkForExistingClusterGroup(clusterGroupName, assortmentPeriodId, combinedLinkSubclasses).subscribe(
+      data => {
+        // No existing cluster groups found
+        if (!data || !data.errorMessages || data.errorMessages.length === 0) {
+          this.createClusterGroups();
+        } else {
+          const args: IWarningDialogData = {
+            title: 'WARNING: Cluster Group already exists in Store Group Management',
+            messages: data.errorMessages,
+            action: 'Overwrite',
+            okAction: () => {
+              this.createClusterGroups(true);
+            },
+          };
+
+          this.creatingClusterGroups = false;
+          this.sharedActions.showWarningDialog(args);
+        }
+      },
+      ex => {
+        // show error dialog
+        const args: IMessageDialogData = {
+          messages: [ex.error.errors],
+        };
+        this.creatingClusterGroups = false;
+        this.sharedActions.showMessageDialog(args);
+      }
+    );
+  }
+
+  public checkForExistingClusterGroupExcel() {
+    const clusterGroupName = this.clusterGroupName.value;
+    const assortmentPeriodId = this.assortmentPeriod.value.assortmentPeriodId;
+
+    this.clusterGroupService.checkForExistingClusterGroup(clusterGroupName, assortmentPeriodId, this.selectedLinkSubclasses).subscribe(
+      data => {
+        // No existing cluster groups found
+        if (!data || !data.errorMessages || data.errorMessages.length === 0) {
+          this.createClusterGroups();
+        } else {
+          const args: IWarningDialogData = {
+            title: 'WARNING: Cluster Group already exists in Store Group Management',
+            messages: data.errorMessages,
+            action: 'Overwrite',
+            okAction: () => {
+              this.createClusterGroups(true);
+            },
+          };
+
+          this.creatingClusterGroups = false;
+          this.sharedActions.showWarningDialog(args);
+        }
+      },
+      ex => {
+        // show error dialog
+        const args: IMessageDialogData = {
+          messages: [ex.error.errors],
+        };
+        this.creatingClusterGroups = false;
+        this.sharedActions.showMessageDialog(args);
+      }
+    );
+  }
+
+  public createClusterGroupOracle(overwrite: boolean) {
     const leadSubclassId = this.productHierarchiesInterface.find(hierarchy => hierarchy.subClassDisplay === this.leadSubclass.value).subClassId;
 
     this.combinedLinkSubclasses = [...new Set([leadSubclassId, ...this.populatedLinkSubclasses, ...this.selectedLinkSubclasses])];
@@ -429,29 +542,37 @@ export class ImportClusterGroupDialogComponent implements OnInit, AfterViewInit 
       assortmentPeriodId: this.assortmentPeriod.value.assortmentPeriodId,
       sourceSubclassId: leadSubclassId,
       targetSubclassIds: this.combinedLinkSubclasses,
-      overwrite: false,
+      overwrite: overwrite,
     };
 
     this.creatingClusterGroups = true;
     this.showErrors = false;
     this.createClusterGroupErrors = [];
 
-    this.clusterGroupService.createClusterGroup(body).subscribe((data: ICreateClusterGroupResponseDto) => {
-      this.creatingClusterGroups = false;
-      if (data.isSuccess) {
-        this.showToastMessage('Cluster Import Success', [], false);
-        this.summaryActions.getClusterGroups();
-        this.dialogRef.close({ data: null });
-      } else {
+    this.clusterGroupService.createClusterGroup(body).subscribe(
+      (data: ICreateClusterGroupResponseDto) => {
+        this.creatingClusterGroups = false;
+        if (data.isSuccess) {
+          this.showToastMessage('Cluster Import Success', [], false);
+          this.summaryActions.getClusterGroups();
+          this.dialogRef.close({ data: null });
+        } else {
+          this.showErrors = true;
+          this.createClusterGroupErrors = data.errorMessages;
+          this.showToastMessage('Error when Importing Clusters', [], true);
+        }
+      },
+      ex => {
+        this.creatingClusterGroups = false;
         this.showErrors = true;
-        this.createClusterGroupErrors = data.errorMessages;
+        this.createClusterGroupErrors = [ex.error.errors];
         this.showToastMessage('Error when Importing Clusters', [], true);
       }
-    });
+    );
   }
 
-  public createClusterGroupExcel() {
-    const formData: FormData = new FormData();
+  public createClusterGroupExcel(overwrite: boolean) {
+    let formData: FormData = new FormData();
     this.convertedExcelData = null;
     this.excelStoreInformation = null;
     this.showErrors = false;
@@ -461,7 +582,7 @@ export class ImportClusterGroupDialogComponent implements OnInit, AfterViewInit 
     formData.append('file', this.excelFile, this.excelFile.name);
     Promise.resolve(formData)
       // Convert the Excel and set variable
-      .then(excelData => this.excelConvertService.convertExcelToJsonPromise(excelData))
+      .then(formData => this.excelConvertService.convertExcelToJsonPromise(formData))
       .then((excelJSONData: IExcelConvertSGM[]) => {
         // This will get the first sheet in the Excel regardless of the sheet name
         this.convertedExcelData = excelJSONData[Object.keys(excelJSONData)[0]];
@@ -483,7 +604,7 @@ export class ImportClusterGroupDialogComponent implements OnInit, AfterViewInit 
         this.addStoresToExcel();
         // Add default values if Chain/Tier does not exist
         this.setChainTierDefaultsToExcel();
-        const excelImportRequest: IClusterGroupCreateRequestExcel = this.setExcelRequest();
+        const excelImportRequest: IClusterGroupCreateRequestExcel = this.setExcelRequest(overwrite);
 
         this.clusterGroupService
           .createClusterGroupExcel(excelImportRequest)
@@ -522,8 +643,12 @@ export class ImportClusterGroupDialogComponent implements OnInit, AfterViewInit 
     }
   }
 
-  public validForm() {
-    return this.clusterGroupName.valid && this.assortmentPeriod.valid && this.leadSubclass.valid;
+  public validFormOracle() {
+    return this.clusterGroupName.valid && this.assortmentPeriod.valid && this.leadSubclass.valid && !this.loadingProductHierarchy;
+  }
+
+  public validFormExcel() {
+    return this.clusterGroupName.valid && this.assortmentPeriod.valid && !this.loadingProductHierarchy;
   }
 
   public tabChanged(tabChangeEvent: MatTabChangeEvent): void {
@@ -595,14 +720,14 @@ export class ImportClusterGroupDialogComponent implements OnInit, AfterViewInit 
     });
   }
 
-  private setExcelRequest() {
+  private setExcelRequest(overwrite: boolean) {
     const excelImportRequest: IClusterGroupCreateRequestExcel = {
       clusterGroupName: this.clusterGroupName.value,
       clusterGroupDescription: this.clusterGroupDescription.value,
       assortmentPeriodId: this.assortmentPeriod.value.assortmentPeriodId,
       subclassIds: this.selectedLinkSubclasses,
       excelLocations: [],
-      overwrite: false,
+      overwrite: overwrite,
     };
     this.convertedExcelData.map(excelLocation => {
       excelImportRequest.excelLocations.push({
@@ -645,6 +770,7 @@ export class ImportClusterGroupDialogComponent implements OnInit, AfterViewInit 
     this.formControlSubDepartments.reset([]);
     this.formControlClasses.reset([]);
     this.formControlSubClasses.reset([]);
+    this.formControlSystemicallyLinkedSubClasses.reset([]);
   }
 
   private resetFormAndValues() {
@@ -654,6 +780,9 @@ export class ImportClusterGroupDialogComponent implements OnInit, AfterViewInit 
 
     this.leadSubclass.reset('', { emitEvent: false });
     this.leadSubclass.disable();
+
+    this.formControlSystemicallyLinkedSubClasses.reset([], { emitEvent: false });
+    this.formControlSystemicallyLinkedSubClasses.disable();
 
     this.formControlProductDepartments.reset([]);
     this.formControlProductDepartments.disable();

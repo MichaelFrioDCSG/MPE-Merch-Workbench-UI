@@ -47,6 +47,18 @@
             >
             </app-input-dropdown-filter>
           </div>
+          <div class="col-md-4">
+            <app-input-multiselect-dropdown
+              [placeholder]="'Auto Linked Subclass(es)'"
+              [title]="'Manage Auto Linked Subclasses'"
+              [arrayValues]="systemicallyLinkedSubClassesDropdownItems"
+              [loading]="loadingSystemicallyLinkedSubClasses"
+              [inputFormControl]="formControlSystemicallyLinkedSubClasses"
+              [required]="false"
+              (onValueChanged)="onSystemicallyLinkedSubClassChanged($event)"
+            >
+            </app-input-multiselect-dropdown>
+          </div>
         </div>
         <div class="row add-space-above">
           <div class="col-md-12">
@@ -95,6 +107,22 @@
               (onValueChanged)="onProductSubClassChanged($event)"
             >
             </app-input-multiselect-dropdown>
+          </div>
+        </div>
+        <div class="row row-centered">
+          <div class="col-md-12">
+            <div mat-dialog-actions class="show-on-right">
+              <button
+                mat-raised-button
+                color="primary"
+                [disabled]="!validFormOracle() || creatingClusterGroups == true"
+                (click)="checkForExistingClusterGroupOracle()"
+                [class.spinner]="creatingClusterGroups"
+              >
+                {{ creatingClusterGroups == false ? 'Import Cluster Group' : 'Importing Cluster Group...' }}
+              </button>
+              <button mat-raised-button color="warn" mat-dialog-close cdkFocusInitial>Close</button>
+            </div>
           </div>
         </div>
       </div>
@@ -187,19 +215,27 @@
             <mat-error *ngIf="formControlExcelFile.hasError('required')">Please select an Excel Document.</mat-error>
           </div>
         </div>
+        <div class="row row-centered">
+          <div class="col-md-12">
+            <div mat-dialog-actions class="show-on-right">
+              <button
+                mat-raised-button
+                color="primary"
+                [disabled]="!validFormExcel() || creatingClusterGroups == true"
+                (click)="checkForExistingClusterGroupExcel()"
+                [class.spinner]="creatingClusterGroups"
+              >
+                {{ creatingClusterGroups == false ? 'Import Cluster Group' : 'Importing Cluster Group...' }}
+              </button>
+              <button mat-raised-button color="warn" mat-dialog-close cdkFocusInitial>Close</button>
+            </div>
+          </div>
+        </div>
       </div>
     </mat-tab>
   </mat-tab-group>
 </div>
 <div class="row row-centered">
-  <div class="col-md-12">
-    <div mat-dialog-actions class="show-on-right">
-      <button mat-raised-button color="primary" (click)="createClusterGroups()" [class.spinner]="creatingClusterGroups">
-        {{ creatingClusterGroups == false ? 'Import Cluster Group' : 'Importing Cluster Group...' }}
-      </button>
-      <button mat-raised-button color="warn" mat-dialog-close cdkFocusInitial>Close</button>
-    </div>
-  </div>
   <ng-container *ngIf="showErrors">
     <div class="col-md-12">
       <ng-container *ngFor="let error of createClusterGroupErrors">

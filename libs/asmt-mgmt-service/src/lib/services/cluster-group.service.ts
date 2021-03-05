@@ -8,12 +8,14 @@ import {
   ICreateClusterGroupRequestDto,
   ICreateClusterGroupResponseDto,
   IStoreInformation,
+  IStoreInformationExcelImport,
   IStoreInformationListValue,
 } from '@mpe/shared';
 import { environment } from '@mpe/home/src/environments/environment';
 import { IStoreInformationRequest } from './IStoreInformationRequest';
 import { IServerResponse } from './IServerResponse';
 import { IClusterGroupResponseDto } from './IClusterGroupResponseDto';
+import { IClusterGroupCreateRequestExcel } from '@mpe/shared';
 
 @Injectable({
   providedIn: 'root',
@@ -65,7 +67,7 @@ export class ClusterGroupService {
   }
 
   public createClusterGroup(body: ICreateClusterGroupRequestDto): Observable<ICreateClusterGroupResponseDto> {
-    return this.http.post<ICreateClusterGroupResponseDto>(`${this.endPointUrl}`, body);
+    return this.http.post<ICreateClusterGroupResponseDto>(`${this.endPointUrl}/create`, body);
   }
 
   public updateClusterGroups(clusterGroups: IClusterGroup[]): Observable<boolean> {
@@ -79,5 +81,17 @@ export class ClusterGroupService {
 
   public refreshPlAttributes(): Observable<object> {
     return this.http.patch(`${this.endPointUrl}/ProductLocationAttributes`, undefined);
+  }
+
+  public createClusterGroupExcel(body: IClusterGroupCreateRequestExcel): Observable<ICreateClusterGroupResponseDto> {
+    return this.http.post<ICreateClusterGroupResponseDto>(`${this.endPointUrl}/create/excel`, body);
+  }
+
+  public getStoreInformationExcelImport(): Observable<IStoreInformationExcelImport[]> {
+    return this.http.get<IStoreInformationExcelImport[]>(`${environment.mpe_api}/api/ClusterGroups/store-information/excel`);
+  }
+
+  public getStoreInformationExcelImportPromise() {
+    return this.getStoreInformationExcelImport().toPromise();
   }
 }
