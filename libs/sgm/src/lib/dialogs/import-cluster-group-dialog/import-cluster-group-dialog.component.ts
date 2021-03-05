@@ -3,13 +3,8 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormBuilder, Validators, FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
-import { IProductHierarchy } from '../../../../../shared/src/lib/models/IProductHierarchy';
-import { IAssortmentPeriod } from '../../../../../shared/src/lib/models/IAssortmentPeriod';
-import { IClusterGroupCreateRequestExcel } from '../../../../../shared/src/lib/models/dto/IClusterGroupCreateRequestExcel';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ToastMessageComponent } from 'libs/shared/src/lib/components/toast-message/toast-message.component';
 import { MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
-import { ExcelConvertService } from '../../services/excel-convert.service';
 import {
   IExcelConvertSGM,
   IExcelStoreInformation,
@@ -19,8 +14,11 @@ import {
   IWarningDialogData,
   SharedActions,
   IMessageDialogData,
+  IProductHierarchy,
+  IAssortmentPeriod,
+  IClusterGroupCreateRequestExcel,
 } from '@mpe/shared';
-import { AssortmentPeriodService, ProductHierarchyService, ClusterGroupService } from '@mpe/AsmtMgmtService';
+import { AssortmentPeriodService, ProductHierarchyService, ClusterGroupService, ExcelConvertService } from '@mpe/AsmtMgmtService';
 import { SummaryActions } from '../../store';
 import { HttpErrorResponse } from '@angular/common/http';
 
@@ -122,7 +120,7 @@ export class ImportClusterGroupDialogComponent implements OnInit, AfterViewInit 
       },
       ex => {
         this.loadingAssortmentPeriods = false;
-        this.showToastMessage('Error while retrieving Assortment Periods', [], true);
+        this.sharedActions.showNotification({ title: 'Error while retrieving Assortment Periods', isError: true, messages: [] });
       }
     );
   }
@@ -553,20 +551,20 @@ export class ImportClusterGroupDialogComponent implements OnInit, AfterViewInit 
       (data: ICreateClusterGroupResponseDto) => {
         this.creatingClusterGroups = false;
         if (data.isSuccess) {
-          this.showToastMessage('Cluster Import Success', [], false);
+          this.sharedActions.showNotification({ title: 'Cluster Import Success', isError: false, messages: [] });
           this.summaryActions.getClusterGroups();
           this.dialogRef.close({ data: null });
         } else {
           this.showErrors = true;
           this.createClusterGroupErrors = data.errorMessages;
-          this.showToastMessage('Error when Importing Clusters', [], true);
+          this.sharedActions.showNotification({ title: 'Error when Importing Clusters', isError: true, messages: [] });
         }
       },
       ex => {
         this.creatingClusterGroups = false;
         this.showErrors = true;
         this.createClusterGroupErrors = [ex.error.errors];
-        this.showToastMessage('Error when Importing Clusters', [], true);
+        this.sharedActions.showNotification({ title: 'Error when Importing Clusters', isError: true, messages: [] });
       }
     );
   }
@@ -580,6 +578,7 @@ export class ImportClusterGroupDialogComponent implements OnInit, AfterViewInit 
     this.showErrors = false;
     this.createClusterGroupErrors = [];
     formData.append('file', this.excelFile, this.excelFile.name);
+    console.log(this.excelFile);
     Promise.resolve(formData)
       // Convert the Excel and set variable
       .then(formData => this.excelConvertService.convertExcelToJsonPromise(formData))
@@ -610,7 +609,7 @@ export class ImportClusterGroupDialogComponent implements OnInit, AfterViewInit 
           .createClusterGroupExcel(excelImportRequest)
           .subscribe(
             (data: ICreateClusterGroupResponseDto) => {
-              this.showToastMessage('Cluster Import Success', [], false);
+              this.sharedActions.showNotification({ title: 'Cluster Import Success', isError: false, messages: [] });
               this.summaryActions.getClusterGroups();
               this.dialogRef.close({ data: null });
             },
@@ -618,7 +617,7 @@ export class ImportClusterGroupDialogComponent implements OnInit, AfterViewInit 
               this.showErrors = true;
               this.createClusterGroupErrors = err.error.errors;
               this.createClusterGroupErrors.slice(0, 10);
-              this.showToastMessage('Error when Importing Clusters', [], true);
+              this.sharedActions.showNotification({ title: 'Error when Importing Clusters', isError: true, messages: [] });
             }
           )
           // Will execute at the end of the subscribe
@@ -711,11 +710,11 @@ export class ImportClusterGroupDialogComponent implements OnInit, AfterViewInit 
           excelLocation.Tier = this.excelStoreInformation.find(store => store.storeNumber === excelLocation.Location).tier;
         }
       } catch {
-        this.showToastMessage(
-          'Adding Stores to Excel Error',
-          [`Store Number: ${excelLocation.Location} had an issue trying to apply the default chain or tier to this store`],
-          true
-        );
+        this.sharedActions.showNotification({
+          title: 'Adding Stores to Excel Error',
+          isError: true,
+          messages: [`Store Number: ${excelLocation.Location} had an issue trying to apply the default chain or tier to this store`],
+        });
       }
     });
   }
@@ -752,17 +751,6 @@ export class ImportClusterGroupDialogComponent implements OnInit, AfterViewInit 
       });
     });
     return excelImportRequest;
-  }
-
-  private showToastMessage(title: string, messages: string[], isError: boolean = false): void {
-    const snackBarRef = this.snackBar.openFromComponent(ToastMessageComponent, {
-      data: {
-        title,
-        messages,
-        isError,
-      },
-    });
-    snackBarRef.onAction().subscribe(() => this.snackBar.dismiss());
   }
 
   private resetLinkValues() {

@@ -13,10 +13,10 @@ import * as actions from './actions';
 export default class SharedEffects {
   constructor(private actions$: Actions, private snackBar: MatSnackBar, private dialog: MatDialog) {}
 
-  private onShowNotificaion = createEffect(
+  private onShowNotification = createEffect(
     () =>
       this.actions$.pipe(
-        ofType(actions.showNotificaion),
+        ofType(actions.showNotification),
         tap(action => {
           const snackBarRef = this.snackBar.openFromComponent(ToastMessageComponent, {
             data: {

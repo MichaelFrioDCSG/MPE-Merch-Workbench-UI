@@ -10,12 +10,12 @@ import {
   IStoreInformation,
   IStoreInformationExcelImport,
   IStoreInformationListValue,
+  IClusterGroupCreateRequestExcel,
 } from '@mpe/shared';
 import { environment } from '@mpe/home/src/environments/environment';
 import { IStoreInformationRequest } from './IStoreInformationRequest';
 import { IServerResponse } from './IServerResponse';
 import { IClusterGroupResponseDto } from './IClusterGroupResponseDto';
-import { IClusterGroupCreateRequestExcel } from '@mpe/shared';
 
 @Injectable({
   providedIn: 'root',

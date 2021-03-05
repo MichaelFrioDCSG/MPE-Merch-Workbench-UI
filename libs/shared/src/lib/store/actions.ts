@@ -4,7 +4,7 @@ import { IMessageDialogData } from '../components/message-dialog/IMessageDialogD
 import { INotificationData } from '../components/toast-message/INotificationData';
 import { IWarningDialogData } from '../components/warning-dialog/IWarningDialogData';
 
-export const showNotificaion = createAction('[Shared] Show Notification', props<INotificationData>());
+export const showNotification = createAction('[Shared] Show Notification', props<INotificationData>());
 export const showMessageDialog = createAction('[Shared] Show Message Dialog', props<IMessageDialogData>());
 export const showWarningDialog = createAction('[Shared] Show Warning Dialog', props<IWarningDialogData>());
 
@@ -12,8 +12,8 @@ export const showWarningDialog = createAction('[Shared] Show Warning Dialog', pr
 export class SharedActions {
   constructor(private store: Store) {}
 
-  public showNotificaion(data: INotificationData): void {
-    this.store.dispatch(showNotificaion(data));
+  public showNotification(data: INotificationData): void {
+    this.store.dispatch(showNotification(data));
   }
 
   public showMessageDialog(data: IMessageDialogData) {

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { environment } from '@mpe/home/src/environments/environment';
 import { HttpClient } from '@angular/common/http';
+import { IExcelConvertSGM } from '@mpe/shared';
 
 @Injectable({
   providedIn: 'root',
@@ -9,12 +10,8 @@ import { HttpClient } from '@angular/common/http';
 export class ExcelConvertService {
   constructor(private http: HttpClient) {}
 
-  public convertExcelToJson(file) {
-    return this.http.post(`${environment.excel_api}/exceltojson`, file).pipe(
-      map((res: any) => {
-        return res;
-      })
-    );
+  public convertExcelToJson(file: any) {
+    return this.http.post<IExcelConvertSGM[]>(`${environment.excel_api}/exceltojson`, file);
   }
   public convertExcelToJsonPromise(file) {
     return this.convertExcelToJson(file).toPromise();

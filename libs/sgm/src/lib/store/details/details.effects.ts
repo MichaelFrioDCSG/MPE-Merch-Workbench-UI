@@ -58,7 +58,7 @@ export default class SummaryEffects {
     () =>
       this.actions$.pipe(
         ofType(actions.saveDetailsSuccess),
-        tap(action => this.sharedActions.showNotificaion({ title: 'Cluster group was saved.', messages: [], isError: false }))
+        tap(action => this.sharedActions.showNotification({ title: 'Cluster group was saved.', messages: [], isError: false }))
       ),
     { dispatch: false }
   );
