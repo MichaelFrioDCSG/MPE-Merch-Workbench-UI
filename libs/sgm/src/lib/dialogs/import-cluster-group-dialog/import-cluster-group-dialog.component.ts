@@ -570,7 +570,7 @@ export class ImportClusterGroupDialogComponent implements OnInit, AfterViewInit 
   }
 
   public createClusterGroupExcel(overwrite: boolean) {
-    let formData: FormData = new FormData();
+    const formData: FormData = new FormData();
     this.convertedExcelData = null;
     this.excelStoreInformation = null;
     this.showErrors = false;
@@ -581,7 +581,7 @@ export class ImportClusterGroupDialogComponent implements OnInit, AfterViewInit 
     console.log(this.excelFile);
     Promise.resolve(formData)
       // Convert the Excel and set variable
-      .then(formData => this.excelConvertService.convertExcelToJsonPromise(formData))
+      .then(excelData => this.excelConvertService.convertExcelToJsonPromise(excelData))
       .then((excelJSONData: IExcelConvertSGM[]) => {
         // This will get the first sheet in the Excel regardless of the sheet name
         this.convertedExcelData = excelJSONData[Object.keys(excelJSONData)[0]];

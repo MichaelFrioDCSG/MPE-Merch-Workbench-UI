@@ -8,7 +8,7 @@ import { ExcelConvertService } from './excel-convert.service';
 describe('ExcelConvertService', () => {
   let excelConvertService: ExcelConvertService;
   let httpTestingController: HttpTestingController;
-  let formData: FormData = new FormData();
+  const formData: FormData = new FormData();
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -22,7 +22,7 @@ describe('ExcelConvertService', () => {
 
   it('when ConvertExcelToJson called, returns observable of IExcelConvertSGM', inject([ExcelConvertService], (service: ExcelConvertService) => {
     // tests will be invoked after fake request/response fires
-    var file = new Blob();
+    const file = new Blob();
     formData.append('file', file, 'Test File Name');
 
     service.convertExcelToJson(formData).subscribe((excelJSONData: IExcelConvertSGM[]) => {
